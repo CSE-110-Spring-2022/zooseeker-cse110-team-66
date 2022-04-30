@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,8 @@ public class ZooData {
         public String street;
     }
 
-    public static Map<String, ZooData.VertexInfo> loadVertexInfoJSON(Context context, String path) {
+    public static List<ZooData.VertexInfo>
+            loadZooItemJSON(Context context, String path, String flag) {
         try {
             InputStream inputStream = context.getAssets().open(path);
             Reader reader = new InputStreamReader(inputStream);
@@ -50,21 +52,19 @@ public class ZooData {
             Type type = new TypeToken<List<ZooData.VertexInfo>>(){}.getType();
             List<ZooData.VertexInfo> zooData = gson.fromJson(reader, type);
 
-            // This code is equivalent to:
-            //
-            // Map<String, ZooData.VertexInfo> indexedZooData = new HashMap();
-            // for (ZooData.VertexInfo datum : zooData) {
-            //   indexedZooData[datum.id] = datum;
-            // }
-            //
-            Map<String, ZooData.VertexInfo> indexedZooData = zooData
-                    .stream()
-                    .collect(Collectors.toMap(v -> v.id, datum -> datum));
-
-            return indexedZooData;
+            // Either return all the exhibits at the zoo or all the non-exhibits
+            List<ZooData.VertexInfo> selectedData = new ArrayList<>();
+            for (ZooData.VertexInfo item : zooData) {
+                if (flag.equals("exhibits") && item.kind == VertexInfo.Kind.EXHIBIT) {
+                    selectedData.add(item); // exhibits
+                } else if (!flag.equals("exhibits") && item.kind != VertexInfo.Kind.EXHIBIT) {
+                    selectedData.add(item); // gates and intersections
+                }
+            }
+            return selectedData;
         } catch (IOException e) {
             e.printStackTrace();
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
     }
 

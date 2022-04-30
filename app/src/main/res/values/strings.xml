@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">San Diego ZooSeeker</string>
     <string name="plan_button_text">Plan</string>
+    <string name="exhibit">Exhibit</string>
+    <string name="add">ADD</string>
+    <string name="search_exhibit">Search Exhibit</string>
 </resources>
