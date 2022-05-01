@@ -1,6 +1,9 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
@@ -21,17 +24,27 @@ public class ExhibitItem {
     public String id;
     public String name;
     public List<String> tags;
+    public Boolean added;
 
     public ExhibitItem(@NonNull String id, String name, List<String> tags) {
         this.id = id;
         this.name = name;
         this.tags = tags;
+        this.added = false;
+    }
+
+    public ExhibitItem(@NonNull String id, String name, List<String> tags, Boolean added) {
+        this.id = id;
+        this.name = name;
+        this.tags = tags;
+        this.added = added;
     }
 
     public ExhibitItem(ZooData.VertexInfo item) {
         this.id = item.id;
         this.name = item.name;
         this.tags = item.tags;
+        this.added = false;
     }
 
     public String getId() { return id; }
@@ -46,6 +59,24 @@ public class ExhibitItem {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Boolean getAdded(){return added;}
+
+    public void setAdded(Boolean added){this.added=added;}
+
+    @SuppressLint("ResourceAsColor")
+    public void setAdded(Activity activity) {
+        Button button = activity.findViewById(R.id.add_exhibit_btn);
+        button.setText("ADDED");
+        button.setBackgroundColor(R.color.gray);
+    }
+
+    @SuppressLint("ResourceAsColor")
+    public void setAdd(Activity activity) {
+        Button button = activity.findViewById(R.id.add_exhibit_btn);
+        button.setText("ADDED");
+        button.setBackgroundColor(R.color.green);
     }
 
     public void setName(String name) {

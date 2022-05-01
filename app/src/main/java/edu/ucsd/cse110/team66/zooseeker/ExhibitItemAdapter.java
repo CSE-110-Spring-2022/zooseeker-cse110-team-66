@@ -17,16 +17,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.ViewHolder> implements Filterable {
     private List<ExhibitItem> exhibits;
     private List<ExhibitItem> exhibitsAll;
+    private Consumer<ExhibitItem> onAddExhibit;
 
     public void setExhibitItems(List<ExhibitItem> exhibits) {
         this.exhibits = exhibits;
         exhibitsAll = new ArrayList<>(exhibits);
         notifyDataSetChanged();
     }
+
 
     @NonNull
     @Override
@@ -41,6 +44,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     @Override
     public void onBindViewHolder(@NonNull ExhibitItemAdapter.ViewHolder holder, int position) {
         holder.setExhibitName(exhibits.get(position));
+        holder.set
     }
 
     @Override
@@ -92,15 +96,22 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView exhibitTextView;
         private Button addExhibitBtn;
+        private ExhibitItem exhibitItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.exhibitTextView = itemView.findViewById(R.id.exhibit_item_text);
             this.addExhibitBtn = itemView.findViewById(R.id.add_exhibit_btn);
+
+            this.addExhibitBtn.setOnClickListener(view -> {
+                if (onAddExhibit == null) return;
+                onAddExhibit.accept(exhibitItem);
+            });
         }
 
         public void setExhibitName(ExhibitItem item) {
             this.exhibitTextView.setText(item.getName());
         }
+
     }
 }
