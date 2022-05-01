@@ -31,15 +31,24 @@ public class ExhibitRouteActivity extends AppCompatActivity {
 
         // back button
         Button back_btn = (Button) findViewById(R.id.back_btn_plan);
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ExhibitRouteActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        Button direction_btn = (Button) findViewById(R.id.direction_btn);
+
+        back_btn.setOnClickListener(v -> backToMainActivity());
+
+        // Direction to fastest route.
+        //direction_btn.setOnClickListener(v -> openDirectionActivity);
 
         // load plan list
     }
+
+    private void backToMainActivity() {
+        Intent intent = new Intent(ExhibitRouteActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+//    private void openDirectionActivity() {
+//        Intent intent = new Intent(this,***); // add direction.class parameter
+//        startActivity(intent);
+//    }
 
 }
