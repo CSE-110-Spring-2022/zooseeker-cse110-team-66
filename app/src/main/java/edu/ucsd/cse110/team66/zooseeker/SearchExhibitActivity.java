@@ -62,7 +62,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                recyclerView.setAlpha(0);
+                exhibitItemAdapter.getFilter().filter(query);
                 return false;
             }
 

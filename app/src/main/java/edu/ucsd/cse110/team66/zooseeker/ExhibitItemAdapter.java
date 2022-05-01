@@ -69,7 +69,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                     }
                     // Check if query is contained within tags
                     for (String tag : exhibit.getTags()) {
-                        if (tag.toLowerCase().contains(loweredQuery)) {
+                        if (tag.toLowerCase().startsWith(loweredQuery)) {
                             if (!filteredExhibits.contains(exhibit)) filteredExhibits.add(exhibit);
                         }
                     }
