@@ -118,13 +118,11 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                         exhibitsAll.get(i).added = !exhibitsAll.get(i).added;
                         if (exhibitsAll.get(i).added) {
                             addExhibitBtn.setText("ADDED");
-                            addExhibitBtn.setBackgroundColor(Color.rgb(192,192,192));
-                            addExhibitBtn.setClickable(false);
+                            addExhibitBtn.setEnabled(false);
                         }
                         else {
                             addExhibitBtn.setText("ADD");
-                            addExhibitBtn.setBackgroundColor(Color.rgb(21,71,52));
-                            addExhibitBtn.setClickable(true);
+                            addExhibitBtn.setEnabled(true);
                         }
                     }
                 }
@@ -136,14 +134,12 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         public void setExhibitItem(ExhibitItem item) {
             this.exhibitTextView.setText(item.getName());
             if (item.added) {
-                this.addExhibitBtn.setBackgroundColor(Color.rgb(192,192,192));
                 this.addExhibitBtn.setText("ADDED");
-                this.addExhibitBtn.setClickable(false);
+                this.addExhibitBtn.setEnabled(false);
             }
             else {
-                this.addExhibitBtn.setBackgroundColor(Color.rgb(21,71,52));
                 this.addExhibitBtn.setText("ADD");
-                this.addExhibitBtn.setClickable(true);
+                this.addExhibitBtn.setEnabled(true);
             }
 
         }
