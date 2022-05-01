@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.ViewHolder> implements Filterable {
@@ -30,6 +29,9 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         notifyDataSetChanged();
     }
 
+    public void setOnAddExhibitHandler(Consumer<ExhibitItem> onAddExhibit) {
+        this.onAddExhibit=onAddExhibit;
+    }
 
     @NonNull
     @Override
@@ -43,8 +45,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ExhibitItemAdapter.ViewHolder holder, int position) {
-        holder.setExhibitName(exhibits.get(position));
-        holder.set
+        holder.setExhibitItem(exhibits.get(position));
     }
 
     @Override
@@ -109,8 +110,18 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
             });
         }
 
-        public void setExhibitName(ExhibitItem item) {
+        @SuppressLint("ResourceAsColor")
+        public void setExhibitItem(ExhibitItem item) {
             this.exhibitTextView.setText(item.getName());
+            if (item.added) {
+                this.addExhibitBtn.setBackgroundColor(R.color.gray);
+                this.addExhibitBtn.setText("ADDED");
+            }
+            else {
+                this.addExhibitBtn.setBackgroundColor(R.color.green);
+                this.addExhibitBtn.setText("ADD");
+            }
+
         }
 
     }

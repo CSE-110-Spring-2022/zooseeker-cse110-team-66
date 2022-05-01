@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -26,6 +27,7 @@ public class ExhibitItem {
     public List<String> tags;
     public Boolean added;
 
+    @Ignore
     public ExhibitItem(@NonNull String id, String name, List<String> tags) {
         this.id = id;
         this.name = name;
@@ -44,7 +46,7 @@ public class ExhibitItem {
         this.id = item.id;
         this.name = item.name;
         this.tags = item.tags;
-        this.added = false;
+        this.added = item.added;
     }
 
     public String getId() { return id; }
