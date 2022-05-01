@@ -24,10 +24,10 @@ public class ExhibitRouteActivity extends AppCompatActivity {
 
         // Code for calculating route based on chosen exhibits, and storing
         // 1. Load the graph...
-        Graph<String, IdentifiedWeightedEdge> g
-                = ZooData.loadZooGraphJSON(this,"sample_zoo_graph.json");
-        GraphPath<String, IdentifiedWeightedEdge> path
-                = DijkstraShortestPath.findPathBetween(g, start, goal);
+//        Graph<String, IdentifiedWeightedEdge> g
+//                = ZooData.loadZooGraphJSON(this,"sample_zoo_graph.json");
+//        GraphPath<String, IdentifiedWeightedEdge> path
+//                = DijkstraShortestPath.findPathBetween(g, start, goal);
 
         // back button
         Button back_btn = (Button) findViewById(R.id.back_btn_plan);
