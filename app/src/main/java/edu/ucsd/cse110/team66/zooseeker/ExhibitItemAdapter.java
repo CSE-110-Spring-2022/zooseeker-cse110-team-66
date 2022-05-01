@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,12 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
 
     public void setOnAddExhibitHandler(Consumer<ExhibitItem> onAddExhibit) {
         this.onAddExhibit=onAddExhibit;
+
+
+    }
+
+    public List<ExhibitItem> getExhibitsAll() {
+        return exhibitsAll;
     }
 
     @NonNull
@@ -106,20 +113,37 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
 
             this.addExhibitBtn.setOnClickListener(view -> {
                 if (onAddExhibit == null) return;
-                onAddExhibit.accept(exhibitItem);
+                for (int i = 0; i < exhibitsAll.size(); ++i) {
+                    if (exhibitsAll.get(i).name == exhibitTextView.getText()) {
+                        exhibitsAll.get(i).added = !exhibitsAll.get(i).added;
+                        if (exhibitsAll.get(i).added) {
+                            addExhibitBtn.setText("ADDED");
+                            addExhibitBtn.setBackgroundColor(Color.rgb(192,192,192));
+                            addExhibitBtn.setClickable(false);
+                        }
+                        else {
+                            addExhibitBtn.setText("ADD");
+                            addExhibitBtn.setBackgroundColor(Color.rgb(21,71,52));
+                            addExhibitBtn.setClickable(true);
+                        }
+                    }
+                }
+
+                //onAddExhibit.accept(exhibitItem);
             });
         }
 
-        @SuppressLint("ResourceAsColor")
         public void setExhibitItem(ExhibitItem item) {
             this.exhibitTextView.setText(item.getName());
             if (item.added) {
-                this.addExhibitBtn.setBackgroundColor(R.color.gray);
+                this.addExhibitBtn.setBackgroundColor(Color.rgb(192,192,192));
                 this.addExhibitBtn.setText("ADDED");
+                this.addExhibitBtn.setClickable(false);
             }
             else {
-                this.addExhibitBtn.setBackgroundColor(R.color.green);
+                this.addExhibitBtn.setBackgroundColor(Color.rgb(21,71,52));
                 this.addExhibitBtn.setText("ADD");
+                this.addExhibitBtn.setClickable(true);
             }
 
         }

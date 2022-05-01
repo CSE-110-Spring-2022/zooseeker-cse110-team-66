@@ -85,6 +85,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         exhibitItemAdapter = new ExhibitItemAdapter();
         exhibitItemAdapter.setHasStableIds(true);
         exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
+        //Log.d("SearchExihibitActivityTEXT", viewModel.getExhibitItems().getValue().toString());
         //viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
 
         recyclerView = findViewById(R.id.exhibit_items);

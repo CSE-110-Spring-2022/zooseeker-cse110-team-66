@@ -3,6 +3,8 @@ package edu.ucsd.cse110.team66.zooseeker;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -67,18 +69,16 @@ public class ExhibitItem {
 
     public void setAdded(Boolean added){this.added=added;}
 
-    @SuppressLint("ResourceAsColor")
-    public void setAdded(Activity activity) {
-        Button button = activity.findViewById(R.id.add_exhibit_btn);
+    public void setAdded(View itemView) {
+        Button button = itemView.findViewById(R.id.add_exhibit_btn);
         button.setText("ADDED");
-        button.setBackgroundColor(R.color.gray);
+        button.setBackgroundColor(Color.rgb(192,192,192));
     }
 
-    @SuppressLint("ResourceAsColor")
-    public void setAdd(Activity activity) {
-        Button button = activity.findViewById(R.id.add_exhibit_btn);
-        button.setText("ADDED");
-        button.setBackgroundColor(R.color.green);
+    public void setAdd(View itemView) {
+        Button button = itemView.findViewById(R.id.add_exhibit_btn);
+        button.setText("ADD");
+        button.setBackgroundColor(Color.rgb(21,71,52));
     }
 
     public void setName(String name) {

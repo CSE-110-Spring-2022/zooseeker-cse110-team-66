@@ -32,9 +32,9 @@ public abstract class ExhibitDatabase extends RoomDatabase {
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         Executors.newSingleThreadExecutor().execute(() -> {
-                            List<ExhibitItem> todos = ExhibitItem
+                            List<ExhibitItem> exhibits = ExhibitItem
                                     .loadExhibits(context, "demo_todos.json");
-                            getSingleton(context).exhibitItemDao().insertAll(todos);
+                            getSingleton(context).exhibitItemDao().insertAll(exhibits);
                         });
                     }
                 })
