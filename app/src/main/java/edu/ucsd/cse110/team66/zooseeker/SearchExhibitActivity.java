@@ -2,6 +2,7 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public ExhibitItemAdapter exhibitItemAdapter;
 
+    private ExhibitItemViewModel viewModel;
     private Button planButton;
     private String goal;
 
@@ -78,8 +80,13 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
     // Display the list of exhibits a user can choose
     private void setExhibitItemAdapter() {
+        viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
+
         exhibitItemAdapter = new ExhibitItemAdapter();
         exhibitItemAdapter.setHasStableIds(true);
+        exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
+        //Log.d("SearchExihibitActivityTEXT", viewModel.getExhibitItems().getValue().toString());
+        //viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
 
         recyclerView = findViewById(R.id.exhibit_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

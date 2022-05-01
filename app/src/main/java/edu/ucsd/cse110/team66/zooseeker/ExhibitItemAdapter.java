@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +16,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
+import java.util.function.Consumer;
 
 public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.ViewHolder> implements Filterable {
     private List<ExhibitItem> exhibits;
     private List<ExhibitItem> exhibitsAll;
+    private Consumer<ExhibitItem> onAddExhibit;
 
     public void setExhibitItems(List<ExhibitItem> exhibits) {
         this.exhibits = exhibits;
         exhibitsAll = new ArrayList<>(exhibits);
         notifyDataSetChanged();
+    }
+
+    public void setOnAddExhibitHandler(Consumer<ExhibitItem> onAddExhibit) {
+        this.onAddExhibit=onAddExhibit;
+
+
+    }
+
+    public List<ExhibitItem> getExhibitsAll() {
+        return exhibitsAll;
     }
 
     @NonNull
@@ -40,7 +52,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ExhibitItemAdapter.ViewHolder holder, int position) {
-        holder.setExhibitName(exhibits.get(position));
+        holder.setExhibitItem(exhibits.get(position));
     }
 
     @Override
@@ -92,15 +104,49 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView exhibitTextView;
         private Button addExhibitBtn;
+        private ExhibitItem exhibitItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.exhibitTextView = itemView.findViewById(R.id.exhibit_item_text);
             this.addExhibitBtn = itemView.findViewById(R.id.add_exhibit_btn);
+
+            this.addExhibitBtn.setOnClickListener(view -> {
+                if (onAddExhibit == null) return;
+                for (int i = 0; i < exhibitsAll.size(); ++i) {
+                    if (exhibitsAll.get(i).name == exhibitTextView.getText()) {
+                        exhibitsAll.get(i).added = !exhibitsAll.get(i).added;
+                        if (exhibitsAll.get(i).added) {
+                            addExhibitBtn.setText("ADDED");
+                            addExhibitBtn.setBackgroundColor(Color.rgb(192,192,192));
+                            addExhibitBtn.setClickable(false);
+                        }
+                        else {
+                            addExhibitBtn.setText("ADD");
+                            addExhibitBtn.setBackgroundColor(Color.rgb(21,71,52));
+                            addExhibitBtn.setClickable(true);
+                        }
+                    }
+                }
+
+                //onAddExhibit.accept(exhibitItem);
+            });
         }
 
-        public void setExhibitName(ExhibitItem item) {
+        public void setExhibitItem(ExhibitItem item) {
             this.exhibitTextView.setText(item.getName());
+            if (item.added) {
+                this.addExhibitBtn.setBackgroundColor(Color.rgb(192,192,192));
+                this.addExhibitBtn.setText("ADDED");
+                this.addExhibitBtn.setClickable(false);
+            }
+            else {
+                this.addExhibitBtn.setBackgroundColor(Color.rgb(21,71,52));
+                this.addExhibitBtn.setText("ADD");
+                this.addExhibitBtn.setClickable(true);
+            }
+
         }
+
     }
 }
