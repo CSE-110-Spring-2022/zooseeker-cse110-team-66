@@ -18,10 +18,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.gson.Gson;
+
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchExhibitActivity extends AppCompatActivity {
@@ -106,7 +109,17 @@ public class SearchExhibitActivity extends AppCompatActivity {
     }
 
     private void openExhibitRouteActivity() {
+        List<ExhibitItem> exhibitsAll = exhibitItemAdapter.getExhibitsAll();
+        ArrayList<String> exhibitsAdded = new ArrayList<String>();
+        for (ExhibitItem exhibit: exhibitsAll) {
+            if (exhibit.added) {
+                exhibitsAdded.add(exhibit.id);
+            }
+        }
+        Gson gson = new Gson();
+        String json = gson.toJson(exhibitsAdded);
         Intent intent = new Intent(this, ExhibitRouteActivity.class);
+        intent.putExtra("exhibitsAll", json);
         startActivity(intent);
     }
 }

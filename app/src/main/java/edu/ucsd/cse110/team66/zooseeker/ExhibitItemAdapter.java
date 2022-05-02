@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
