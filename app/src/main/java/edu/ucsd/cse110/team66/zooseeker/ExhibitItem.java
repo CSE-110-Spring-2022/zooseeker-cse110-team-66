@@ -27,7 +27,7 @@ public class ExhibitItem {
     public String id;
     public String name;
     public List<String> tags;
-    public Boolean added;
+    public boolean added;
 
     @Ignore
     public ExhibitItem(@NonNull String id, String name, List<String> tags) {
@@ -37,7 +37,7 @@ public class ExhibitItem {
         this.added = false;
     }
 
-    public ExhibitItem(@NonNull String id, String name, List<String> tags, Boolean added) {
+    public ExhibitItem(@NonNull String id, String name, List<String> tags, boolean added) {
         this.id = id;
         this.name = name;
         this.tags = tags;
@@ -65,9 +65,9 @@ public class ExhibitItem {
         this.id = id;
     }
 
-    public Boolean getAdded(){return added;}
+    public boolean getAdded(){return added;}
 
-    public void setAdded(Boolean added){this.added=added;}
+    public void setAdded(boolean added){this.added=added;}
 
     public void setAdded(View itemView) {
         Button button = itemView.findViewById(R.id.add_exhibit_btn);

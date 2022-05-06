@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -48,7 +49,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         setExhibitItemAdapter();
         recyclerView.setAlpha(0);
 
-        planButton = (Button) findViewById(R.id.plan_btn);
+        planButton = findViewById(R.id.plan_btn);
         //planButton.setEnabled(false);
         planButton.setOnClickListener(v -> openExhibitRouteActivity());
     }
@@ -104,6 +105,8 @@ public class SearchExhibitActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(exhibitItemAdapter);
+        TextView countView = findViewById(R.id.exhibit_count);
+        exhibitItemAdapter.setCountView(countView);
 
         exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
     }
@@ -122,4 +125,5 @@ public class SearchExhibitActivity extends AppCompatActivity {
         intent.putExtra("exhibitsAll", json);
         startActivity(intent);
     }
+
 }
