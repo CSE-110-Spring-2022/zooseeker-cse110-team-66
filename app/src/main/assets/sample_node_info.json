@@ -27,8 +27,7 @@
       "monkey",
       "ape",
       "mammal"
-    ],
-    "added": false
+    ]
   },
   {
     "id": "gators",
@@ -38,8 +37,7 @@
       "alligator",
       "reptile",
       "gator"
-    ],
-    "added": false
+    ]
   },
   {
     "id": "lions",
@@ -50,8 +48,7 @@
       "cats",
       "mammal",
       "africa"
-    ],
-    "added": false
+    ]
   },
   {
     "id": "elephant_odyssey",
@@ -61,8 +58,7 @@
       "elephant",
       "mammal",
       "africa"
-    ],
-    "added": false
+    ]
   },
   {
     "id": "arctic_foxes",
@@ -72,7 +68,6 @@
       "arctic",
       "fox",
       "mammal"
-    ],
-    "added": false
+    ]
   }
 ]

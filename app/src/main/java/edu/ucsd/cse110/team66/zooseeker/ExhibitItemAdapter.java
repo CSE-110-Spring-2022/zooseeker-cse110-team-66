@@ -25,6 +25,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     private List<ExhibitItem> exhibits;
     private List<ExhibitItem> exhibitsAll;
     private Consumer<ExhibitItem> onAddExhibit;
+    public TextView countView;
 
     public void setExhibitItems(List<ExhibitItem> exhibits) {
         this.exhibits = exhibits;
@@ -103,10 +104,22 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         }
     };
 
+    public void setCountView(TextView textView) {
+        countView = textView;
+    }
+
+    private void updateCount(TextView textview) {
+        String strCount = textview.getText().toString();
+        int numCount = Integer.parseInt(strCount);
+        numCount++;
+        textview.setText(String.format("%d",numCount));
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView exhibitTextView;
         private Button addExhibitBtn;
         private ExhibitItem exhibitItem;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -114,6 +127,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
             this.addExhibitBtn = itemView.findViewById(R.id.add_exhibit_btn);
 
             this.addExhibitBtn.setOnClickListener(view -> {
+                updateCount(countView);
                 if (onAddExhibit == null) return;
                 for (int i = 0; i < exhibitsAll.size(); ++i) {
                     if (exhibitsAll.get(i).name == exhibitTextView.getText()) {
@@ -143,6 +157,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                 this.addExhibitBtn.setText("ADD");
                 this.addExhibitBtn.setEnabled(true);
             }
+
 
         }
 
