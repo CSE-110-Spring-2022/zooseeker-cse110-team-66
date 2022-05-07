@@ -33,8 +33,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
     public ExhibitItemAdapter exhibitItemAdapter;
 
     private ExhibitItemViewModel viewModel;
-    private Button planButton;
-    private String goal;
+    private static Button planButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +49,8 @@ public class SearchExhibitActivity extends AppCompatActivity {
         recyclerView.setAlpha(0);
 
         planButton = findViewById(R.id.plan_btn);
-        //planButton.setEnabled(false);
         planButton.setOnClickListener(v -> openExhibitRouteActivity());
+        planButton.setEnabled(false);
     }
 
     @Override
@@ -91,6 +90,10 @@ public class SearchExhibitActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public static void enablePlanButton() {
+        planButton.setEnabled(true);
+    }
+
     // Display the list of exhibits a user can choose
     private void setExhibitItemAdapter() {
         viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
@@ -98,16 +101,14 @@ public class SearchExhibitActivity extends AppCompatActivity {
         exhibitItemAdapter = new ExhibitItemAdapter();
         exhibitItemAdapter.setHasStableIds(true);
         exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
-        //Log.d("SearchExihibitActivityTEXT", viewModel.getExhibitItems().getValue().toString());
-        //viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
 
         recyclerView = findViewById(R.id.exhibit_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(exhibitItemAdapter);
+
         TextView countView = findViewById(R.id.exhibit_count);
         exhibitItemAdapter.setCountView(countView);
-
         exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
     }
 
