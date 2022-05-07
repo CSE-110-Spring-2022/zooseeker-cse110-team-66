@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import java.util.Vector;
 public class ExhibitRouteActivity extends AppCompatActivity {
     private final String start = "entrance_exit_gate";
     private String goal;
+    public RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,11 @@ public class ExhibitRouteActivity extends AppCompatActivity {
             toPathFind.remove(currentPosition);
         }
 
+
+        PlanListAdapter adapter = new PlanListAdapter();
+        adapter.setHasStableIds(true);
+
+        recyclerView = findViewById(R.id.plan_items);
 
         // back button
         Button back_btn = (Button) findViewById(R.id.back_btn_plan);
