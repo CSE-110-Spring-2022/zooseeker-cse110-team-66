@@ -35,8 +35,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
 
     public void setOnAddExhibitHandler(Consumer<ExhibitItem> onAddExhibit) {
         this.onAddExhibit=onAddExhibit;
-
-
     }
 
     public List<ExhibitItem> getExhibitsAll() {
@@ -61,10 +59,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     @Override
     public int getItemCount() {
         return exhibits.size();
-    }
-
-    public int getAddedCount() {
-        return Integer.parseInt(countView.getText().toString());
     }
 
     @Override
@@ -147,8 +141,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                         }
                     }
                 }
-
-                //onAddExhibit.accept(exhibitItem);
             });
         }
 
@@ -162,9 +154,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                 this.addExhibitBtn.setText("ADD");
                 this.addExhibitBtn.setEnabled(true);
             }
-
-
         }
-
     }
 }

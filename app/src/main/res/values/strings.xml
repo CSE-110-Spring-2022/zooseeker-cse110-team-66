@@ -5,4 +5,5 @@
     <string name="add">ADD</string>
     <string name="search_exhibit">Search Exhibit</string>
     <string name="route">route</string>
+    <string name="voice_search_exhibit">voice_search_exhibit</string>
 </resources>
