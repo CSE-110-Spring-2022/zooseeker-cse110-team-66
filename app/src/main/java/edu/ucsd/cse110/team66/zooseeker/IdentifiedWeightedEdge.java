@@ -15,6 +15,15 @@ public class IdentifiedWeightedEdge extends DefaultWeightedEdge {
     public void setId(String id) { this.id = id; }
 
     @Override
+    public String getSource() {return (String) super.getSource();}
+
+    @Override
+    public String getTarget() {return (String) super.getTarget();}
+
+    @Override
+    public double getWeight() {return super.getWeight();}
+
+    @Override
     public String toString() {
         return "(" + getSource() + " :" + id + ": " + getTarget() + ")";
     }

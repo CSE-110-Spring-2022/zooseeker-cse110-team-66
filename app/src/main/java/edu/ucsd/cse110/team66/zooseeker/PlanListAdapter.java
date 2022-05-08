@@ -13,9 +13,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHolder> {
-    private List<PlanListItem> planItems = Collections.emptyList();
+    private List<List<PlanListItem>> planItems = Collections.emptyList();
 
-    public void setPlanListItems(List<PlanListItem> newPlanItems) {
+    public void setPlanListItems(List<List<PlanListItem>> newPlanItems) {
         this.planItems.clear();;
         this.planItems = newPlanItems;
         notifyDataSetChanged();
@@ -45,17 +45,17 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private PlanListItem planItem;
+        private List<PlanListItem> planItem;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.textView = itemView.findViewById(R.id.plan_item_text);
         }
 
-        public PlanListItem getPlanItem() {return planItem; }
+        public List<PlanListItem> getPlanItem() {return planItem; }
 
-        public void setPlanItem(PlanListItem planListItem) {
+        public void setPlanItem(List<PlanListItem> planListItem) {
             this.planItem = planListItem;
-            this.textView.setText(planListItem.toMessage());
+            this.textView.setText(PlanListItem.toMessage(planItem));
         }
     }
 
