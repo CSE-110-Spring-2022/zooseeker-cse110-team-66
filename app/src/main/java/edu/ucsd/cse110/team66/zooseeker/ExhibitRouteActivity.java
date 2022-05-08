@@ -28,6 +28,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
     private final String start = "entrance_exit_gate";
     private String goal;
     public RecyclerView recyclerView;
+    private ArrayList<String> exhibitDirections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +138,11 @@ public class ExhibitRouteActivity extends AppCompatActivity {
 
         adapter.setPlanListItems(plannedDirections);
 
+        exhibitDirections = new ArrayList<String>();
+        for (int i = 0; i < plannedDirections.size(); ++i) {
+            exhibitDirections.add(PlanListItem.toMessage(plannedDirections.get(i)));
+        }
+
         // back button
         Button back_btn = (Button) findViewById(R.id.back_btn_plan);
         back_btn.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +152,18 @@ public class ExhibitRouteActivity extends AppCompatActivity {
             }
         });
 
+        Button directions_btn = findViewById(R.id.directions_btn);
+        directions_btn.setOnClickListener(view -> openExhibitDirectionsActivity());
         // load plan list
+
+
+    }
+    private void openExhibitDirectionsActivity() {
+        Gson gson = new Gson();
+        String json = gson.toJson(exhibitDirections);
+        Intent intent = new Intent(this, ExhibitDirectionsActivity.class);
+        intent.putExtra("exhibitDirections",json);
+        startActivity(intent);
     }
 
 }

@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SanDiegoZooSeeker">
         <activity
+            android:name=".ExhibitDirectionsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExhibitRouteActivity"
             android:exported="false" />
         <activity
