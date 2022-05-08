@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     private List<ExhibitItem> exhibits;
     private List<ExhibitItem> exhibitsAll;
     private Consumer<ExhibitItem> onAddExhibit;
+    public TextView countView;
 
     public void setExhibitItems(List<ExhibitItem> exhibits) {
         this.exhibits = exhibits;
@@ -32,8 +35,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
 
     public void setOnAddExhibitHandler(Consumer<ExhibitItem> onAddExhibit) {
         this.onAddExhibit=onAddExhibit;
-
-
     }
 
     public List<ExhibitItem> getExhibitsAll() {
@@ -101,10 +102,22 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         }
     };
 
+    public void setCountView(TextView textView) {
+        countView = textView;
+    }
+
+    private void updateAddedCount(TextView textview) {
+        String strCount = textview.getText().toString();
+        int numCount = Integer.parseInt(strCount);
+        numCount++;
+        textview.setText(String.format("%d",numCount));
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView exhibitTextView;
         private Button addExhibitBtn;
         private ExhibitItem exhibitItem;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -112,6 +125,8 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
             this.addExhibitBtn = itemView.findViewById(R.id.add_exhibit_btn);
 
             this.addExhibitBtn.setOnClickListener(view -> {
+                updateAddedCount(countView);
+                SearchExhibitActivity.enablePlanButton();
                 if (onAddExhibit == null) return;
                 for (int i = 0; i < exhibitsAll.size(); ++i) {
                     if (exhibitsAll.get(i).name == exhibitTextView.getText()) {
@@ -126,8 +141,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                         }
                     }
                 }
-
-                //onAddExhibit.accept(exhibitItem);
             });
         }
 
@@ -141,8 +154,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                 this.addExhibitBtn.setText("ADD");
                 this.addExhibitBtn.setEnabled(true);
             }
-
         }
-
     }
 }

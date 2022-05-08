@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">San Diego ZooSeeker</string>
-    <string name="plan_button_text">Plan</string>
+    <string name="plan_button_text">Plan\n</string>
     <string name="exhibit">Exhibit</string>
     <string name="add">ADD</string>
     <string name="search_exhibit">Search Exhibit</string>
     <string name="route">route</string>
-    <string name="direc_btn_text">Direction</string>
+    <string name="voice_search_exhibit">voice_search_exhibit</string>
 </resources>

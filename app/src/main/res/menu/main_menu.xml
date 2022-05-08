@@ -9,4 +9,10 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         />
 
+    <item android:id="@+id/search_voice_btn"
+        android:title="@string/voice_search_exhibit"
+        android:icon="@drawable/ic_baseline_keyboard_voice_24"
+        app:showAsAction="always"
+        />
+
 </menu>
