@@ -13,11 +13,13 @@ import com.google.gson.Gson;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -39,8 +41,10 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         // 1. Load the graph...
         Graph<String, IdentifiedWeightedEdge> g
                 = ZooData.loadZooGraphJSON(this,"sample_zoo_graph.json");
+        DijkstraShortestPath graph = new DijkstraShortestPath(g);
         Vector<String> fastestPath = new Vector<String>();
         Vector<Double> pathDistances = new Vector<Double>();
+        Vector<Boolean> to_reverse = new Vector<Boolean>();
         Vector<List<IdentifiedWeightedEdge>> Directions = new Vector<List<IdentifiedWeightedEdge>>();
         String currentPosition = "entrance_plaza";
         fastestPath.add(start);
@@ -55,6 +59,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
             double currentDistance = 999999999;
             String closestExhibit = currentPosition;
             List<IdentifiedWeightedEdge> nextDirection = null;
+            Boolean possible_reverse = false;
             for (String nextExhibit: toPathFind) {
                 GraphPath<String, IdentifiedWeightedEdge> path
                     = DijkstraShortestPath.findPathBetween(g, currentPosition, nextExhibit);
@@ -64,6 +69,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                     closestExhibit = nextExhibit;
                 }
             }
+            to_reverse.add(possible_reverse);
             fastestPath.add(closestExhibit);
             pathDistances.add(currentDistance);
             Directions.add(nextDirection);
@@ -89,6 +95,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                 "edge-0","entrance_exit_gate",
                 "entrance_plaza","Entrance and Exit Gate",
                 "Entrance Plaza",10.0));
+        String previous = "entrance_plaza";
         plannedDirections.add(firstDirection);
         for (int i = 0; i < Directions.size(); ++i) {
             List<PlanListItem> currentDirection = new ArrayList<>();
@@ -96,14 +103,25 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                 IdentifiedWeightedEdge to_add = Directions.get(i).get(j);
                 String street_name = edgeinfo.get(to_add.getId()).street;
                 String street_id = to_add.getId();
-                String source_id = to_add.getSource();
-                String target_id = to_add.getTarget();
+                String source_id;
+                String target_id;
+                if (to_add.getSource().equals(previous)) {
+                    source_id = to_add.getSource();
+                    target_id = to_add.getTarget();
+                }
+                else {
+                    source_id = to_add.getTarget();
+                    target_id = to_add.getSource();
+                }
+                previous = target_id;
                 String source_name = exhibit_id_to_name.get(source_id);
                 String target_name = exhibit_id_to_name.get(target_id);
                 double weight = to_add.getWeight();
                 currentDirection.add(new PlanListItem(street_name,street_id,
                         source_id,target_id,source_name,target_name,weight));
             }
+
+
             plannedDirections.add(currentDirection);
         }
 

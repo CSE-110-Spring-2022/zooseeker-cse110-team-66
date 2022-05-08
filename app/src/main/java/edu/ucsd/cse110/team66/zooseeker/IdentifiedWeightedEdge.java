@@ -17,6 +17,8 @@ public class IdentifiedWeightedEdge extends DefaultWeightedEdge {
     @Override
     public String getSource() {return (String) super.getSource();}
 
+
+
     @Override
     public String getTarget() {return (String) super.getTarget();}
 
