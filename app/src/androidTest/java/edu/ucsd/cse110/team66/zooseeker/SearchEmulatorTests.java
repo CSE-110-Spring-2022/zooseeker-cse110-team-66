@@ -125,12 +125,7 @@ public class SearchEmulatorTests {
 
         scenario.onActivity(activity -> {
             assertEquals(5,activity.exhibitItemAdapter.getItemCount());
-
         });
-
-
-
-
     }
 
     private static Matcher<View> childAtPosition(
