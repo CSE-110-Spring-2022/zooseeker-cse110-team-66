@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -134,6 +135,8 @@ public class DisplayFastestPathTest {
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
         textView4.check(matches(withText("To Gorillas:  From Lions, walk down Africa Rocks Street for 200.0 feet towards Gorillas. ")));
+
+        onView(withId(R.id.plan_items)).perform(swipeUp());
 
         ViewInteraction textView5 = onView(
                 allOf(withId(R.id.plan_item_text), withText("To Arctic Foxes: \nFrom Elephant Odyssey, walk down Africa Rocks Street for 200.0 feet towards Lions.\nThen Lions, walk down Sharp Teeth Shortcut for 200.0 feet towards Alligators.\nThen Alligators, walk down Reptile Road for 100.0 feet towards Entrance Plaza.\nThen Entrance Plaza, walk down Arctic Avenue for 300.0 feet towards Arctic Foxes.\n"),
