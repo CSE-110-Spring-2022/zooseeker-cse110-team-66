@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team66.zooseeker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         directionIndex = 0;
         directionDisplay = findViewById(R.id.direction_display);
         directionDisplay.setText(exhibitDirections.get(directionIndex));
+        directionDisplay.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         nextDirection = findViewById(R.id.next_exhibit_direction_btn);
         nextDirection.setOnClickListener(view -> nextExhibitDirection());
         ++directionIndex;
