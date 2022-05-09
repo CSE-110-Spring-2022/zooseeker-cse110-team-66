@@ -11,10 +11,10 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class ExhibitDirectionsActivity extends AppCompatActivity {
-private ArrayList<String> exhibitDirections;
-private int directionIndex;
-TextView directionDisplay;
-Button nextDirection;
+    private ArrayList<String> exhibitDirections;
+    private int directionIndex;
+    TextView directionDisplay;
+    Button nextDirection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

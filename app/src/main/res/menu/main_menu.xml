@@ -14,5 +14,4 @@
         android:icon="@drawable/ic_baseline_keyboard_voice_24"
         app:showAsAction="always"
         />
-
 </menu>

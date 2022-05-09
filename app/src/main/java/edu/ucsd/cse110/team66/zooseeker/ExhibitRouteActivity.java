@@ -1,11 +1,15 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,7 +30,6 @@ import java.util.Vector;
 
 public class ExhibitRouteActivity extends AppCompatActivity {
     private final String start = "entrance_exit_gate";
-    private String goal;
     public RecyclerView recyclerView;
     private ArrayList<String> exhibitDirections;
 
@@ -34,6 +37,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exhibit_route);
+        setUpBackButton();
 
         Gson gson = new Gson();
         String exhibitsAll = getIntent().getExtras().getString("exhibitsAll");
@@ -121,43 +125,46 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                 currentDirection.add(new PlanListItem(street_name,street_id,
                         source_id,target_id,source_name,target_name,weight));
             }
-
-
             plannedDirections.add(currentDirection);
         }
 
-
         PlanListAdapter adapter = new PlanListAdapter();
         adapter.setHasStableIds(true);
+        adapter.setPlanListItems(plannedDirections);
 
         recyclerView = findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
-
-
-        adapter.setPlanListItems(plannedDirections);
 
         exhibitDirections = new ArrayList<String>();
         for (int i = 0; i < plannedDirections.size(); ++i) {
             exhibitDirections.add(PlanListItem.toMessage(plannedDirections.get(i)));
         }
 
-        // back button
-        Button back_btn = (Button) findViewById(R.id.back_btn_plan);
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
         Button directions_btn = findViewById(R.id.directions_btn);
         directions_btn.setOnClickListener(view -> openExhibitDirectionsActivity());
-        // load plan list
-
-
     }
+
+    // Set up back button at the top left
+    private void setUpBackButton() {
+        ActionBar actionBar = getSupportActionBar();
+        // Customize the back button
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    // Go back to Search_Exhibit when the back button is clicked
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void openExhibitDirectionsActivity() {
         Gson gson = new Gson();
         String json = gson.toJson(exhibitDirections);
