@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import android.content.Context;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.room.Room;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -64,5 +67,30 @@ public class ZooSeekerTest {
         assertEquals(exhibitItem1.name, item.name);
         assertEquals(exhibitItem1.tags, item.tags);
     }
+
+    @Test
+    public void testCountZero() {
+        try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
+            scenario.onActivity(activity -> {
+
+                TextView text_display =(TextView)activity.findViewById(R.id.exhibit_count);
+                assertEquals("0", text_display.getText());
+
+            });
+        }
+    }
+
+    @Test
+    public void testPlanBtnUnavailable() {
+        try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
+            scenario.onActivity(activity -> {
+
+                Button Plan_button =(Button)activity.findViewById(R.id.plan_btn);
+                assertEquals(false, Plan_button.isEnabled());
+
+            });
+        }
+    }
+
 
 }
