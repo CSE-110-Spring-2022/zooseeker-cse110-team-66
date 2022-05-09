@@ -29,6 +29,7 @@ public class ExhibitItemViewModel extends AndroidViewModel {
 
     public void loadUsers() { exhibitItems = exhibitItemDao.getAllLive();}
 
+    // Disable add exhibit button if exhibit has already been added
     public void toggleAdded(ExhibitItem exhibitItem) {
         exhibitItem.added = !exhibitItem.added;
         exhibitItemDao.update(exhibitItem);

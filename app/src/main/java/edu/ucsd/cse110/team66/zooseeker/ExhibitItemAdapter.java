@@ -62,10 +62,23 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     }
 
     @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
     public Filter getFilter() {
         return filter;
     }
 
+    /*
+    Citation:
+    Link: https://www.youtube.com/watch?v=sJ-Z9G0SDhc&t=23s
+    Title: How to Filter a RecyclerView with SearchView - Android Studio Tutorial
+    Date: Apr 28, 2022
+    Usage: Information on creating filters
+    */
+    // Custom filter to filter the displayed exhibits based on the query
     Filter filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
@@ -116,7 +129,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView exhibitTextView;
         private Button addExhibitBtn;
-        private ExhibitItem exhibitItem;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -144,6 +156,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
             });
         }
 
+        // Set the exhibit name and whether it has been added
         public void setExhibitItem(ExhibitItem item) {
             this.exhibitTextView.setText(item.getName());
             if (item.added) {

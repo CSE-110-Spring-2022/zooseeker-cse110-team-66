@@ -3,7 +3,8 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.swipeUp;
+
+
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -113,79 +114,36 @@ public class DisplayFastestPathTest {
         materialButton6.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.show_dest_text), withText("Entrance Plaza"),
+
+                allOf(withId(R.id.plan_item_text), withText("To Entrance Plaza: \nFrom Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza.\n"),
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
-        textView.check(matches(withText("Entrance Plaza")));
+        textView.check(matches(withText("To Entrance Plaza:  From Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza. ")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.plan_item_text), withText("From Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza."),
+                allOf(withId(R.id.plan_item_text), withText("To Alligators: \nFrom Entrance Plaza, walk down Reptile Road for 100.0 feet towards Alligators.\n"),
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
-        textView2.check(matches(withText("From Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza.")));
+        textView2.check(matches(withText("To Alligators:  From Entrance Plaza, walk down Reptile Road for 100.0 feet towards Alligators. ")));
 
         ViewInteraction textView3 = onView(
-                allOf(withId(R.id.show_dest_text), withText("Alligators"),
+                allOf(withId(R.id.plan_item_text), withText("To Lions: \nFrom Alligators, walk down Sharp Teeth Shortcut for 200.0 feet towards Lions.\n"),
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
-        textView3.check(matches(withText("Alligators")));
+        textView3.check(matches(withText("To Lions:  From Alligators, walk down Sharp Teeth Shortcut for 200.0 feet towards Lions. ")));
 
         ViewInteraction textView4 = onView(
-                allOf(withId(R.id.plan_item_text), withText("From Entrance Plaza, walk down Reptile Road for 100.0 feet towards Alligators."),
+                allOf(withId(R.id.plan_item_text), withText("To Gorillas: \nFrom Lions, walk down Africa Rocks Street for 200.0 feet towards Gorillas.\n"),
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
-        textView4.check(matches(withText("From Entrance Plaza, walk down Reptile Road for 100.0 feet towards Alligators.")));
+        textView4.check(matches(withText("To Gorillas:  From Lions, walk down Africa Rocks Street for 200.0 feet towards Gorillas. ")));
 
         ViewInteraction textView5 = onView(
-                allOf(withId(R.id.show_dest_text), withText("Lions"),
+                allOf(withId(R.id.plan_item_text), withText("To Arctic Foxes: \nFrom Elephant Odyssey, walk down Africa Rocks Street for 200.0 feet towards Lions.\nThen Lions, walk down Sharp Teeth Shortcut for 200.0 feet towards Alligators.\nThen Alligators, walk down Reptile Road for 100.0 feet towards Entrance Plaza.\nThen Entrance Plaza, walk down Arctic Avenue for 300.0 feet towards Arctic Foxes.\n"),
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
-        textView5.check(matches(withText("Lions")));
+        textView5.check(matches(withText("To Arctic Foxes:  From Elephant Odyssey, walk down Africa Rocks Street for 200.0 feet towards Lions. Then Lions, walk down Sharp Teeth Shortcut for 200.0 feet towards Alligators. Then Alligators, walk down Reptile Road for 100.0 feet towards Entrance Plaza. Then Entrance Plaza, walk down Arctic Avenue for 300.0 feet towards Arctic Foxes. ")));
 
-        ViewInteraction textView6 = onView(
-                allOf(withId(R.id.plan_item_text), withText("From Alligators, walk down Sharp Teeth Shortcut for 200.0 feet towards Lions."),
-                        withParent(withParent(withId(R.id.plan_items))),
-                        isDisplayed()));
-        textView6.check(matches(withText("From Alligators, walk down Sharp Teeth Shortcut for 200.0 feet towards Lions.")));
-
-        ViewInteraction textView7 = onView(
-                allOf(withId(R.id.show_dest_text), withText("Gorillas"),
-                        withParent(withParent(withId(R.id.plan_items))),
-                        isDisplayed()));
-        textView7.check(matches(withText("Gorillas")));
-
-        ViewInteraction textView8 = onView(
-                allOf(withId(R.id.plan_item_text), withText("From Lions, walk down Africa Rocks Street for 200.0 feet towards Gorillas."),
-                        withParent(withParent(withId(R.id.plan_items))),
-                        isDisplayed()));
-        textView8.check(matches(withText("From Lions, walk down Africa Rocks Street for 200.0 feet towards Gorillas.")));
-
-        onView(withId(R.id.plan_items))
-                .perform(swipeUp());
-
-        ViewInteraction textView9 = onView(
-                allOf(withId(R.id.show_dest_text), withText("Elephant Odyssey"),
-                        withParent(withParent(withId(R.id.plan_items))),
-                        isDisplayed()));
-        textView9.check(matches(withText("Elephant Odyssey")));
-
-        ViewInteraction textView10 = onView(
-                allOf(withId(R.id.plan_item_text), withText("From Gorillas, walk down Africa Rocks Street for 200.0 feet towards Lions.Then Lions, walk down Africa Rocks Street for 200.0 feet towards Elephant Odyssey."),
-                        withParent(withParent(withId(R.id.plan_items))),
-                        isDisplayed()));
-        textView10.check(matches(withText("From Gorillas, walk down Africa Rocks Street for 200.0 feet towards Lions.Then Lions, walk down Africa Rocks Street for 200.0 feet towards Elephant Odyssey.")));
-
-        ViewInteraction textView11 = onView(
-                allOf(withId(R.id.show_dest_text), withText("Entrance Plaza"),
-                        withParent(withParent(withId(R.id.plan_items))),
-                        isDisplayed()));
-        textView11.check(matches(withText("Entrance Plaza")));
-
-        ViewInteraction textView12 = onView(
-                allOf(withId(R.id.plan_item_text), withText("From Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza."),
-                        withParent(withParent(withId(R.id.plan_items))),
-                        isDisplayed()));
-        textView12.check(matches(withText("From Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza.")));
     }
 
     private static Matcher<View> childAtPosition(

@@ -4,6 +4,8 @@
     <string name="exhibit">Exhibit</string>
     <string name="add">ADD</string>
     <string name="search_exhibit">Search Exhibit</string>
-    <string name="route">route</string>
+
+    <string name="route">Exhibit Route</string>
+
     <string name="voice_search_exhibit">voice_search_exhibit</string>
 </resources>

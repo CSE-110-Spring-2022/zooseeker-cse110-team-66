@@ -2,6 +2,9 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import android.content.Context;
 
+import android.util.Log;
+
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -16,6 +19,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class PlanListItem {
+
+    // Public fields for directions
+
     public String street_name;
     public String street_id;
     public String source_id;
@@ -23,6 +29,9 @@ public class PlanListItem {
     public String source_name;
     public String target_name;
     public double weight;
+
+
+    private static String exhibitName;
 
 
     PlanListItem(String street_name, String street_id, String source_id,
@@ -38,23 +47,21 @@ public class PlanListItem {
     }
 
     public static String toMessage(List<PlanListItem> items) {
-        String message ="";
+
+        String message = "To " + items.get(items.size()-1).target_name + ": \n";
         for (int i = 0; i < items.size(); ++i) {
             if (i == 0) {
-                message+= "From ";
+                message+= "From the ";
             }
             else {
-                message+="Then ";
+                message+="Then from the ";
             }
-            message += items.get(i).source_name + ", walk down " + items.get(i).street_name  +
+            message += items.get(i).source_name + " exhibit, walk down " + items.get(i).street_name  +
                     " for " + String.valueOf(items.get(i).weight) + " feet towards " +
-                    items.get(i).target_name + ".";
+                    items.get(i).target_name + ".\n";
+
         }
         return message;
-    }
-
-    public static String toMessageDestination(List<PlanListItem> items) {
-        return items.get(items.size()-1).target_name;
     }
 
     public static List<PlanListItem> loadJSON(Context context, String node_info_path, String zoo_graph_path, String edge_info_path) {
