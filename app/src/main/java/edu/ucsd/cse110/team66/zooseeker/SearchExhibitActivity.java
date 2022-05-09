@@ -48,6 +48,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         planButton.setEnabled(false);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater()
