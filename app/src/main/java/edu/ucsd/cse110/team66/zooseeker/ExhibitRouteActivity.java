@@ -1,15 +1,11 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -30,6 +26,7 @@ import java.util.Vector;
 
 public class ExhibitRouteActivity extends AppCompatActivity {
     private final String start = "entrance_exit_gate";
+    private String goal;
     public RecyclerView recyclerView;
     private ArrayList<String> exhibitDirections;
 
@@ -37,7 +34,31 @@ public class ExhibitRouteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exhibit_route);
-        setUpBackButton();
+
+        List<ZooData.VertexInfo> zooExhibitsData =
+                ZooData.loadZooItemJSON(this,
+                        "sample_node_info.json","exhibits");
+
+        List<ZooData.VertexInfo> zooEntranceData =
+                ZooData.loadZooItemJSON(this,
+                        "sample_node_info.json","gates and intersection");
+        String entrance_and_exit_gate_id = "";
+        String entrance_and_exit_gate_name = "";
+
+        String intersection_id = "";
+        String intersection_name = "";
+
+        for (int i = 0; i < zooEntranceData.size();++i) {
+            if (zooEntranceData.get(i).kind.toString() == "GATE") {
+                entrance_and_exit_gate_id = zooEntranceData.get(i).id;
+                entrance_and_exit_gate_name = zooEntranceData.get(i).name;
+            }
+            else if (zooEntranceData.get(i).kind.toString() == "INTERSECTION") {
+                intersection_id = zooEntranceData.get(i).id;
+                intersection_name = zooEntranceData.get(i).name;
+            }
+        }
+
 
         Gson gson = new Gson();
         String exhibitsAll = getIntent().getExtras().getString("exhibitsAll");
@@ -46,22 +67,14 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         // 1. Load the graph...
         Graph<String, IdentifiedWeightedEdge> g
                 = ZooData.loadZooGraphJSON(this,"sample_zoo_graph.json");
-        DijkstraShortestPath graph = new DijkstraShortestPath(g);
-        Vector<String> fastestPath = new Vector<String>();
-        Vector<Double> pathDistances = new Vector<Double>();
-        Vector<Boolean> to_reverse = new Vector<Boolean>();
         Vector<List<IdentifiedWeightedEdge>> Directions = new Vector<List<IdentifiedWeightedEdge>>();
-        String currentPosition = "entrance_plaza";
-        fastestPath.add(start);
-        fastestPath.add(currentPosition);
-        pathDistances.add(0.0);
-        pathDistances.add(10.0);
+        String currentPosition = intersection_id;
         Vector<String> toPathFind = new Vector<String>();
         for (int i = 0; i < exhibitsAdded.size(); ++i) {
             toPathFind.add(exhibitsAdded.get(i));
         }
         for (int i = 0; i < exhibitsAdded.size(); ++i) {
-            double currentDistance = Integer.MAX_VALUE;
+            double currentDistance = 999999999;
             String closestExhibit = currentPosition;
             List<IdentifiedWeightedEdge> nextDirection = null;
             Boolean possible_reverse = false;
@@ -74,32 +87,36 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                     closestExhibit = nextExhibit;
                 }
             }
-            to_reverse.add(possible_reverse);
-            fastestPath.add(closestExhibit);
-            pathDistances.add(currentDistance);
+
             Directions.add(nextDirection);
             currentPosition=closestExhibit;
             toPathFind.remove(currentPosition);
         }
 
-        List<ZooData.VertexInfo> zooData =
-                ZooData.loadZooItemJSON(this, "sample_node_info.json","exhibits");
+        GraphPath<String, IdentifiedWeightedEdge> path
+                = DijkstraShortestPath.findPathBetween(g, currentPosition, entrance_and_exit_gate_id);
+        Directions.add(path.getEdgeList());
+
+
         Map<String, String> exhibit_id_to_name = new HashMap<String, String>();
-        exhibit_id_to_name.put("entrance_exit_gate", "Entrance and Exit Gate");
-        exhibit_id_to_name.put("entrance_plaza", "Entrance Plaza");
-        for (int i = 0; i < zooData.size(); ++i) {
-            exhibit_id_to_name.put(zooData.get(i).id,zooData.get(i).name);
+        exhibit_id_to_name.put(entrance_and_exit_gate_id, entrance_and_exit_gate_name);
+        exhibit_id_to_name.put(intersection_id, intersection_name);
+        for (int i = 0; i < zooExhibitsData.size(); ++i) {
+            exhibit_id_to_name.put(zooExhibitsData.get(i).id,zooExhibitsData.get(i).name);
         }
         Map<String, ZooData.EdgeInfo> edgeinfo =
                 ZooData.loadEdgeInfoJSON(this, "sample_edge_info.json");
 
         List<List<PlanListItem>> plannedDirections = new ArrayList<>();
         List<PlanListItem> firstDirection = new ArrayList<>();
-        firstDirection.add(new PlanListItem("Entrance Way",
-                "edge-0","entrance_exit_gate",
-                "entrance_plaza","Entrance and Exit Gate",
-                "Entrance Plaza",10.0));
-        String previous = "entrance_plaza";
+
+        String start_street_id = g.getEdge(entrance_and_exit_gate_id, intersection_id).getId();
+
+        firstDirection.add(new PlanListItem(edgeinfo.get(start_street_id).street,
+                start_street_id,entrance_and_exit_gate_id,
+                intersection_id,entrance_and_exit_gate_name,
+                intersection_name,g.getEdge(entrance_and_exit_gate_id,intersection_id).getWeight()));
+        String previous = intersection_id;
         plannedDirections.add(firstDirection);
         for (int i = 0; i < Directions.size(); ++i) {
             List<PlanListItem> currentDirection = new ArrayList<>();
@@ -124,46 +141,43 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                 currentDirection.add(new PlanListItem(street_name,street_id,
                         source_id,target_id,source_name,target_name,weight));
             }
+
+
             plannedDirections.add(currentDirection);
         }
 
+
         PlanListAdapter adapter = new PlanListAdapter();
         adapter.setHasStableIds(true);
-        adapter.setPlanListItems(plannedDirections);
 
         recyclerView = findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+
+
+        adapter.setPlanListItems(plannedDirections);
 
         exhibitDirections = new ArrayList<String>();
         for (int i = 0; i < plannedDirections.size(); ++i) {
             exhibitDirections.add(PlanListItem.toMessage(plannedDirections.get(i)));
         }
 
+        // back button
+        Button back_btn = (Button) findViewById(R.id.back_btn_plan);
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         Button directions_btn = findViewById(R.id.directions_btn);
         directions_btn.setOnClickListener(view -> openExhibitDirectionsActivity());
-    }
+        // load plan list
 
-    // Set up back button at the top left
-    private void setUpBackButton() {
-        ActionBar actionBar = getSupportActionBar();
-        // Customize the back button
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
-        // showing the back button in action bar
-        actionBar.setDisplayHomeAsUpEnabled(true);
-    }
 
-    // Go back to Search_Exhibit when the back button is clicked
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
-
     private void openExhibitDirectionsActivity() {
         Gson gson = new Gson();
         String json = gson.toJson(exhibitDirections);
