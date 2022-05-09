@@ -103,6 +103,9 @@ public class ExhibitRouteActivity extends AppCompatActivity {
             toPathFind.remove(currentPosition);
         }
 
+        GraphPath<String, IdentifiedWeightedEdge> path
+                = DijkstraShortestPath.findPathBetween(g, currentPosition, entrance_and_exit_gate_id);
+        Directions.add(path.getEdgeList());
 
 
         Map<String, String> exhibit_id_to_name = new HashMap<String, String>();
