@@ -5,7 +5,6 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -31,34 +30,10 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AddExhibitTest {
+public class RepeatedAddExhibitTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-
-    @Test
-    public void addExhibitTest() {
-        ViewInteraction actionMenuItemView = onView(
-                allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(androidx.appcompat.R.id.action_bar),
-                                        1),
-                                0),
-                        isDisplayed()));
-        actionMenuItemView.perform(click());
-
-        ViewInteraction materialButton = onView(
-                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
-                        childAtPosition(
-                                allOf(withId(R.id.exhibit_item_layout),
-                                        childAtPosition(
-                                                withId(R.id.exhibit_items),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        materialButton.check(matches(isEnabled()));
-    }
 
     @Test
     public void repeatedAddExhibitTest() {
