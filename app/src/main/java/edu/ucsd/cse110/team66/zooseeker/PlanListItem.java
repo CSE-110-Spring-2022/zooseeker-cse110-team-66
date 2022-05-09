@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -24,6 +25,7 @@ public class PlanListItem {
     public String target_name;
     public double weight;
 
+    private static String exhibitName;
 
     PlanListItem(String street_name, String street_id, String source_id,
                  String target_id, String source_name, String target_name,
@@ -41,12 +43,12 @@ public class PlanListItem {
         String message = "To " + items.get(items.size()-1).target_name + ": \n";
         for (int i = 0; i < items.size(); ++i) {
             if (i == 0) {
-                message+= "From ";
+                message+= "From the ";
             }
             else {
-                message+="Then ";
+                message+="Then from the ";
             }
-            message += items.get(i).source_name + ", walk down " + items.get(i).street_name  +
+            message += items.get(i).source_name + " exhibit, walk down " + items.get(i).street_name  +
                     " for " + String.valueOf(items.get(i).weight) + " feet towards " +
                     items.get(i).target_name + ".\n";
         }

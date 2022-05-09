@@ -61,7 +61,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
             toPathFind.add(exhibitsAdded.get(i));
         }
         for (int i = 0; i < exhibitsAdded.size(); ++i) {
-            double currentDistance = 999999999;
+            double currentDistance = Integer.MAX_VALUE;
             String closestExhibit = currentPosition;
             List<IdentifiedWeightedEdge> nextDirection = null;
             Boolean possible_reverse = false;
@@ -82,14 +82,13 @@ public class ExhibitRouteActivity extends AppCompatActivity {
             toPathFind.remove(currentPosition);
         }
 
-        List<ZooData.VertexInfo> zoodata =
-                ZooData.loadZooItemJSON(this,
-                        "sample_node_info.json","exhibits");
+        List<ZooData.VertexInfo> zooData =
+                ZooData.loadZooItemJSON(this, "sample_node_info.json","exhibits");
         Map<String, String> exhibit_id_to_name = new HashMap<String, String>();
         exhibit_id_to_name.put("entrance_exit_gate", "Entrance and Exit Gate");
         exhibit_id_to_name.put("entrance_plaza", "Entrance Plaza");
-        for (int i = 0; i < zoodata.size(); ++i) {
-            exhibit_id_to_name.put(zoodata.get(i).id,zoodata.get(i).name);
+        for (int i = 0; i < zooData.size(); ++i) {
+            exhibit_id_to_name.put(zooData.get(i).id,zooData.get(i).name);
         }
         Map<String, ZooData.EdgeInfo> edgeinfo =
                 ZooData.loadEdgeInfoJSON(this, "sample_edge_info.json");
