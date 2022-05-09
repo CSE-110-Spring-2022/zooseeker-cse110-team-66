@@ -61,8 +61,6 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                 intersection_name = zooEntranceData.get(i).name;
             }
         }
-
-
         Gson gson = new Gson();
         String exhibitsAll = getIntent().getExtras().getString("exhibitsAll");
         ArrayList<String> exhibitsAdded = gson.fromJson(exhibitsAll, ArrayList.class);
