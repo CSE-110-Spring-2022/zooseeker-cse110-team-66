@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PlanListItem {
+    // Public fields for directions
     public String street_name;
     public String street_id;
     public String source_id;

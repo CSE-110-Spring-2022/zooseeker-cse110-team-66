@@ -71,6 +71,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         return filter;
     }
 
+    // Custom filter to filter the displayed exhibits based on the query
     Filter filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
@@ -121,8 +122,6 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView exhibitTextView;
         private Button addExhibitBtn;
-        private ExhibitItem exhibitItem;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -149,6 +148,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
             });
         }
 
+        // Set the exhibit name and whether it has been added
         public void setExhibitItem(ExhibitItem item) {
             this.exhibitTextView.setText(item.getName());
             if (item.added) {

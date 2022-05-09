@@ -21,17 +21,28 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exhibit_directions);
+        displayDirection();
+        setNextDirectionButton();
+    }
+
+    // Display the direction(s) to the next closest exhibit on the screen
+    private void displayDirection() {
         Gson gson= new Gson();
         exhibitDirections = gson.fromJson(getIntent().getExtras().getString("exhibitDirections"), ArrayList.class);
-        directionIndex = 0;
         directionDisplay = findViewById(R.id.direction_display);
         directionDisplay.setText(exhibitDirections.get(directionIndex));
         directionDisplay.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+    }
+
+    // Set up direction button
+    private void setNextDirectionButton() {
+        directionIndex = 0;
         nextDirection = findViewById(R.id.next_exhibit_direction_btn);
         nextDirection.setOnClickListener(view -> nextExhibitDirection());
         ++directionIndex;
     }
 
+    // Go to the next direction; return to plan route if all directions have been displayed
     private void nextExhibitDirection() {
         if (directionIndex == exhibitDirections.size())
         {
