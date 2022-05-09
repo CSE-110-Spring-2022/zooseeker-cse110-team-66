@@ -24,6 +24,7 @@ public abstract class ExhibitDatabase extends RoomDatabase {
         return singleton;
     }
 
+
     private static ExhibitDatabase makeDatabase(Context context) {
         return Room.databaseBuilder(context, ExhibitDatabase.class, "todo_app.db")
                 .allowMainThreadQueries()

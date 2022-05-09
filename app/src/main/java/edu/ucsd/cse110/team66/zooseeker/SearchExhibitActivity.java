@@ -48,7 +48,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         planButton.setEnabled(false);
     }
 
-
+    // Create a menu at the top for the search and voice search icons
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater()
@@ -56,12 +56,13 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
         MenuItem searchItem = menu.findItem(R.id.exhibit_search);
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            // Show all exhibits when search icon is clicked
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
                 recyclerView.setAlpha(1);
                 return true;
             }
-
+            // Hide all exhibits when search icon is clicked
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 recyclerView.setAlpha(0);
@@ -108,6 +109,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
     }
 
+    // Store added exhibits for use by planning route fragment
     private void openExhibitRouteActivity() {
         List<ExhibitItem> exhibitsAll = exhibitItemAdapter.getExhibitsAll();
         ArrayList<String> exhibitsAdded = new ArrayList<String>();
