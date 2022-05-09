@@ -2,6 +2,9 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import android.content.Context;
 
+import android.util.Log;
+
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -23,6 +26,8 @@ public class PlanListItem {
     public String source_name;
     public String target_name;
     public double weight;
+
+    private static String exhibitName;
 
 
     PlanListItem(String street_name, String street_id, String source_id,
@@ -53,9 +58,11 @@ public class PlanListItem {
         return message;
     }
 
+
     public static String toMessageDestination(List<PlanListItem> items) {
         return items.get(items.size()-1).target_name;
     }
+
 
     public static List<PlanListItem> loadJSON(Context context, String node_info_path, String zoo_graph_path, String edge_info_path) {
         try {

@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +43,10 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
     }
 
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
@@ -61,8 +64,10 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
 
         public void setPlanItem(List<PlanListItem> planListItem) {
             this.planItem = planListItem;
+
             this.dest.setText(PlanListItem.toMessageDestination(planItem));
             this.textView.setText(PlanListItem.toMessage(planItem));
+
 
         }
     }

@@ -6,23 +6,18 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.TextView;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -36,24 +31,37 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class PlanButtonTests {
+public class AddExhibitTest {
 
     @Rule
-    public ActivityScenarioRule rule = new ActivityScenarioRule<>(SearchExhibitActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void testInitialZeroExhibitsAdded() {
-        ActivityScenario scenario =  rule.getScenario();
+    public void addExhibitTest() {
+        ViewInteraction actionMenuItemView = onView(
+                allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(androidx.appcompat.R.id.action_bar),
+                                        1),
+                                0),
+                        isDisplayed()));
+        actionMenuItemView.perform(click());
 
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.onActivity(activity -> {
-            assertFalse(activity.findViewById(R.id.plan_btn).isEnabled());
-            assertEquals(((TextView) activity.findViewById(R.id.exhibit_count)).getText().toString(), "0");
-        });
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+                        childAtPosition(
+                                allOf(withId(R.id.exhibit_item_layout),
+                                        childAtPosition(
+                                                withId(R.id.exhibit_items),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        materialButton.check(matches(isEnabled()));
     }
 
     @Test
-    public void oneExhibitAddedTest() {
+    public void repeatedAddExhibitTest() {
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
                         childAtPosition(
@@ -86,97 +94,25 @@ public class PlanButtonTests {
                         isDisplayed()));
         appCompatImageButton.perform(click());
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.plan_btn), withText("PLAN\n"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isEnabled()));
-        button.check(matches(isEnabled()));
-    }
-
-
-    @Test
-    public void PlanNumberTest() {
-        ViewInteraction actionMenuItemView = onView(
+        ViewInteraction actionMenuItemView2 = onView(
                 allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(androidx.appcompat.R.id.action_bar),
-                                        1),
-                                0),
-                        isDisplayed()));
-        actionMenuItemView.perform(click());
-
-        ViewInteraction materialButton = onView(
-                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
-                        childAtPosition(
-                                allOf(withId(R.id.exhibit_item_layout),
-                                        childAtPosition(
-                                                withId(R.id.exhibit_items),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        materialButton.perform(click());
-
-        ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
-                        childAtPosition(
-                                allOf(withId(R.id.exhibit_item_layout),
-                                        childAtPosition(
-                                                withId(R.id.exhibit_items),
-                                                1)),
-                                1),
-                        isDisplayed()));
-        materialButton2.perform(click());
-
-        ViewInteraction materialButton3 = onView(
-                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
-                        childAtPosition(
-                                allOf(withId(R.id.exhibit_item_layout),
-                                        childAtPosition(
-                                                withId(R.id.exhibit_items),
-                                                2)),
-                                1),
-                        isDisplayed()));
-        materialButton3.perform(click());
-
-        ViewInteraction materialButton4 = onView(
-                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
-                        childAtPosition(
-                                allOf(withId(R.id.exhibit_item_layout),
-                                        childAtPosition(
-                                                withId(R.id.exhibit_items),
-                                                3)),
-                                1),
-                        isDisplayed()));
-        materialButton4.perform(click());
-
-        ViewInteraction materialButton5 = onView(
-                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
-                        childAtPosition(
-                                allOf(withId(R.id.exhibit_item_layout),
-                                        childAtPosition(
-                                                withId(R.id.exhibit_items),
-                                                4)),
-                                1),
-                        isDisplayed()));
-        materialButton5.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.exhibit_count), withText("5"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed()));
-        textView.check(matches(withText("5")));
-
-        ViewInteraction materialButton6 = onView(
-                allOf(withId(R.id.plan_btn), withText("Plan\n"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
                                         0),
                                 0),
                         isDisplayed()));
-        materialButton6.perform(click());
+        actionMenuItemView2.perform(click());
+
+        ViewInteraction button = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADDED"),
+                        withParent(allOf(withId(R.id.exhibit_item_layout),
+                                withParent(withId(R.id.exhibit_items)))),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
+        button.check(matches(isNotEnabled()));
     }
+
 
 
     private static Matcher<View> childAtPosition(

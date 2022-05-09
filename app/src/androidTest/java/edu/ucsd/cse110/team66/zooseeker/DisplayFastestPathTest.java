@@ -3,7 +3,9 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+
 import static androidx.test.espresso.action.ViewActions.swipeUp;
+
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -113,6 +115,7 @@ public class DisplayFastestPathTest {
         materialButton6.perform(click());
 
         ViewInteraction textView = onView(
+
                 allOf(withId(R.id.show_dest_text), withText("Entrance Plaza"),
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
@@ -186,6 +189,7 @@ public class DisplayFastestPathTest {
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
         textView12.check(matches(withText("From Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza.")));
+
     }
 
     private static Matcher<View> childAtPosition(
