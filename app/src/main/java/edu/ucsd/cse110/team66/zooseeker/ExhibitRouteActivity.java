@@ -141,43 +141,46 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                 currentDirection.add(new PlanListItem(street_name,street_id,
                         source_id,target_id,source_name,target_name,weight));
             }
-
-
             plannedDirections.add(currentDirection);
         }
-
-
+        
         PlanListAdapter adapter = new PlanListAdapter();
         adapter.setHasStableIds(true);
+        adapter.setPlanListItems(plannedDirections);
 
         recyclerView = findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
-
-
-        adapter.setPlanListItems(plannedDirections);
 
         exhibitDirections = new ArrayList<String>();
         for (int i = 0; i < plannedDirections.size(); ++i) {
             exhibitDirections.add(PlanListItem.toMessage(plannedDirections.get(i)));
         }
 
-        // back button
-        Button back_btn = (Button) findViewById(R.id.back_btn_plan);
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
         Button directions_btn = findViewById(R.id.directions_btn);
         directions_btn.setOnClickListener(view -> openExhibitDirectionsActivity());
-        // load plan list
-
-
     }
+    
+    // Set up back button at the top left
+    private void setUpBackButton() {
+        ActionBar actionBar = getSupportActionBar();
+        // Customize the back button
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    // Go back to Search_Exhibit when the back button is clicked
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    
     private void openExhibitDirectionsActivity() {
         Gson gson = new Gson();
         String json = gson.toJson(exhibitDirections);
