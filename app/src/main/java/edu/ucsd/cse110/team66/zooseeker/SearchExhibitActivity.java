@@ -40,11 +40,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_exhibit);
 
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("exhibitsToVisit",0);
-        editor.apply();
-
         setExhibitItemAdapter();
         recyclerView.setAlpha(0);
 
