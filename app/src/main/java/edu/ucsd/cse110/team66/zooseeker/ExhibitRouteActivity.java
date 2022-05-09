@@ -29,7 +29,6 @@ import java.util.Vector;
 
 public class ExhibitRouteActivity extends AppCompatActivity {
     private final String start = "entrance_exit_gate";
-    private String goal;
     public RecyclerView recyclerView;
     private ArrayList<String> exhibitDirections;
 
@@ -37,6 +36,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exhibit_route);
+        setUpBackButton();
 
         List<ZooData.VertexInfo> zooExhibitsData =
                 ZooData.loadZooItemJSON(this,
