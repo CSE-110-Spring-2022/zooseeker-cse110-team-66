@@ -67,16 +67,8 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         // 1. Load the graph...
         Graph<String, IdentifiedWeightedEdge> g
                 = ZooData.loadZooGraphJSON(this,"sample_zoo_graph.json");
-        DijkstraShortestPath graph = new DijkstraShortestPath(g);
-        Vector<String> fastestPath = new Vector<String>();
-        Vector<Double> pathDistances = new Vector<Double>();
-        Vector<Boolean> to_reverse = new Vector<Boolean>();
         Vector<List<IdentifiedWeightedEdge>> Directions = new Vector<List<IdentifiedWeightedEdge>>();
         String currentPosition = intersection_id;
-        fastestPath.add(start);
-        fastestPath.add(currentPosition);
-        pathDistances.add(0.0);
-        pathDistances.add(10.0);
         Vector<String> toPathFind = new Vector<String>();
         for (int i = 0; i < exhibitsAdded.size(); ++i) {
             toPathFind.add(exhibitsAdded.get(i));
@@ -95,9 +87,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
                     closestExhibit = nextExhibit;
                 }
             }
-            to_reverse.add(possible_reverse);
-            fastestPath.add(closestExhibit);
-            pathDistances.add(currentDistance);
+
             Directions.add(nextDirection);
             currentPosition=closestExhibit;
             toPathFind.remove(currentPosition);
