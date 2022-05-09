@@ -35,6 +35,31 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exhibit_route);
 
+        List<ZooData.VertexInfo> zooExhibitsData =
+                ZooData.loadZooItemJSON(this,
+                        "sample_node_info.json","exhibits");
+
+        List<ZooData.VertexInfo> zooEntranceData =
+                ZooData.loadZooItemJSON(this,
+                        "sample_node_info.json","gates and intersection");
+        String entrance_and_exit_gate_id = "";
+        String entrance_and_exit_gate_name = "";
+
+        String intersection_id = "";
+        String intersection_name = "";
+
+        for (int i = 0; i < zooEntranceData.size();++i) {
+            if (zooEntranceData.get(i).kind.toString() == "GATE") {
+                entrance_and_exit_gate_id = zooEntranceData.get(i).id;
+                entrance_and_exit_gate_name = zooEntranceData.get(i).name;
+            }
+            else if (zooEntranceData.get(i).kind.toString() == "INTERSECTION") {
+                intersection_id = zooEntranceData.get(i).id;
+                intersection_name = zooEntranceData.get(i).name;
+            }
+        }
+
+
         Gson gson = new Gson();
         String exhibitsAll = getIntent().getExtras().getString("exhibitsAll");
         ArrayList<String> exhibitsAdded = gson.fromJson(exhibitsAll, ArrayList.class);
@@ -47,7 +72,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         Vector<Double> pathDistances = new Vector<Double>();
         Vector<Boolean> to_reverse = new Vector<Boolean>();
         Vector<List<IdentifiedWeightedEdge>> Directions = new Vector<List<IdentifiedWeightedEdge>>();
-        String currentPosition = "entrance_plaza";
+        String currentPosition = intersection_id;
         fastestPath.add(start);
         fastestPath.add(currentPosition);
         pathDistances.add(0.0);
@@ -78,25 +103,27 @@ public class ExhibitRouteActivity extends AppCompatActivity {
             toPathFind.remove(currentPosition);
         }
 
-        List<ZooData.VertexInfo> zoodata =
-                ZooData.loadZooItemJSON(this,
-                        "sample_node_info.json","exhibits");
+
+
         Map<String, String> exhibit_id_to_name = new HashMap<String, String>();
-        exhibit_id_to_name.put("entrance_exit_gate", "Entrance and Exit Gate");
-        exhibit_id_to_name.put("entrance_plaza", "Entrance Plaza");
-        for (int i = 0; i < zoodata.size(); ++i) {
-            exhibit_id_to_name.put(zoodata.get(i).id,zoodata.get(i).name);
+        exhibit_id_to_name.put(entrance_and_exit_gate_id, entrance_and_exit_gate_name);
+        exhibit_id_to_name.put(intersection_id, intersection_name);
+        for (int i = 0; i < zooExhibitsData.size(); ++i) {
+            exhibit_id_to_name.put(zooExhibitsData.get(i).id,zooExhibitsData.get(i).name);
         }
         Map<String, ZooData.EdgeInfo> edgeinfo =
                 ZooData.loadEdgeInfoJSON(this, "sample_edge_info.json");
 
         List<List<PlanListItem>> plannedDirections = new ArrayList<>();
         List<PlanListItem> firstDirection = new ArrayList<>();
-        firstDirection.add(new PlanListItem("Entrance Way",
-                "edge-0","entrance_exit_gate",
-                "entrance_plaza","Entrance and Exit Gate",
-                "Entrance Plaza",10.0));
-        String previous = "entrance_plaza";
+
+        String start_street_id = g.getEdge(entrance_and_exit_gate_id, intersection_id).getId();
+
+        firstDirection.add(new PlanListItem(edgeinfo.get(start_street_id).street,
+                start_street_id,entrance_and_exit_gate_id,
+                intersection_id,entrance_and_exit_gate_name,
+                intersection_name,g.getEdge(entrance_and_exit_gate_id,intersection_id).getWeight()));
+        String previous = intersection_id;
         plannedDirections.add(firstDirection);
         for (int i = 0; i < Directions.size(); ++i) {
             List<PlanListItem> currentDirection = new ArrayList<>();
