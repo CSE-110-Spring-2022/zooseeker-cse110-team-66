@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -158,6 +159,33 @@ public class DisplayFastestPathTest {
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
         textView8.check(matches(withText("From Lions, walk down Africa Rocks Street for 200.0 feet towards Gorillas.")));
+
+        onView(withId(R.id.plan_items))
+                .perform(swipeUp());
+
+        ViewInteraction textView9 = onView(
+                allOf(withId(R.id.show_dest_text), withText("Elephant Odyssey"),
+                        withParent(withParent(withId(R.id.plan_items))),
+                        isDisplayed()));
+        textView9.check(matches(withText("Elephant Odyssey")));
+
+        ViewInteraction textView10 = onView(
+                allOf(withId(R.id.plan_item_text), withText("From Gorillas, walk down Africa Rocks Street for 200.0 feet towards Lions.Then Lions, walk down Africa Rocks Street for 200.0 feet towards Elephant Odyssey."),
+                        withParent(withParent(withId(R.id.plan_items))),
+                        isDisplayed()));
+        textView10.check(matches(withText("From Gorillas, walk down Africa Rocks Street for 200.0 feet towards Lions.Then Lions, walk down Africa Rocks Street for 200.0 feet towards Elephant Odyssey.")));
+
+        ViewInteraction textView11 = onView(
+                allOf(withId(R.id.show_dest_text), withText("Entrance Plaza"),
+                        withParent(withParent(withId(R.id.plan_items))),
+                        isDisplayed()));
+        textView11.check(matches(withText("Entrance Plaza")));
+
+        ViewInteraction textView12 = onView(
+                allOf(withId(R.id.plan_item_text), withText("From Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza."),
+                        withParent(withParent(withId(R.id.plan_items))),
+                        isDisplayed()));
+        textView12.check(matches(withText("From Entrance and Exit Gate, walk down Entrance Way for 10.0 feet towards Entrance Plaza.")));
     }
 
     private static Matcher<View> childAtPosition(

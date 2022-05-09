@@ -93,6 +93,90 @@ public class PlanButtonTests {
         button.check(matches(isEnabled()));
     }
 
+    @Test
+    public void PlanNumberTest() {
+        ViewInteraction actionMenuItemView = onView(
+                allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(androidx.appcompat.R.id.action_bar),
+                                        1),
+                                0),
+                        isDisplayed()));
+        actionMenuItemView.perform(click());
+
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+                        childAtPosition(
+                                allOf(withId(R.id.exhibit_item_layout),
+                                        childAtPosition(
+                                                withId(R.id.exhibit_items),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        materialButton.perform(click());
+
+        ViewInteraction materialButton2 = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+                        childAtPosition(
+                                allOf(withId(R.id.exhibit_item_layout),
+                                        childAtPosition(
+                                                withId(R.id.exhibit_items),
+                                                1)),
+                                1),
+                        isDisplayed()));
+        materialButton2.perform(click());
+
+        ViewInteraction materialButton3 = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+                        childAtPosition(
+                                allOf(withId(R.id.exhibit_item_layout),
+                                        childAtPosition(
+                                                withId(R.id.exhibit_items),
+                                                2)),
+                                1),
+                        isDisplayed()));
+        materialButton3.perform(click());
+
+        ViewInteraction materialButton4 = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+                        childAtPosition(
+                                allOf(withId(R.id.exhibit_item_layout),
+                                        childAtPosition(
+                                                withId(R.id.exhibit_items),
+                                                3)),
+                                1),
+                        isDisplayed()));
+        materialButton4.perform(click());
+
+        ViewInteraction materialButton5 = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+                        childAtPosition(
+                                allOf(withId(R.id.exhibit_item_layout),
+                                        childAtPosition(
+                                                withId(R.id.exhibit_items),
+                                                4)),
+                                1),
+                        isDisplayed()));
+        materialButton5.perform(click());
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.exhibit_count), withText("5"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        textView.check(matches(withText("5")));
+
+        ViewInteraction materialButton6 = onView(
+                allOf(withId(R.id.plan_btn), withText("Plan\n"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        materialButton6.perform(click());
+    }
+
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 
