@@ -58,6 +58,8 @@ public class ZooData {
             for (ZooData.VertexInfo item : zooData) {
                 if (flag.equals("exhibits") && item.kind == VertexInfo.Kind.EXHIBIT) {
                     selectedData.add(item); // exhibits
+                } else if (flag.equals("all")) {
+                    selectedData.add(item);
                 } else if (!flag.equals("exhibits") && item.kind != VertexInfo.Kind.EXHIBIT) {
                     selectedData.add(item); // gates and intersections
                 }
