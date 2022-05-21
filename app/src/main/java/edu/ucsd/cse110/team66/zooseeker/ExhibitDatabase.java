@@ -26,7 +26,7 @@ public abstract class ExhibitDatabase extends RoomDatabase {
 
 
     private static ExhibitDatabase makeDatabase(Context context) {
-        return Room.databaseBuilder(context, ExhibitDatabase.class, "todo_app.db")
+        return Room.databaseBuilder(context, ExhibitDatabase.class, "exhibit_app.db")
                 .allowMainThreadQueries()
                 .addCallback(new Callback() {
                     @Override
@@ -34,7 +34,7 @@ public abstract class ExhibitDatabase extends RoomDatabase {
                         super.onCreate(db);
                         Executors.newSingleThreadExecutor().execute(() -> {
                             List<ExhibitItem> exhibits = ExhibitItem
-                                    .loadExhibits(context, "demo_todos.json");
+                                    .loadExhibits(context, "sample_node_info.json");
                             getSingleton(context).exhibitItemDao().insertAll(exhibits);
                         });
                     }

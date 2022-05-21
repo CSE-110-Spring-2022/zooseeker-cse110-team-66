@@ -42,10 +42,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
         setExhibitItemAdapter();
         recyclerView.setAlpha(0);
-
-        planButton = findViewById(R.id.plan_btn);
-        planButton.setOnClickListener(v -> openExhibitRouteActivity());
-        planButton.setEnabled(false);
     }
 
     // Create a menu at the top for the search and voice search icons
@@ -98,6 +94,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         exhibitItemAdapter = new ExhibitItemAdapter();
         exhibitItemAdapter.setHasStableIds(true);
         exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
+        viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
 
         recyclerView = findViewById(R.id.exhibit_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -106,7 +103,11 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
         TextView countView = findViewById(R.id.exhibit_count);
         exhibitItemAdapter.setCountView(countView);
-        exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
+        //exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
+
+        planButton = findViewById(R.id.plan_btn);
+        planButton.setOnClickListener(v -> openExhibitRouteActivity());
+        planButton.setEnabled(false);
     }
 
     // Store added exhibits for use by planning route fragment
