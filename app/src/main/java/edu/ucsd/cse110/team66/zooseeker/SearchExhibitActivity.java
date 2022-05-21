@@ -34,6 +34,9 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
     private ExhibitItemViewModel viewModel;
     private static Button planButton;
+    private static Button clearButton;
+
+    //private Runnable onClearExhibits;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +86,8 @@ public class SearchExhibitActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public static void enablePlanButton() {
-        planButton.setEnabled(true);
+    public static void togglePlanButton(boolean value) {
+        planButton.setEnabled(value);
     }
 
     // Display the list of exhibits a user can choose
@@ -94,6 +97,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         exhibitItemAdapter = new ExhibitItemAdapter();
         exhibitItemAdapter.setHasStableIds(true);
         exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
+        //setOnClearExhibitsHandler(viewModel::toggleClear);
         viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
 
         recyclerView = findViewById(R.id.exhibit_items);
@@ -107,8 +111,17 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
         planButton = findViewById(R.id.plan_btn);
         planButton.setOnClickListener(v -> openExhibitRouteActivity());
-        planButton.setEnabled(false);
+
+        clearButton = findViewById(R.id.clear_btn);
+        clearButton.setOnClickListener(view -> {
+            //if (onClearExhibits == null) return;
+            viewModel.toggleClear();
+        });
     }
+
+    /*public void setOnClearExhibitsHandler(Runnable onClearExhibits) {
+        this.onClearExhibits=onClearExhibits;
+    }*/
 
     // Store added exhibits for use by planning route fragment
     private void openExhibitRouteActivity() {

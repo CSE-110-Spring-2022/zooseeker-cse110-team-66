@@ -26,6 +26,9 @@ public interface ExhibitItemDao {
     @Query("SELECT * FROM `exhibit_items` ORDER BY `name`")
     LiveData<List<ExhibitItem>> getAllLive();
 
+    @Query("UPDATE `exhibit_items` SET `added` = 0")
+    int clearAllAdded();
+
     @Update
     int update(ExhibitItem exhibitItem);
 

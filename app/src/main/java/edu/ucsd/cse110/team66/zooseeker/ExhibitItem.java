@@ -115,6 +115,7 @@ public class ExhibitItem {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", tags=" + tags +
+                ", added=" + added +
                 '}';
     }
 }

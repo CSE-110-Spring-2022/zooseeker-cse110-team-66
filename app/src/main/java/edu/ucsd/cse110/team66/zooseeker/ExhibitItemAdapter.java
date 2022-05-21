@@ -33,7 +33,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         this.exhibits = exhibits;
         exhibitsAll = new ArrayList<>(exhibits);
 
-        if (getAddedItemCount()!=0) SearchExhibitActivity.enablePlanButton();
+        SearchExhibitActivity.togglePlanButton(getAddedItemCount()!=0);
         updateAddedCount();
 
         notifyDataSetChanged();
@@ -149,7 +149,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
 
             this.addExhibitBtn.setOnClickListener(view -> {
                 updateAddedCount();
-                SearchExhibitActivity.enablePlanButton();
+                //SearchExhibitActivity.togglePlanButton(true);
                 if (onAddExhibit == null) return;
                 /* for (int i = 0; i < exhibitsAll.size(); ++i) {
                     if (exhibitsAll.get(i).name == exhibitTextView.getText()) {
