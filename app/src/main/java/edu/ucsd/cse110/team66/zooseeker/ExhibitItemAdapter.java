@@ -20,16 +20,22 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.ViewHolder> implements Filterable {
-    private List<ExhibitItem> exhibits;
-    private List<ExhibitItem> exhibitsAll;
+    private List<ExhibitItem> exhibits = Collections.emptyList();
+    private List<ExhibitItem> exhibitsAll = Collections.emptyList();
     private Consumer<ExhibitItem> onAddExhibit;
     public TextView countView;
 
     public void setExhibitItems(List<ExhibitItem> exhibits) {
+        this.exhibits.clear();
         this.exhibits = exhibits;
         exhibitsAll = new ArrayList<>(exhibits);
+
+        SearchExhibitActivity.togglePlanButton(getAddedItemCount()!=0);
+        updateAddedCount();
+
         notifyDataSetChanged();
     }
 
@@ -102,7 +108,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                 }
             }
             FilterResults filterResults = new FilterResults();
-            Collections.sort(filteredExhibits, ExhibitItem.ExhibitNameComparator);
+            //Collections.sort(filteredExhibits, ExhibitItem.ExhibitNameComparator);
             filterResults.values = filteredExhibits;
             return filterResults;
         }
@@ -119,16 +125,22 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         countView = textView;
     }
 
-    private void updateAddedCount(TextView textview) {
-        String strCount = textview.getText().toString();
-        int numCount = Integer.parseInt(strCount);
-        numCount++;
-        textview.setText(String.format("%d",numCount));
+    public int getAddedItemCount(){
+        return exhibitsAll.stream()
+                .filter(exhibit -> exhibit.added)
+                .collect(Collectors.toList())
+                .size();
+    }
+
+    public void updateAddedCount() {
+        int count = getAddedItemCount();
+        countView.setText(String.format("%d",count));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView exhibitTextView;
         private Button addExhibitBtn;
+        private ExhibitItem exhibitItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -136,10 +148,10 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
             this.addExhibitBtn = itemView.findViewById(R.id.add_exhibit_btn);
 
             this.addExhibitBtn.setOnClickListener(view -> {
-                updateAddedCount(countView);
-                SearchExhibitActivity.enablePlanButton();
+                updateAddedCount();
+                //SearchExhibitActivity.togglePlanButton(true);
                 if (onAddExhibit == null) return;
-                for (int i = 0; i < exhibitsAll.size(); ++i) {
+                /* for (int i = 0; i < exhibitsAll.size(); ++i) {
                     if (exhibitsAll.get(i).name == exhibitTextView.getText()) {
                         exhibitsAll.get(i).added = !exhibitsAll.get(i).added;
                         if (exhibitsAll.get(i).added) {
@@ -151,13 +163,19 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                             addExhibitBtn.setEnabled(true);
                         }
                     }
-                }
+                } */
+                addExhibitBtn.setText("ADDED");
+                addExhibitBtn.setEnabled(false);
+                onAddExhibit.accept(exhibitItem);
+                updateAddedCount();
             });
         }
 
         // Set the exhibit name and whether it has been added
         public void setExhibitItem(ExhibitItem item) {
             this.exhibitTextView.setText(item.getName());
+            this.exhibitItem = item;
+
             if (item.added) {
                 this.addExhibitBtn.setText("ADDED");
                 this.addExhibitBtn.setEnabled(false);

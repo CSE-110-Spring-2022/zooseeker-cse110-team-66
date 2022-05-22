@@ -34,4 +34,9 @@ public class ExhibitItemViewModel extends AndroidViewModel {
         exhibitItem.added = !exhibitItem.added;
         exhibitItemDao.update(exhibitItem);
     }
+
+    // Clear all added fields (set to false)
+    public void toggleClear() {
+        exhibitItemDao.clearAllAdded();
+    }
 }

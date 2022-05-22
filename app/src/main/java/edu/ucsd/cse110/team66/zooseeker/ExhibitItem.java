@@ -8,12 +8,14 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,6 +29,8 @@ public class ExhibitItem {
     public String id;
     public String name;
     public List<String> tags;
+
+    @ColumnInfo(name = "added")
     public boolean added;
 
     @Ignore
@@ -111,6 +115,7 @@ public class ExhibitItem {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", tags=" + tags +
+                ", added=" + added +
                 '}';
     }
 }
