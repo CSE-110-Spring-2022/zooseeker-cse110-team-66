@@ -33,8 +33,8 @@ public class SearchExhibitActivity extends AppCompatActivity {
     public ExhibitItemAdapter exhibitItemAdapter;
 
     private ExhibitItemViewModel viewModel;
-    private Button planButton;
-    private Button clearButton;
+    private static Button planButton;
+    private static Button clearButton;
 
     //private Runnable onClearExhibits;
 
