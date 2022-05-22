@@ -33,8 +33,8 @@ public class SearchExhibitActivity extends AppCompatActivity {
     public ExhibitItemAdapter exhibitItemAdapter;
 
     private ExhibitItemViewModel viewModel;
-    private static Button planButton;
-    private static Button clearButton;
+    private Button planButton;
+    private Button clearButton;
 
     //private Runnable onClearExhibits;
 
@@ -69,6 +69,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
             }
         });
         SearchView searchView = (SearchView) searchItem.getActionView();
+        exhibitItemAdapter.getSearchView(searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
