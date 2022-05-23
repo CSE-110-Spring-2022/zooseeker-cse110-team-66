@@ -13,6 +13,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     private List<ExhibitItem> exhibitsAll = Collections.emptyList();
     private Consumer<ExhibitItem> onAddExhibit;
     public TextView countView;
+    public SearchView searchView;
 
     public void setExhibitItems(List<ExhibitItem> exhibits) {
         this.exhibits.clear();
@@ -137,6 +139,10 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         countView.setText(String.format("%d",count));
     }
 
+    public void getSearchView(SearchView searchView) {
+        this.searchView = searchView;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView exhibitTextView;
         private Button addExhibitBtn;
@@ -168,6 +174,8 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
                 addExhibitBtn.setEnabled(false);
                 onAddExhibit.accept(exhibitItem);
                 updateAddedCount();
+                searchView.setQuery("", false); //empties the search field
+                searchView.clearFocus();
             });
         }
 

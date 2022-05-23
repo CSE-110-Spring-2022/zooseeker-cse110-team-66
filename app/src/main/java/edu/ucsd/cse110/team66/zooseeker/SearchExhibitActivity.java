@@ -69,6 +69,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
             }
         });
         SearchView searchView = (SearchView) searchItem.getActionView();
+        exhibitItemAdapter.getSearchView(searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
