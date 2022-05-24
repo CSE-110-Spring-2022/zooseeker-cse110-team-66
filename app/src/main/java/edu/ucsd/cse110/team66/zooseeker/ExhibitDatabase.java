@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities= {ExhibitItem.class}, version = 1, exportSchema = false)
+@Database(entities= {ExhibitItem.class}, version = 2, exportSchema = false)
 public abstract class ExhibitDatabase extends RoomDatabase {
     private static ExhibitDatabase singleton = null;
 
