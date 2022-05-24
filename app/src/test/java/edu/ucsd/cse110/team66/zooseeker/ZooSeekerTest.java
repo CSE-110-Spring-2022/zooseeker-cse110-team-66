@@ -7,6 +7,7 @@ import android.content.Context;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RunWith(AndroidJUnit4.class)
 public class ZooSeekerTest {
@@ -90,6 +92,32 @@ public class ZooSeekerTest {
 
             });
         }
+    }
+
+    @Test
+    public void testClearBtnUnavailable() {
+        try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
+            scenario.onActivity(activity -> {
+
+                Button clear_button =(Button)activity.findViewById(R.id.clear_btn);
+                assertEquals(false, clear_button.isEnabled());
+
+            });
+        }
+    }
+
+    @Test
+    public void testClear() {
+        List<String> tag1 = Arrays.asList("monkey");
+        ExhibitItem exhibitItem1 = new ExhibitItem("monkey", "Monkey", tag1);
+        exhibitItem1.added = true;
+
+        long numID1 = dao.insert(exhibitItem1);
+        int size = dao.getDataCount();
+        assertEquals(1, size);
+        dao.clearAllAdded();
+        size = dao.getDataCount();
+        assertEquals(0, size);
     }
 
 

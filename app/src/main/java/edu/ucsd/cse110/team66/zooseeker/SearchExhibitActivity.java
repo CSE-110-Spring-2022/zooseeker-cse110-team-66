@@ -33,8 +33,10 @@ public class SearchExhibitActivity extends AppCompatActivity {
     public ExhibitItemAdapter exhibitItemAdapter;
 
     private ExhibitItemViewModel viewModel;
-    private static Button planButton;
-    private static Button clearButton;
+    private Button planButton;
+    private Button clearButton;
+    private TextView countView;
+    private Button listButton;
 
     //private Runnable onClearExhibits;
 
@@ -44,6 +46,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_exhibit);
 
         setExhibitItemAdapter();
+
         recyclerView.setAlpha(0);
     }
 
@@ -87,10 +90,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public static void togglePlanButton(boolean value) {
-        planButton.setEnabled(value);
-    }
-
     // Display the list of exhibits a user can choose
     private void setExhibitItemAdapter() {
         viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
@@ -106,18 +105,24 @@ public class SearchExhibitActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(exhibitItemAdapter);
 
-        TextView countView = findViewById(R.id.exhibit_count);
-        exhibitItemAdapter.setCountView(countView);
+        countView = findViewById(R.id.exhibit_count);
+        clearButton = findViewById(R.id.clear_btn);
+        planButton = findViewById(R.id.plan_btn);
+        listButton = findViewById(R.id.selected_exhibits_btn);
+
+        exhibitItemAdapter.getCountView(countView);
+        exhibitItemAdapter.getClearBtn(clearButton);
+        exhibitItemAdapter.getPlanBtn(planButton);
+        exhibitItemAdapter.getListBtn(listButton);
         //exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
 
-        planButton = findViewById(R.id.plan_btn);
         planButton.setOnClickListener(v -> openExhibitRouteActivity());
 
-        clearButton = findViewById(R.id.clear_btn);
         clearButton.setOnClickListener(view -> {
             //if (onClearExhibits == null) return;
             viewModel.toggleClear();
         });
+
     }
 
     /*public void setOnClearExhibitsHandler(Runnable onClearExhibits) {

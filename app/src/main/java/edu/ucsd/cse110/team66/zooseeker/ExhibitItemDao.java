@@ -29,6 +29,9 @@ public interface ExhibitItemDao {
     @Query("UPDATE `exhibit_items` SET `added` = 0")
     int clearAllAdded();
 
+    @Query("SELECT COUNT(*) FROM `exhibit_items` WHERE `added`= 1")
+    int getDataCount();
+
     @Update
     int update(ExhibitItem exhibitItem);
 
