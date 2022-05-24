@@ -195,7 +195,7 @@
       "source": "owens_aviary",
       "target": "fern_canyon",
       "weight": 30.0
-    }
+    },
     {
       "id": "fern_to_fern",
       "source": "fern_canyon",
