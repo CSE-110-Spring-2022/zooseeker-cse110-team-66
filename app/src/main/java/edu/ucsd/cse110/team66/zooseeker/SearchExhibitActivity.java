@@ -48,11 +48,11 @@ public class SearchExhibitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_exhibit);
-        setExhibitItemAdapter();
-        setRecyclerView();
         setPlanButton();
         setClearButton();
         setSelectedExhibitsButton();
+        setExhibitItemAdapter();
+        setRecyclerView();
     }
 
     /** Create a menu at the top for the search and voice search icons **/
@@ -95,21 +95,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    /** Display the list of exhibits a user can choose **/
-    private void setExhibitItemAdapter() {
-        viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
-
-        exhibitItemAdapter = new ExhibitItemAdapter();
-        exhibitItemAdapter.setHasStableIds(true);
-        exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
-        viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
-
-        exhibitItemAdapter.getCountView(countView);
-        exhibitItemAdapter.getClearBtn(clearButton);
-        exhibitItemAdapter.getPlanBtn(planButton);
-        exhibitItemAdapter.getListBtn(showSelectedExhibitsButton);
-    }
-
     /** Display selected exhibits in a compact list format **/
     public void openSelectedExhibitsListActivity() {
         List<String> exhibitsAddedName = exhibitItemAdapter.getSelectedExhibits().stream()
@@ -136,15 +121,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /** Set up the recycler view to use the adapter **/
-    private void setRecyclerView() {
-        recyclerView = findViewById(R.id.exhibit_items);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(exhibitItemAdapter);
-        recyclerView.setAlpha(0);
-    }
-
     /** Set up the plan button and chosen exhibits counter **/
     private void setPlanButton() {
         planButton = findViewById(R.id.plan_btn);
@@ -153,14 +129,38 @@ public class SearchExhibitActivity extends AppCompatActivity {
     }
 
     /** Set up clear button **/
-    public void setClearButton() {
+    private void setClearButton() {
         clearButton = findViewById(R.id.clear_btn);
         clearButton.setOnClickListener(view -> viewModel.toggleClear());
     }
 
     /** Set up selected exhibits button **/
-    public void setSelectedExhibitsButton() {
+    private void setSelectedExhibitsButton() {
         showSelectedExhibitsButton = findViewById(R.id.selected_exhibits_btn);
         showSelectedExhibitsButton.setOnClickListener(view -> openSelectedExhibitsListActivity());
+    }
+
+    /** Display the list of exhibits a user can choose **/
+    private void setExhibitItemAdapter() {
+        viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
+
+        exhibitItemAdapter = new ExhibitItemAdapter();
+        exhibitItemAdapter.setHasStableIds(true);
+        exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
+        viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
+
+        exhibitItemAdapter.getCountView(countView);
+        exhibitItemAdapter.getClearBtn(clearButton);
+        exhibitItemAdapter.getPlanBtn(planButton);
+        exhibitItemAdapter.getListBtn(showSelectedExhibitsButton);
+    }
+
+    /** Set up the recycler view to use the adapter **/
+    private void setRecyclerView() {
+        recyclerView = findViewById(R.id.exhibit_items);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(exhibitItemAdapter);
+        recyclerView.setAlpha(0);
     }
 }
