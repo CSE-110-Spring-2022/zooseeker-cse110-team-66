@@ -29,13 +29,17 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
     private Consumer<ExhibitItem> onAddExhibit;
     public TextView countView;
     public SearchView searchView;
+    public Button clearBtn;
+    public Button planBtn;
+    public Button listBtn;
 
     public void setExhibitItems(List<ExhibitItem> exhibits) {
         this.exhibits.clear();
         this.exhibits = exhibits;
         exhibitsAll = new ArrayList<>(exhibits);
 
-        SearchExhibitActivity.togglePlanButton(getAddedItemCount()!=0);
+        togglePlanButton(getAddedItemCount()!=0);
+        toggleClearButton(getAddedItemCount()!=0);
         updateAddedCount();
 
         notifyDataSetChanged();
@@ -123,15 +127,18 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         }
     };
 
-    public void setCountView(TextView textView) {
-        countView = textView;
+    public void getCountView(TextView textView) {
+        this.countView = textView;
+    }
+
+    public List<ExhibitItem> getSelectedExhibits(){
+        return exhibitsAll.stream()
+                .filter(exhibit -> exhibit.added)
+                .collect(Collectors.toList());
     }
 
     public int getAddedItemCount(){
-        return exhibitsAll.stream()
-                .filter(exhibit -> exhibit.added)
-                .collect(Collectors.toList())
-                .size();
+        return getSelectedExhibits().size();
     }
 
     public void updateAddedCount() {
@@ -141,6 +148,27 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
 
     public void getSearchView(SearchView searchView) {
         this.searchView = searchView;
+    }
+
+    public void getListBtn(Button listBtn) {
+        this.listBtn = listBtn;
+    }
+
+    public void getClearBtn(Button clearBtn) {
+        this.clearBtn = clearBtn;
+    }
+
+    public void getPlanBtn(Button planBtn) {
+        this.planBtn = planBtn;
+    }
+
+    public void togglePlanButton(boolean value) {
+        planBtn.setEnabled(value);
+        listBtn.setEnabled(value);
+    }
+
+    public void toggleClearButton(boolean value) {
+        clearBtn.setEnabled(value);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

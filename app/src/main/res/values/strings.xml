@@ -9,4 +9,5 @@
     <string name="exhibit_node_info_json">sample_node_info_loc.json</string>
     <string name="trail_edge_info_json">sample_edge_info_loc.json</string>
     <string name="zoo_graph_json">sample_zoo_graph_loc.json</string>
+    <string name="settings">settings</string>
 </resources>
