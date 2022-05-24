@@ -30,20 +30,6 @@
         app:layout_constraintLeft_toRightOf="@id/clear_btn"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <Button
-        android:id="@+id/plan_btn"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/round_button"
-        android:enabled="false"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/plan_button_text"
-        android:textSize="14dp"
-        app:layout_constraintBottom_toTopOf="@id/selected_exhibits_btn"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/exhibit_items"
         android:layout_width="409dp"
@@ -56,15 +42,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/exhibit_count"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="47dp"
-        android:layout_marginBottom="5dp"
-        android:text="0"
-        android:textSize="25dp"
-        android:translationZ="90dp"
-        app:layout_constraintBottom_toBottomOf="@id/plan_btn"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/selected_exhibits_btn"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/plan_btn"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/round_button"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/plan_button_text"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/exhibit_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@id/plan_btn"
+            android:layout_marginBottom="5dp"
+            android:text="0"
+            android:textSize="25dp"
+            android:translationZ="90dp" />
+
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

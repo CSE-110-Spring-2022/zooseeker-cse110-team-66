@@ -131,11 +131,14 @@ public class ExhibitItemAdapter extends RecyclerView.Adapter<ExhibitItemAdapter.
         this.countView = textView;
     }
 
-    public int getAddedItemCount(){
+    public List<ExhibitItem> getSelectedExhibits(){
         return exhibitsAll.stream()
                 .filter(exhibit -> exhibit.added)
-                .collect(Collectors.toList())
-                .size();
+                .collect(Collectors.toList());
+    }
+
+    public int getAddedItemCount(){
+        return getSelectedExhibits().size();
     }
 
     public void updateAddedCount() {
