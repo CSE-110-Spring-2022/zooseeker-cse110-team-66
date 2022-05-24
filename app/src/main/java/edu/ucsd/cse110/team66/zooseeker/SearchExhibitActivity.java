@@ -39,29 +39,17 @@ public class SearchExhibitActivity extends AppCompatActivity {
     public ExhibitItemAdapter exhibitItemAdapter;
 
     private ExhibitItemViewModel viewModel;
-    private static Button planButton;
-    private static Button clearButton;
-    private static Button showSelectedExhibitsButton;
+    private Button planButton;
+    private Button clearButton;
+    private Button showSelectedExhibitsButton;
+    private TextView countView;
+    private Button listButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_exhibit);
-
         setExhibitItemAdapter();
-
-        // Set up plan button
-        planButton = findViewById(R.id.plan_btn);
-        planButton.setOnClickListener(v -> openExhibitRouteActivity());
-
-        // Set up clear button
-        clearButton = findViewById(R.id.clear_btn);
-        clearButton.setOnClickListener(view -> viewModel.toggleClear());
-
-        // Set up selected exhibits button
-        showSelectedExhibitsButton = findViewById(R.id.selected_exhibits_btn);
-        showSelectedExhibitsButton.setOnClickListener(view -> openSelectedExhibitsListActivity());
-
         recyclerView.setAlpha(0);
     }
 
@@ -105,14 +93,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Allow the plan button to be enabled or disabled depending on number of selected exhibits
-     * @param value to set the plan button to
-     */
-    public static void togglePlanButton(boolean value) {
-        planButton.setEnabled(value);
-    }
-
     /** Display the list of exhibits a user can choose **/
     private void setExhibitItemAdapter() {
         viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
@@ -122,15 +102,26 @@ public class SearchExhibitActivity extends AppCompatActivity {
         exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
         viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
 
-
         recyclerView = findViewById(R.id.exhibit_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(exhibitItemAdapter);
 
-        TextView countView = findViewById(R.id.exhibit_count);
-        exhibitItemAdapter.setCountView(countView);
+        countView = findViewById(R.id.exhibit_count);
+        clearButton = findViewById(R.id.clear_btn);
+        planButton = findViewById(R.id.plan_btn);
+        showSelectedExhibitsButton = findViewById(R.id.selected_exhibits_btn);
+
+        exhibitItemAdapter.getCountView(countView);
+        exhibitItemAdapter.getClearBtn(clearButton);
+        exhibitItemAdapter.getPlanBtn(planButton);
+        exhibitItemAdapter.getListBtn(showSelectedExhibitsButton);
+      
         //exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
+
+        planButton.setOnClickListener(view -> openExhibitRouteActivity());
+        clearButton.setOnClickListener(view -> viewModel.toggleClear());
+        showSelectedExhibitsButton.setOnClickListener(view -> openSelectedExhibitsListActivity());
     }
 
     /** Display selected exhibits in a compact list format **/
