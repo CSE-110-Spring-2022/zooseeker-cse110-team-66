@@ -43,13 +43,14 @@ public class ExhibitItem {
         this.tags = tags;
         this.added = false;
     }
-
+    @Ignore
     public ExhibitItem(@NonNull String id, String name, List<String> tags, boolean added) {
         this.id = id;
         this.name = name;
         this.tags = tags;
         this.added = added;
     }
+
 
     public ExhibitItem(@NonNull String id, String name, List<String> tags, boolean added, double lat, double lng) {
         this.id = id;

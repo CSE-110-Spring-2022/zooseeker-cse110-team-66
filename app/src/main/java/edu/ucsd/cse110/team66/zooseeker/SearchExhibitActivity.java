@@ -49,6 +49,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
     private Button clearButton;
     private Button showSelectedExhibitsButton;
     private TextView countView;
+    private final PermissionChecker permissionChecker = new PermissionChecker(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_exhibit);
         setExhibitItemAdapter();
         recyclerView.setAlpha(0);
+        if (permissionChecker.ensurePermissions()) return;
     }
 
     /** Create a menu at the top for the search and voice search icons **/

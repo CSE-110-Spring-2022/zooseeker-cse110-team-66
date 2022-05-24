@@ -76,8 +76,6 @@ public class VisitingRoute {
         return VisitingRoute.get_planned_directions(VisitingRoute.entrance_and_exit_gate_id,Directions);
     }
 
-
-
     public static Vector<List<IdentifiedWeightedEdge>> get_fastest_path_to_end(String currentPosition, List<String> exhibitsAdded) {
         Vector<List<IdentifiedWeightedEdge>> Directions = new Vector<List<IdentifiedWeightedEdge>>();
 
