@@ -43,7 +43,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
     private Button clearButton;
     private Button showSelectedExhibitsButton;
     private TextView countView;
-    private Button listButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

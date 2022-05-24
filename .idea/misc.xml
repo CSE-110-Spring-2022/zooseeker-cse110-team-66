@@ -8,22 +8,19 @@
         <entry key="..\:/Users/Jonathan/Documents/College/UCSD/2021-2022 Fourth Year/Spring/CSE 110/zooseeker-cse110-team-66/app/src/main/res/layout/activity_search_exhibit.xml" value="0.2" />
         <entry key="..\:/Users/Jonathan/Documents/College/UCSD/2021-2022 Fourth Year/Spring/CSE 110/zooseeker-cse110-team-66/app/src/main/res/layout/exhibit_item.xml" value="0.152" />
         <entry key="..\:/Users/Jonathan/Documents/College/UCSD/2021-2022 Fourth Year/Spring/CSE 110/zooseeker-cse110-team-66/app/src/main/res/menu/main_menu.xml" value="0.36102564102564105" />
-        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.201" />
         <entry key="app/src/main/res/drawable/circlebutton.xml" value="0.197" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_keyboard_voice_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.112" />
-        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.201" />
-        <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.201" />
         <entry key="app/src/main/res/drawable/round_button.xml" value="0.1295" />
-        <entry key="app/src/main/res/layout/activity_exhibit_directions.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_exhibit_directions.xml" value="0.129981884057971" />
         <entry key="app/src/main/res/layout/activity_exhibit_plan.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_exhibit_route.xml" value="0.13205645161290322" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.10004447163015173" />
-        <entry key="app/src/main/res/layout/activity_search_exhibit.xml" value="0.47161254882812503" />
-        <entry key="app/src/main/res/layout/activity_selected_exhibits_list.xml" value="0.30448760986328127" />
+        <entry key="app/src/main/res/layout/activity_search_exhibit.xml" value="0.20993957519531253" />
+        <entry key="app/src/main/res/layout/activity_selected_exhibits_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_show_selected_exhibits_list.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/exhibit_item.xml" value="0.13526458740234387" />
+        <entry key="app/src/main/res/layout/exhibit_item.xml" value="0.2505800464037123" />
         <entry key="app/src/main/res/layout/plan_list_item.xml" value="0.21656951904296876" />
         <entry key="app/src/main/res/layout/popup_exhibit_list.xml" value="0.1" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.23333333333333334" />
