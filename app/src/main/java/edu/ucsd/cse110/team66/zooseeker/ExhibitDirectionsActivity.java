@@ -1,15 +1,22 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -21,12 +28,25 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     TextView directionDisplay;
     Button nextDirection;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exhibit_directions);
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
+
+        var provider = LocationManager.GPS_PROVIDER;
+        var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        var locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                Log.d("zooseeker", String.format("Location changed: %s", location));
+                UserLocation.currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
+            }
+        };
+
+        locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
 
         routeNum = routeInfo.getInt("routeNum", 0);
         directionIndex = routeNum;

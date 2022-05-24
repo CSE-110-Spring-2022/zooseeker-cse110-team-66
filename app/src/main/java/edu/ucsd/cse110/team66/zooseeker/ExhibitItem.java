@@ -131,6 +131,7 @@ public class ExhibitItem {
                 ", name='" + name + '\'' +
                 ", tags=" + tags +
                 ", added=" + added +
-                '}';
+                ", lat=" + lat +
+                ", lng=" + lng + '}';
     }
 }
