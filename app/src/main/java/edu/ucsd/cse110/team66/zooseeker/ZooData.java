@@ -28,10 +28,12 @@ public class ZooData {
             // from the strings in our JSON to this Enum.
             @SerializedName("gate") GATE,
             @SerializedName("exhibit") EXHIBIT,
-            @SerializedName("intersection") INTERSECTION
+            @SerializedName("intersection") INTERSECTION,
+            @SerializedName("exhibit_group") GROUP
         }
 
         public String id;
+        public String group_id;
         public Kind kind;
         public String name;
         public List<String> tags;
@@ -62,7 +64,11 @@ public class ZooData {
                     selectedData.add(item); // exhibits
                 } else if (flag.equals("all")) {
                     selectedData.add(item);
-                } else if (!flag.equals("exhibits") && item.kind != VertexInfo.Kind.EXHIBIT) {
+                }
+                else if (flag.equals("groups") && item.kind == VertexInfo.Kind.GROUP) {
+                    selectedData.add(item);
+                }
+                else if (!flag.equals("exhibits") && item.kind != VertexInfo.Kind.EXHIBIT) {
                     selectedData.add(item); // gates and intersections
                 }
             }

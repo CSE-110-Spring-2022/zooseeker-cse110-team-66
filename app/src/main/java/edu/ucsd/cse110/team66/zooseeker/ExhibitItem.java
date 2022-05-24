@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -26,6 +27,7 @@ public class ExhibitItem {
     @PrimaryKey(autoGenerate = true)
     public long numID;
 
+    public String group_id;
     public String id;
     public String name;
     public List<String> tags;
@@ -52,8 +54,9 @@ public class ExhibitItem {
     }
 
 
-    public ExhibitItem(@NonNull String id, String name, List<String> tags, boolean added, double lat, double lng) {
+    public ExhibitItem(@NonNull String id, String name, List<String> tags, boolean added, double lat, double lng, @Nullable String group_id) {
         this.id = id;
+        this.group_id = group_id;
         this.name = name;
         this.tags = tags;
         this.added = added;
@@ -68,6 +71,7 @@ public class ExhibitItem {
         this.added = item.added;
         this.lat = item.lat;
         this.lng = item.lng;
+        this.group_id = item.group_id;
     }
 
     public String getId() { return id; }

@@ -32,7 +32,11 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -155,10 +159,30 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
     /** Store added exhibits for use by planning route fragment **/
     private void openExhibitRouteActivity() {
-        List<String> exhibitsAdded = exhibitItemAdapter.getSelectedExhibits().stream()
+        List<String> tempExhibitsAdded = exhibitItemAdapter.getSelectedExhibits().stream()
                 .map(exhibit -> exhibit.id)
                 .collect(Collectors.toList());
 
+        List<ZooData.VertexInfo> exhibits = ZooData.loadZooItemJSON(this, getString(R.string.exhibit_node_info_json),"exhibits");
+        Map<String,String> exhibits_to_groups = new HashMap<String, String>();
+        for (int i = 0; i < exhibits.size(); ++i) {
+            if (exhibits.get(i).group_id != null) {
+                exhibits_to_groups.put(exhibits.get(i).id, exhibits.get(i).group_id);
+            }
+            else {
+                exhibits_to_groups.put(exhibits.get(i).id,exhibits.get(i).id);
+            }
+        }
+
+        Set<String> existingExhibits = new HashSet<String>();
+        List<String> exhibitsAdded = new ArrayList<String>();
+        for (String exhibit:tempExhibitsAdded) {
+            if (!existingExhibits.contains(exhibits_to_groups.get(exhibit))) {
+                existingExhibits.add(exhibits_to_groups.get(exhibit));
+                exhibitsAdded.add(exhibits_to_groups.get(exhibit));
+            }
+        }
+        
         Gson gson = new Gson();
         String json = gson.toJson(exhibitsAdded);
         Intent intent = new Intent(this, ExhibitRouteActivity.class);
