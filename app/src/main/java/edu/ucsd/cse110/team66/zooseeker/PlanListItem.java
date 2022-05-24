@@ -56,7 +56,23 @@ public class PlanListItem {
         return message;
     }
 
-    public static List<PlanListItem> loadJSON(Context context, String node_info_path, String zoo_graph_path, String edge_info_path) {
+    public static String getName (List<PlanListItem> items) {
+        return items.get(items.size()-1).target_name;
+    }
+
+    public static String getStreet (List<PlanListItem> items) {
+        return items.get(items.size()-1).street_name;
+    }
+
+    public static double getDistance (List<PlanListItem> items) {
+        double length = 0;
+        for (int i = 0; i < items.size(); ++i) {
+            length += items.get(i).weight;
+        }
+        return length;
+    }
+
+    public static List<PlanListItem> loadJSON (Context context, String node_info_path, String zoo_graph_path, String edge_info_path) {
         try {
             InputStream input = context.getAssets().open(node_info_path);
             Reader reader = new InputStreamReader(input);
