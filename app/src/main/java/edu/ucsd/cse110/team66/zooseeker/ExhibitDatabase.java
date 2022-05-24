@@ -34,7 +34,7 @@ public abstract class ExhibitDatabase extends RoomDatabase {
                         super.onCreate(db);
                         Executors.newSingleThreadExecutor().execute(() -> {
                             List<ExhibitItem> exhibits = ExhibitItem
-                                    .loadExhibits(context, "sample_node_info.json");
+                                    .loadExhibits(context, context.getString(R.string.exhibit_node_info_json));
                             getSingleton(context).exhibitItemDao().insertAll(exhibits);
                         });
                     }

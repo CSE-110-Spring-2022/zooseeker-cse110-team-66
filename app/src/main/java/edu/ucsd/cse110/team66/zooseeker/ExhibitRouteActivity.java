@@ -9,20 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -90,7 +86,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         // Get Zoo Exhibits Data
         List<ZooData.VertexInfo> zooExhibitsData =
                 ZooData.loadZooItemJSON(this,
-                        "sample_node_info.json","all");
+                        getString(R.string.exhibit_node_info_json),"all");
 
 
         // Get Entrance/Exit id
@@ -110,7 +106,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         // Code for calculating route based on chosen exhibits, and storing
         // 1. Load the graph...
         Graph<String, IdentifiedWeightedEdge> g
-                = ZooData.loadZooGraphJSON(this,"sample_zoo_graph.json");
+                = ZooData.loadZooGraphJSON(this,getString(R.string.zoo_graph_json));
         Vector<List<IdentifiedWeightedEdge>> Directions = new Vector<List<IdentifiedWeightedEdge>>();
 
         // 2. Find the fastest path.
@@ -153,7 +149,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
 
         // Load street id to street name map
         Map<String, ZooData.EdgeInfo> edgeinfo =
-                ZooData.loadEdgeInfoJSON(this, "sample_edge_info.json");
+                ZooData.loadEdgeInfoJSON(this, getString(R.string.trail_edge_info_json));
 
         // Create directions object to help with generating direction texts
         List<List<PlanListItem>> plannedDirections = new ArrayList<>();

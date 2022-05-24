@@ -33,6 +33,9 @@ public class ExhibitItem {
     @ColumnInfo(name = "added")
     public boolean added;
 
+    public double lat;
+    public double lng;
+
     @Ignore
     public ExhibitItem(@NonNull String id, String name, List<String> tags) {
         this.id = id;
@@ -48,11 +51,22 @@ public class ExhibitItem {
         this.added = added;
     }
 
+    public ExhibitItem(@NonNull String id, String name, List<String> tags, boolean added, double lat, double lng) {
+        this.id = id;
+        this.name = name;
+        this.tags = tags;
+        this.added = added;
+        this.lat = lat;
+        this.lng = lng;
+    }
+
     public ExhibitItem(ZooData.VertexInfo item) {
         this.id = item.id;
         this.name = item.name;
         this.tags = item.tags;
         this.added = item.added;
+        this.lat = item.lat;
+        this.lng = item.lng;
     }
 
     public String getId() { return id; }
