@@ -13,10 +13,15 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -27,6 +32,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchExhibitActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
@@ -35,8 +41,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
     private ExhibitItemViewModel viewModel;
     private static Button planButton;
     private static Button clearButton;
-
-    //private Runnable onClearExhibits;
+    private static Button showSelectedExhibitsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +49,23 @@ public class SearchExhibitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_exhibit);
 
         setExhibitItemAdapter();
+
+        // Set up plan button
+        planButton = findViewById(R.id.plan_btn);
+        planButton.setOnClickListener(v -> openExhibitRouteActivity());
+
+        // Set up clear button
+        clearButton = findViewById(R.id.clear_btn);
+        clearButton.setOnClickListener(view -> viewModel.toggleClear());
+
+        // Set up selected exhibits button
+        showSelectedExhibitsButton = findViewById(R.id.selected_exhibits_btn);
+        showSelectedExhibitsButton.setOnClickListener(view -> openSelectedExhibitsListActivity());
+
         recyclerView.setAlpha(0);
     }
 
-    // Create a menu at the top for the search and voice search icons
+    /** Create a menu at the top for the search and voice search icons **/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater()
@@ -87,19 +105,23 @@ public class SearchExhibitActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Allow the plan button to be enabled or disabled depending on number of selected exhibits
+     * @param value to set the plan button to
+     */
     public static void togglePlanButton(boolean value) {
         planButton.setEnabled(value);
     }
 
-    // Display the list of exhibits a user can choose
+    /** Display the list of exhibits a user can choose **/
     private void setExhibitItemAdapter() {
         viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
 
         exhibitItemAdapter = new ExhibitItemAdapter();
         exhibitItemAdapter.setHasStableIds(true);
         exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
-        //setOnClearExhibitsHandler(viewModel::toggleClear);
         viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
+
 
         recyclerView = findViewById(R.id.exhibit_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -109,30 +131,27 @@ public class SearchExhibitActivity extends AppCompatActivity {
         TextView countView = findViewById(R.id.exhibit_count);
         exhibitItemAdapter.setCountView(countView);
         //exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
-
-        planButton = findViewById(R.id.plan_btn);
-        planButton.setOnClickListener(v -> openExhibitRouteActivity());
-
-        clearButton = findViewById(R.id.clear_btn);
-        clearButton.setOnClickListener(view -> {
-            //if (onClearExhibits == null) return;
-            viewModel.toggleClear();
-        });
     }
 
-    /*public void setOnClearExhibitsHandler(Runnable onClearExhibits) {
-        this.onClearExhibits=onClearExhibits;
-    }*/
+    /** Display selected exhibits in a compact list format **/
+    public void openSelectedExhibitsListActivity() {
+        List<String> exhibitsAddedName = exhibitItemAdapter.getSelectedExhibits().stream()
+                .map(exhibit -> exhibit.name)
+                .collect(Collectors.toList());
 
-    // Store added exhibits for use by planning route fragment
+        Gson gson = new Gson();
+        String json = gson.toJson(exhibitsAddedName);
+        Intent intent = new Intent(this, SelectedExhibitsListActivity.class);
+        intent.putExtra("exhibitsAddedName", json);
+        startActivity(intent);
+    }
+
+    /** Store added exhibits for use by planning route fragment **/
     private void openExhibitRouteActivity() {
-        List<ExhibitItem> exhibitsAll = exhibitItemAdapter.getExhibitsAll();
-        ArrayList<String> exhibitsAdded = new ArrayList<String>();
-        for (ExhibitItem exhibit: exhibitsAll) {
-            if (exhibit.added) {
-                exhibitsAdded.add(exhibit.id);
-            }
-        }
+        List<String> exhibitsAdded = exhibitItemAdapter.getSelectedExhibits().stream()
+                .map(exhibit -> exhibit.id)
+                .collect(Collectors.toList());
+
         Gson gson = new Gson();
         String json = gson.toJson(exhibitsAdded);
         Intent intent = new Intent(this, ExhibitRouteActivity.class);
