@@ -7,6 +7,7 @@ import android.content.Context;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RunWith(AndroidJUnit4.class)
 public class ZooSeekerTest {
