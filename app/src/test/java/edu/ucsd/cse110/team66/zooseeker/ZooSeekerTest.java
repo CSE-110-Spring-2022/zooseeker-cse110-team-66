@@ -160,7 +160,7 @@ public class ZooSeekerTest {
             TextView countView = activity.findViewById(R.id.exhibit_count);
             assertEquals("0", countView.getText().toString());
             RecyclerView recyclerView = activity.findViewById(R.id.exhibit_items);
-            Button exhibit1 = recyclerView.getChildAt(0).findViewById(R.id.add_exhibit_btn);
+            Button exhibit1 = recyclerView.getChildAt(1).findViewById(R.id.add_exhibit_btn);
             exhibit1.performClick();
             assertEquals("1", countView.getText().toString());
         });
