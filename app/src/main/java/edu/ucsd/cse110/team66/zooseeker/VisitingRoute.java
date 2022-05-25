@@ -76,17 +76,22 @@ public class VisitingRoute {
         double distance = 99999999;
         String closest = "";
         for (Map.Entry<String,LatLng> place:VisitingRoute.coordMap.entrySet()) {
-            if (getDistance(place.getValue()) < distance) {
-                distance = getDistance(place.getValue());
+            if (getDistanceFT(place.getValue()) < distance) {
+                distance = getDistanceFT(place.getValue());
                 closest = place.getKey();
             }
         }
         return closest;
     }
 
-    public static double getDistance(LatLng place) {
+    public static double getDistanceFT(LatLng place) {
         return Math.sqrt(Math.pow(UserLocation.DEG_LAT_IN_FT * (UserLocation.currentLocation.latitude - place.latitude), 2) +
                 Math.pow(UserLocation.DEG_LNG_IN_FT * (UserLocation.currentLocation.longitude - place.longitude), 2));
+    }
+
+    public static double getDistanceDegree(LatLng place) {
+        return Math.sqrt(Math.pow(UserLocation.currentLocation.latitude - place.latitude, 2) +
+                Math.pow(UserLocation.currentLocation.longitude - place.longitude, 2));
     }
 
     public static boolean followingCurrentDirection(int index) {
@@ -100,12 +105,15 @@ public class VisitingRoute {
     }
 
     public static boolean isCloseTo(LatLng place) {
-        return VisitingRoute.getDistance(place) < VisitingRoute.deltaDistance;
+        return VisitingRoute.getDistanceDegree(place) < VisitingRoute.deltaDistance;
     }
 
     public static List<LatLng> getCoordsOnRouteDirection(int index) {
         List<PlanListItem> direction = VisitingRoute.route.get(index);
         List<LatLng> coords = new ArrayList<>();
+        //if not looking at last direction
+        coords.add(new LatLng(coordMap.get(direction.get(0).source_id).latitude,coordMap.get(direction.get(0).source_id).longitude));
+
 
         for (PlanListItem planListItem:direction) {
             coords.add(new LatLng(coordMap.get(planListItem.target_id).latitude, coordMap.get(planListItem.target_id).longitude));
@@ -125,6 +133,8 @@ public class VisitingRoute {
     // find direction to next closest exhibit from currentlocation to remaining exhibits
     public static List<PlanListItem> getNextFastestDirection(int index) {
         List<String> exhibitsLeft = VisitingRoute.getExhibitsLeft(index);
+        //get rid of exit gate
+        exhibitsLeft.remove(exhibitsLeft.size()-1);
 
         double currentDistance = 999999999;
         String currentPosition = VisitingRoute.closestExhibit();

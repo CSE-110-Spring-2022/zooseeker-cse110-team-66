@@ -60,6 +60,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                 if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
 
                     List<PlanListItem> nextFastestDirection = VisitingRoute.getNextFastestDirection(directionIndex);
+
                     // check if not too far off track, not enough to replan, just automatically update current direction
                     if (nextFastestDirection.get(nextFastestDirection.size()-1).target_id
                             .equals(VisitingRoute.getExhibitToVisitAtIndex(directionIndex))) {
@@ -75,25 +76,25 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                     else {
                         //TODO: NEED TO GENERATE POPUP ASKING TO REPLAN, IF YES, THEN DO THE BELOW
 
-                        //replace exhibit directions from current index to end
-                        String startingExhibit = VisitingRoute.closestExhibit();
-                        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(startingExhibit, VisitingRoute.getExhibitsLeft(directionIndex));
-                        List<List<PlanListItem>> route = VisitingRoute.get_planned_directions(startingExhibit,Directions);
-
-
-                        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
-                            // saved route
-                            VisitingRoute.route.set(i, route.get(i-directionIndex));
-                            VisitingRoute.saveExhibitsVisitingOrder();
-                            //generating correct exhibitDirections
-                            exhibitDirections.set(i,PlanListItem.toMessage(VisitingRoute.route.get(i)));
-                            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
-                        }
-
-                        if(detailedDirections)
-                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
-                        else
-                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+//                        //replace exhibit directions from current index to end
+//                        String startingExhibit = VisitingRoute.closestExhibit();
+//                        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(startingExhibit, VisitingRoute.getExhibitsLeft(directionIndex));
+//                        List<List<PlanListItem>> route = VisitingRoute.get_planned_directions(startingExhibit,Directions);
+//
+//
+//                        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
+//                            // saved route
+//                            VisitingRoute.route.set(i, route.get(i-directionIndex));
+//                            VisitingRoute.saveExhibitsVisitingOrder();
+//                            //generating correct exhibitDirections
+//                            exhibitDirections.set(i,PlanListItem.toMessage(VisitingRoute.route.get(i)));
+//                            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
+//                        }
+//
+//                        if(detailedDirections)
+//                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
+//                        else
+//                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
                     }
                 }
             }
