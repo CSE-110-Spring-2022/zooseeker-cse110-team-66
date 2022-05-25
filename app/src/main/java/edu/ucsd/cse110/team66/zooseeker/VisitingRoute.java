@@ -2,6 +2,7 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import android.content.Context;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
 import org.jgrapht.Graph;
@@ -22,7 +23,10 @@ public class VisitingRoute {
     public static Graph<String, IdentifiedWeightedEdge> g;
     public static Map<String, ZooData.EdgeInfo> edgeinfo;
     public static Map<String, String> exhibit_id_to_name;
-
+    public static List<List<PlanListItem>> route;
+    public static List<String> exhibit_visiting_order;
+    public static Map<String, LatLng> coordMap;
+    public static double deltaDistance = 0.001;
 
     public VisitingRoute(Context context, String exhibitsAll) {
         this.context = context;
@@ -71,9 +75,74 @@ public class VisitingRoute {
 
     }
 
+    public static boolean followingCurrentDirection(int index) {
+        List<LatLng> coordsOnRouteDirection = VisitingRoute.getCoordsOnRouteDirection(index);
+        for (LatLng place:coordsOnRouteDirection) {
+            if (VisitingRoute.isCloseTo(place)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isCloseTo(LatLng place) {
+        return Math.sqrt(Math.pow(UserLocation.currentLocation.latitude - place.latitude, 2) +
+                Math.pow(UserLocation.currentLocation.longitude - place.longitude, 2)) < VisitingRoute.deltaDistance;
+    }
+
+    public static List<LatLng> getCoordsOnRouteDirection(int index) {
+        List<PlanListItem> direction = VisitingRoute.route.get(index);
+        List<LatLng> coords = new ArrayList<>();
+
+        if (VisitingRoute.coordMap == null) {
+            VisitingRoute.generateCoordMap();
+        }
+
+        for (PlanListItem planListItem:direction) {
+            coords.add(new LatLng(coordMap.get(planListItem.target_id).latitude, coordMap.get(planListItem.target_id).longitude));
+        }
+
+        return coords;
+    }
+
+    public static void generateCoordMap() {
+        for (ZooData.VertexInfo vertexInfo:VisitingRoute.zooExhibitsData) {
+            if (!(vertexInfo.kind == ZooData.VertexInfo.Kind.EXHIBIT && vertexInfo.group_id != null)) {
+                VisitingRoute.coordMap.put(vertexInfo.id, new LatLng(vertexInfo.lat,vertexInfo.lng));
+            }
+        }
+    }
+
     public static List<List<PlanListItem>> getRoute() {
+        if (VisitingRoute.route == null) {
+            VisitingRoute.saveRoute();
+        }
+        return VisitingRoute.route;
+    }
+
+    public static void saveRoute() {
         Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(VisitingRoute.entrance_and_exit_gate_id, VisitingRoute.exhibitsAdded);
-        return VisitingRoute.get_planned_directions(VisitingRoute.entrance_and_exit_gate_id,Directions);
+        VisitingRoute.route = VisitingRoute.get_planned_directions(VisitingRoute.entrance_and_exit_gate_id,Directions);
+    }
+
+    public static String getExhibitToVisitAtIndex(int index) {
+        if (VisitingRoute.exhibit_visiting_order == null) {
+            VisitingRoute.saveExhibitsVisitingOrder();
+        }
+        return VisitingRoute.exhibit_visiting_order.get(index);
+    }
+
+    public static List<String> getExhibitsToVisitOrder() {
+        if (VisitingRoute.exhibit_visiting_order == null) {
+            VisitingRoute.saveExhibitsVisitingOrder();
+        }
+        return VisitingRoute.exhibit_visiting_order;
+    }
+
+    public static void saveExhibitsVisitingOrder() {
+        for (List<PlanListItem> direction:VisitingRoute.route) {
+            exhibit_visiting_order.add(direction.get(direction.size() - 1).target_id);
+        }
     }
 
     public static Vector<List<IdentifiedWeightedEdge>> get_fastest_path_to_end(String currentPosition, List<String> exhibitsAdded) {

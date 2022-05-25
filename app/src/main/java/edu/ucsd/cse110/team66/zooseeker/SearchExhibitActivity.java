@@ -182,7 +182,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
                 exhibitsAdded.add(exhibits_to_groups.get(exhibit));
             }
         }
-        
+
         Gson gson = new Gson();
         String json = gson.toJson(exhibitsAdded);
         Intent intent = new Intent(this, ExhibitRouteActivity.class);

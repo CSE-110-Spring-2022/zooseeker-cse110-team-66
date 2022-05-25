@@ -36,6 +36,17 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
 
+
+
+
+
+        routeNum = routeInfo.getInt("routeNum", 0);
+        directionIndex = routeNum;
+        Log.d("directionIndex", ""+directionIndex);
+        displayDirection();
+        setNextDirectionButton();
+
+
         var provider = LocationManager.GPS_PROVIDER;
         var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         var locationListener = new LocationListener() {
@@ -43,16 +54,14 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             public void onLocationChanged(@NonNull Location location) {
                 Log.d("zooseeker", String.format("Location changed: %s", location));
                 UserLocation.currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
+                // if no longer on route, need to recalculate
+                if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
+
+                }
             }
         };
 
         locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
-
-        routeNum = routeInfo.getInt("routeNum", 0);
-        directionIndex = routeNum;
-        Log.d("directionIndex", ""+directionIndex);
-        displayDirection();
-        setNextDirectionButton();
     }
 
     // Display the direction(s) to the next closest exhibit on the screen
