@@ -1,16 +1,23 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -25,6 +32,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     SwitchCompat detailedBtn;
     Boolean isCheck = false;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +40,32 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
 
+
+
+
+
         routeNum = routeInfo.getInt("routeNum", 0);
         directionIndex = routeNum;
         Log.d("directionIndex", ""+directionIndex);
         displayDirection();
         setNextDirectionButton();
+
+
+        var provider = LocationManager.GPS_PROVIDER;
+        var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        var locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                Log.d("zooseeker", String.format("Location changed: %s", location));
+                UserLocation.currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
+                // if no longer on route, need to recalculate
+                if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
+
+                }
+            }
+        };
+
+        locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
     }
 
     // Display the direction(s) to the next closest exhibit on the screen

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -26,12 +27,16 @@ public class ExhibitItem {
     @PrimaryKey(autoGenerate = true)
     public long numID;
 
+    public String group_id;
     public String id;
     public String name;
     public List<String> tags;
 
     @ColumnInfo(name = "added")
     public boolean added;
+
+    public double lat;
+    public double lng;
 
     @Ignore
     public ExhibitItem(@NonNull String id, String name, List<String> tags) {
@@ -40,7 +45,7 @@ public class ExhibitItem {
         this.tags = tags;
         this.added = false;
     }
-
+    @Ignore
     public ExhibitItem(@NonNull String id, String name, List<String> tags, boolean added) {
         this.id = id;
         this.name = name;
@@ -48,11 +53,25 @@ public class ExhibitItem {
         this.added = added;
     }
 
+
+    public ExhibitItem(@NonNull String id, String name, List<String> tags, boolean added, double lat, double lng, @Nullable String group_id) {
+        this.id = id;
+        this.group_id = group_id;
+        this.name = name;
+        this.tags = tags;
+        this.added = added;
+        this.lat = lat;
+        this.lng = lng;
+    }
+
     public ExhibitItem(ZooData.VertexInfo item) {
         this.id = item.id;
         this.name = item.name;
         this.tags = item.tags;
         this.added = item.added;
+        this.lat = item.lat;
+        this.lng = item.lng;
+        this.group_id = item.group_id;
     }
 
     public String getId() { return id; }
@@ -116,6 +135,7 @@ public class ExhibitItem {
                 ", name='" + name + '\'' +
                 ", tags=" + tags +
                 ", added=" + added +
-                '}';
+                ", lat=" + lat +
+                ", lng=" + lng + '}';
     }
 }
