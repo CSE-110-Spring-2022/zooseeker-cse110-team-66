@@ -2,6 +2,10 @@ package edu.ucsd.cse110.team66.zooseeker;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.Shadows;
+import org.robolectric.android.controller.ActivityController;
+import org.robolectric.shadows.ShadowActivity;
 
 import static org.junit.Assert.*;
 
@@ -19,27 +23,28 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
  */
 @RunWith(AndroidJUnit4.class)
 public class MaintainDatabaseTest {
+
     @Test
-    public void maintainDatabaseTest() {
-        try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
-            scenario.onActivity(activity -> {
+    public void MaintainDatabaseUITest() {
+        ActivityController<SearchExhibitActivity> activityController = Robolectric.buildActivity(SearchExhibitActivity.class);
+        activityController.create().start().visible();
 
-                TextView countView = activity.findViewById(R.id.exhibit_count);
-                assertEquals("0", countView.getText().toString());
-                RecyclerView recyclerView = activity.findViewById(R.id.exhibit_items);
-                recyclerView.measure(0, 0);
-                recyclerView.layout(0, 0, 100, 10000);
-                Button exhibit1 = recyclerView.getChildAt(1).findViewById(R.id.add_exhibit_btn);
-                exhibit1.performClick();
-                assertEquals("1", countView.getText().toString());
+        ShadowActivity myActivityShadow = Shadows.shadowOf(activityController.get());
 
-            });
+        myActivityShadow.clickMenuItem(R.id.exhibit_search);
 
-            scenario.recreate();
-            scenario.onActivity(activity -> {
-                TextView countView = activity.findViewById(R.id.exhibit_count);
-                assertEquals("1", countView.getText().toString());
-            });
-        }
+        TextView countView = activityController.get().findViewById(R.id.exhibit_count);
+        assertEquals("0", countView.getText().toString());
+
+        RecyclerView recyclerView = activityController.get().findViewById(R.id.exhibit_items);
+        Button button = recyclerView.getChildAt(0).findViewById(R.id.add_exhibit_btn);
+        button.performClick();
+
+        assertEquals("1", countView.getText().toString());
+
+        activityController.recreate();
+        assertEquals("1", countView.getText().toString());
+
     }
+
 }
