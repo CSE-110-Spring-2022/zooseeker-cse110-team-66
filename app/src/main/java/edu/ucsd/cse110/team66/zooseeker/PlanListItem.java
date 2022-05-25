@@ -40,7 +40,7 @@ public class PlanListItem {
         this.weight = weight;
     }
 
-    public static String toMessage(List<PlanListItem> items) {
+    public static String toDetailedMessage(List<PlanListItem> items) {
         String message = "To " + items.get(items.size()-1).target_name + ": \n";
         for (int i = 0; i < items.size(); ++i) {
             if (i == 0) {
@@ -55,6 +55,20 @@ public class PlanListItem {
         }
         return message;
     }
+
+
+    public static String toMessage(List<PlanListItem> items) {
+        String message = "To " + items.get(items.size()-1).target_name + ": \n";
+        for (int i = 0; i < items.size(); ++i) {
+            message += "walk " + String.valueOf(items.get(i).weight) + " feet towards " +
+                    items.get(i).target_name + ".\n";
+        }
+        return message;
+    }
+
+
+
+
 
     public static String getName (List<PlanListItem> items) {
         return items.get(items.size()-1).target_name;

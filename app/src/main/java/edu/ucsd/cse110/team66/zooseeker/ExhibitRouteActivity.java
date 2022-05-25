@@ -26,7 +26,9 @@ import java.util.Vector;
 public class ExhibitRouteActivity extends AppCompatActivity {
     private final String start = "entrance_exit_gate";
     public RecyclerView recyclerView;
+    private ArrayList<String> detailedExhibitDirections;
     private ArrayList<String> exhibitDirections;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +47,10 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+        detailedExhibitDirections = new ArrayList<String>();
         exhibitDirections = new ArrayList<String>();
         for (int i = 0; i < plannedDirections.size(); ++i) {
+            detailedExhibitDirections.add(PlanListItem.toDetailedMessage(plannedDirections.get(i)));
             exhibitDirections.add(PlanListItem.toMessage(plannedDirections.get(i)));
         }
 
@@ -76,8 +80,10 @@ public class ExhibitRouteActivity extends AppCompatActivity {
     
     private void openExhibitDirectionsActivity() {
         Gson gson = new Gson();
+        String jsonDetailed = gson.toJson(detailedExhibitDirections);
         String json = gson.toJson(exhibitDirections);
         Intent intent = new Intent(this, ExhibitDirectionsActivity.class);
+        intent.putExtra("detailedExhibitDirections",jsonDetailed);
         intent.putExtra("exhibitDirections",json);
         startActivity(intent);
     }
