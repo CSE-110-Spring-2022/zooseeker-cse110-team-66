@@ -36,8 +36,7 @@ public class MaintainDatabaseTest {
         TextView countView = activityController.get().findViewById(R.id.exhibit_count);
         assertEquals("0", countView.getText().toString());
 
-        RecyclerView recyclerView = activityController.get().findViewById(R.id.exhibit_items);
-        Button button = recyclerView.getChildAt(0).findViewById(R.id.add_exhibit_btn);
+        Button button = activityController.get().findViewById(R.id.add_exhibit_btn);
         button.performClick();
 
         assertEquals("1", countView.getText().toString());
