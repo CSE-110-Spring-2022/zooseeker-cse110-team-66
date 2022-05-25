@@ -67,9 +67,9 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                         exhibitDirections.set(directionIndex,PlanListItem.toMessage(VisitingRoute.route.get(directionIndex)));
                         detailedExhibitDirections.set(directionIndex,PlanListItem.toDetailedMessage(VisitingRoute.route.get(directionIndex)));
                         if(detailedDirections)
-                            directionDisplay.setText(detailedExhibitDirections.get(directionIndex));
+                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
                         else
-                            directionDisplay.setText(exhibitDirections.get(directionIndex));
+                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
                     }
                     // check if off track lots to replan
                     else {
@@ -91,9 +91,9 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                         }
 
                         if(detailedDirections)
-                            directionDisplay.setText(detailedExhibitDirections.get(directionIndex));
+                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
                         else
-                            directionDisplay.setText(exhibitDirections.get(directionIndex));
+                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
                     }
                 }
             }
@@ -120,11 +120,11 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         if(exhibitDirections.isEmpty() || detailedExhibitDirections.isEmpty())
             return;
         if (detailedBtn.isChecked()) {
-            directionDisplay.setText(detailedExhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
             detailedDirections = true;
         }
         else {
-            directionDisplay.setText(exhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
             detailedDirections = false;
         }
     }
@@ -152,8 +152,8 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         editor.apply();
         ++directionIndex;
         if(detailedDirections)
-            directionDisplay.setText(detailedExhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
         else
-            directionDisplay.setText(exhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
     }
 }
