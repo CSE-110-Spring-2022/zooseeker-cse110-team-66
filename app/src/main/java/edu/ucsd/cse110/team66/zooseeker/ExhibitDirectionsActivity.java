@@ -61,6 +61,15 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                 // if no longer on route, need to recalculate
                 if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
                     // check if not too far off track, not enough to replan
+                    String closest_exhibit_id = VisitingRoute.closestExhibit();
+                    boolean close = false;
+                    for (int i = 0; i < VisitingRoute.route.get(directionIndex).size(); ++i) {
+                        if (closest_exhibit_id.equals(VisitingRoute.route.get(directionIndex).get(i).target_id)) {
+                            close = true;
+                            break;
+                        }
+                    }
+
 
                     // check if off track lots to replan
                 }

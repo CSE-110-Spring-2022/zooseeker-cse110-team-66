@@ -66,6 +66,28 @@ public class VisitingRoute {
 
 
 
+        VisitingRoute.saveExhibitsVisitingOrder();
+        VisitingRoute.saveRoute();
+        VisitingRoute.generateCoordMap();
+
+
+    }
+
+    public static String closestExhibit() {
+        double distance = 99999999;
+        String closest = "";
+        for (Map.Entry<String,LatLng> place:VisitingRoute.coordMap.entrySet()) {
+            if (getDistance(place.getValue()) < distance) {
+                distance = getDistance(place.getValue());
+                closest = place.getKey();
+            }
+        }
+        return closest;
+    }
+
+    public static double getDistance(LatLng place) {
+        return Math.sqrt(Math.pow(UserLocation.DEG_LAT_IN_FT * (UserLocation.currentLocation.latitude - place.latitude), 2) +
+                Math.pow(UserLocation.DEG_LNG_IN_FT * (UserLocation.currentLocation.longitude - place.longitude), 2));
     }
 
     public static boolean followingCurrentDirection(int index) {
@@ -79,21 +101,45 @@ public class VisitingRoute {
     }
 
     public static boolean isCloseTo(LatLng place) {
-        return Math.sqrt(Math.pow(UserLocation.currentLocation.latitude - place.latitude, 2) +
-                Math.pow(UserLocation.currentLocation.longitude - place.longitude, 2)) < VisitingRoute.deltaDistance;
+        return VisitingRoute.getDistance(place) < VisitingRoute.deltaDistance;
     }
 
     public static List<LatLng> getCoordsOnRouteDirection(int index) {
         List<PlanListItem> direction = VisitingRoute.route.get(index);
         List<LatLng> coords = new ArrayList<>();
 
-        VisitingRoute.generateCoordMap();
-
         for (PlanListItem planListItem:direction) {
             coords.add(new LatLng(coordMap.get(planListItem.target_id).latitude, coordMap.get(planListItem.target_id).longitude));
         }
 
         return coords;
+    }
+
+    public static List<String> getExhibitsLeft(int index) {
+        List<String> exhibitsLeft = new ArrayList<String>();
+        for (int i = index; i < exhibit_visiting_order.size(); ++i) {
+            exhibitsLeft.add(exhibit_visiting_order.get(i));
+        }
+        return exhibitsLeft;
+    }
+
+    // find direction to next closest exhibit from currentlocation to remaining exhibits
+    public static List<PlanListItem> getNextFastestDirection(int index) {
+        List<String> exhibitsLeft = VisitingRoute.getExhibitsLeft(index);
+
+        double currentDistance = 999999999;
+        String closestExhibit = VisitingRoute.closestExhibit();
+        List<IdentifiedWeightedEdge> nextDirection = null;
+        Boolean possible_reverse = false;
+        for (String nextPosition: toPathFind) {
+            GraphPath<String, IdentifiedWeightedEdge> path
+                    = VisitingRoute.get_fastest_direction(currentPosition, nextPosition);
+            if (currentDistance > path.getWeight()) {
+                currentDistance =  path.getWeight();
+                nextDirection = path.getEdgeList();
+                closestExhibit = nextPosition;
+            }
+        }
     }
 
     public static void generateCoordMap() {
@@ -107,7 +153,6 @@ public class VisitingRoute {
     }
 
     public static List<List<PlanListItem>> getRoute() {
-        VisitingRoute.saveRoute();
         return VisitingRoute.route;
     }
 
@@ -117,12 +162,10 @@ public class VisitingRoute {
     }
 
     public static String getExhibitToVisitAtIndex(int index) {
-        VisitingRoute.saveExhibitsVisitingOrder();
         return VisitingRoute.exhibit_visiting_order.get(index);
     }
 
     public static List<String> getExhibitsToVisitOrder() {
-        VisitingRoute.saveExhibitsVisitingOrder();
         return VisitingRoute.exhibit_visiting_order;
     }
 
