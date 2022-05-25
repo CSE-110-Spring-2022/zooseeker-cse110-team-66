@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -32,11 +33,16 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class SearchExhibitActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public ExhibitItemAdapter exhibitItemAdapter;
+    //private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    //private Future<Void> future;
 
     private ExhibitItemViewModel viewModel;
     private Button planButton;
@@ -131,7 +137,11 @@ public class SearchExhibitActivity extends AppCompatActivity {
     /** Set up clear button **/
     private void setClearButton() {
         clearButton = findViewById(R.id.clear_btn);
-        clearButton.setOnClickListener(view -> viewModel.toggleClear());
+        clearButton.setOnClickListener(view -> {
+            viewModel.toggleClear();
+            editor.putInt("routeNum", 0);
+            editor.apply();
+        });
     }
 
     /** Set up selected exhibits button **/
@@ -141,7 +151,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
     }
 
     /** Display the list of exhibits a user can choose **/
-    private void setExhibitItemAdapter() {
+    private void setExhibitItemAdapter() {    
         viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
 
         exhibitItemAdapter = new ExhibitItemAdapter();
@@ -153,6 +163,10 @@ public class SearchExhibitActivity extends AppCompatActivity {
         exhibitItemAdapter.getClearBtn(clearButton);
         exhibitItemAdapter.getPlanBtn(planButton);
         exhibitItemAdapter.getListBtn(showSelectedExhibitsButton);
+
+        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = routeInfo.edit();
+        int routeNum = routeInfo.getInt("routeNum", 0);
     }
 
     /** Set up the recycler view to use the adapter **/
