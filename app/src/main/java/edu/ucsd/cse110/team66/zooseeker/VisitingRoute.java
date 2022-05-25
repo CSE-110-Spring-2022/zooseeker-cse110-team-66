@@ -66,7 +66,6 @@ public class VisitingRoute {
 
 
 
-        VisitingRoute.saveExhibitsVisitingOrder();
         VisitingRoute.saveRoute();
         VisitingRoute.generateCoordMap();
 
@@ -128,10 +127,10 @@ public class VisitingRoute {
         List<String> exhibitsLeft = VisitingRoute.getExhibitsLeft(index);
 
         double currentDistance = 999999999;
-        String closestExhibit = VisitingRoute.closestExhibit();
+        String currentPosition = VisitingRoute.closestExhibit();
+        String closestExhibit = currentPosition;
         List<IdentifiedWeightedEdge> nextDirection = null;
-        Boolean possible_reverse = false;
-        for (String nextPosition: toPathFind) {
+        for (String nextPosition: exhibitsLeft) {
             GraphPath<String, IdentifiedWeightedEdge> path
                     = VisitingRoute.get_fastest_direction(currentPosition, nextPosition);
             if (currentDistance > path.getWeight()) {
@@ -140,6 +139,32 @@ public class VisitingRoute {
                 closestExhibit = nextPosition;
             }
         }
+
+        List<PlanListItem> currentDirection = new ArrayList<>();
+        for (int j = 0; j < nextDirection.size(); ++j) {
+            IdentifiedWeightedEdge to_add = nextDirection.get(j);
+            String street_name = edgeinfo.get(to_add.getId()).street;
+            String street_id = to_add.getId();
+            String source_id;
+            String target_id;
+            if (to_add.getSource().equals(currentPosition)) {
+                source_id = to_add.getSource();
+                target_id = to_add.getTarget();
+            }
+            else {
+                source_id = to_add.getTarget();
+                target_id = to_add.getSource();
+            }
+            currentPosition = target_id;
+            String source_name = exhibit_id_to_name.get(source_id);
+            String target_name = exhibit_id_to_name.get(target_id);
+            double weight = to_add.getWeight();
+            currentDirection.add(new PlanListItem(street_name,street_id,
+                    source_id,target_id,source_name,target_name,weight));
+        }
+
+        return currentDirection;
+
     }
 
     public static void generateCoordMap() {
@@ -159,6 +184,7 @@ public class VisitingRoute {
     public static void saveRoute() {
         Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(VisitingRoute.entrance_and_exit_gate_id, VisitingRoute.exhibitsAdded);
         VisitingRoute.route = VisitingRoute.get_planned_directions(VisitingRoute.entrance_and_exit_gate_id,Directions);
+        VisitingRoute.saveExhibitsVisitingOrder();
     }
 
     public static String getExhibitToVisitAtIndex(int index) {
@@ -188,7 +214,6 @@ public class VisitingRoute {
             double currentDistance = 999999999;
             String closestExhibit = currentPosition;
             List<IdentifiedWeightedEdge> nextDirection = null;
-            Boolean possible_reverse = false;
             for (String nextPosition: toPathFind) {
                 GraphPath<String, IdentifiedWeightedEdge> path
                         = VisitingRoute.get_fastest_direction(currentPosition, nextPosition);
