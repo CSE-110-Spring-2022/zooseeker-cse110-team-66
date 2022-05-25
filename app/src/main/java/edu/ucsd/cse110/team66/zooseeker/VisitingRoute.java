@@ -106,11 +106,13 @@ public class VisitingRoute {
     }
 
     public static void generateCoordMap() {
+        coordMap = new HashMap<String, LatLng>();
         for (ZooData.VertexInfo vertexInfo:VisitingRoute.zooExhibitsData) {
             if (!(vertexInfo.kind == ZooData.VertexInfo.Kind.EXHIBIT && vertexInfo.group_id != null)) {
                 VisitingRoute.coordMap.put(vertexInfo.id, new LatLng(vertexInfo.lat,vertexInfo.lng));
             }
         }
+
     }
 
     public static List<List<PlanListItem>> getRoute() {
@@ -140,6 +142,7 @@ public class VisitingRoute {
     }
 
     public static void saveExhibitsVisitingOrder() {
+        exhibit_visiting_order = new ArrayList<String>();
         for (List<PlanListItem> direction:VisitingRoute.route) {
             exhibit_visiting_order.add(direction.get(direction.size() - 1).target_id);
         }
