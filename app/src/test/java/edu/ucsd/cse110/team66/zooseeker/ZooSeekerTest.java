@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -22,6 +23,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.Shadows;
+import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowViewGroup;
 
 import java.util.Arrays;
 import java.util.List;
@@ -154,7 +159,10 @@ public class ZooSeekerTest {
         scenario.onActivity(activity -> {
             TextView countView = activity.findViewById(R.id.exhibit_count);
             assertEquals("0", countView.getText().toString());
-            Button exhibit1 = activity.findViewById(R.id.add_exhibit_btn);
+            RecyclerView recyclerView = activity.findViewById(R.id.exhibit_items);
+            recyclerView.measure(0, 0);
+            recyclerView.layout(0, 0, 100, 10000);
+            Button exhibit1 = recyclerView.getChildAt(0).findViewById(R.id.add_exhibit_btn);
             exhibit1.performClick();
             assertEquals("1", countView.getText().toString());
         });
