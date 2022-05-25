@@ -32,45 +32,38 @@ public class VisitingRoute {
         this.context = context;
 
         // Get selected animal exhibits
-        if (VisitingRoute.exhibitsAdded == null) {
-            Gson gson = new Gson();
-            exhibitsAdded = gson.fromJson(exhibitsAll, ArrayList.class);
+        Gson gson = new Gson();
+        exhibitsAdded = gson.fromJson(exhibitsAll, ArrayList.class);
+
+
+        VisitingRoute.zooExhibitsData = ZooData.loadZooItemJSON(this.context,
+                this.context.getString(R.string.exhibit_node_info_json),"all");
+
+        // Creating quick search of exhibit names by mapping exhibit ids to names
+        VisitingRoute.exhibit_id_to_name = new HashMap<String, String>();
+        for (int i = 0; i < VisitingRoute.zooExhibitsData.size(); ++i) {
+            VisitingRoute.exhibit_id_to_name.put(VisitingRoute.zooExhibitsData.get(i).id,
+                    VisitingRoute.zooExhibitsData.get(i).name);
         }
 
-        // Get Zoo Exhibits Data
-        if (VisitingRoute.zooExhibitsData == null) {
-            VisitingRoute.zooExhibitsData = ZooData.loadZooItemJSON(this.context,
-                    this.context.getString(R.string.exhibit_node_info_json),"all");
 
-            // Creating quick search of exhibit names by mapping exhibit ids to names
-            VisitingRoute.exhibit_id_to_name = new HashMap<String, String>();
-            for (int i = 0; i < VisitingRoute.zooExhibitsData.size(); ++i) {
-                VisitingRoute.exhibit_id_to_name.put(VisitingRoute.zooExhibitsData.get(i).id,
-                        VisitingRoute.zooExhibitsData.get(i).name);
+        for (int i = 0; i < zooExhibitsData.size();++i) {
+            if (zooExhibitsData.get(i).kind.toString().equals("GATE")) {
+                entrance_and_exit_gate_id = zooExhibitsData.get(i).id;
+                break;
             }
         }
 
 
-        // Get Entrance/Exit id
-        if (VisitingRoute.entrance_and_exit_gate_id == null) {
-            for (int i = 0; i < zooExhibitsData.size();++i) {
-                if (zooExhibitsData.get(i).kind.toString().equals("GATE")) {
-                    entrance_and_exit_gate_id = zooExhibitsData.get(i).id;
-                    break;
-                }
-            }
-        }
 
-        if (VisitingRoute.edgeinfo == null) {
-            edgeinfo = ZooData.loadEdgeInfoJSON(this.context,
-                    this.context.getString(R.string.trail_edge_info_json));
-        }
+        edgeinfo = ZooData.loadEdgeInfoJSON(this.context,
+                this.context.getString(R.string.trail_edge_info_json));
 
         // Code for calculating route based on chosen exhibits, and storing
         // 1. Load the graph...
-        if (VisitingRoute.g == null) {
-            VisitingRoute.g = ZooData.loadZooGraphJSON(this.context,this.context.getString(R.string.zoo_graph_json));
-        }
+
+        VisitingRoute.g = ZooData.loadZooGraphJSON(this.context,this.context.getString(R.string.zoo_graph_json));
+
 
 
     }
@@ -94,9 +87,7 @@ public class VisitingRoute {
         List<PlanListItem> direction = VisitingRoute.route.get(index);
         List<LatLng> coords = new ArrayList<>();
 
-        if (VisitingRoute.coordMap == null) {
-            VisitingRoute.generateCoordMap();
-        }
+        VisitingRoute.generateCoordMap();
 
         for (PlanListItem planListItem:direction) {
             coords.add(new LatLng(coordMap.get(planListItem.target_id).latitude, coordMap.get(planListItem.target_id).longitude));
@@ -114,9 +105,7 @@ public class VisitingRoute {
     }
 
     public static List<List<PlanListItem>> getRoute() {
-        if (VisitingRoute.route == null) {
-            VisitingRoute.saveRoute();
-        }
+        VisitingRoute.saveRoute();
         return VisitingRoute.route;
     }
 
@@ -126,16 +115,12 @@ public class VisitingRoute {
     }
 
     public static String getExhibitToVisitAtIndex(int index) {
-        if (VisitingRoute.exhibit_visiting_order == null) {
-            VisitingRoute.saveExhibitsVisitingOrder();
-        }
+        VisitingRoute.saveExhibitsVisitingOrder();
         return VisitingRoute.exhibit_visiting_order.get(index);
     }
 
     public static List<String> getExhibitsToVisitOrder() {
-        if (VisitingRoute.exhibit_visiting_order == null) {
-            VisitingRoute.saveExhibitsVisitingOrder();
-        }
+        VisitingRoute.saveExhibitsVisitingOrder();
         return VisitingRoute.exhibit_visiting_order;
     }
 

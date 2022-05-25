@@ -59,11 +59,11 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                 Log.d("zooseeker", String.format("Location changed: %s", location));
                 UserLocation.currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
                 // if no longer on route, need to recalculate
-                if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
+                //if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
                     // check if not too far off track, not enough to replan
 
                     // check if off track lots to replan
-                }
+                //}
             }
         };
 
