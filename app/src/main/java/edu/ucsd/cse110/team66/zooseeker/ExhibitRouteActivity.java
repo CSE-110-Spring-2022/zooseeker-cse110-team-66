@@ -9,20 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -30,7 +26,9 @@ import java.util.Vector;
 public class ExhibitRouteActivity extends AppCompatActivity {
     private final String start = "entrance_exit_gate";
     public RecyclerView recyclerView;
+    private ArrayList<String> detailedExhibitDirections;
     private ArrayList<String> exhibitDirections;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +47,10 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+        detailedExhibitDirections = new ArrayList<String>();
         exhibitDirections = new ArrayList<String>();
         for (int i = 0; i < plannedDirections.size(); ++i) {
+            detailedExhibitDirections.add(PlanListItem.toDetailedMessage(plannedDirections.get(i)));
             exhibitDirections.add(PlanListItem.toMessage(plannedDirections.get(i)));
         }
 
@@ -80,8 +80,10 @@ public class ExhibitRouteActivity extends AppCompatActivity {
     
     private void openExhibitDirectionsActivity() {
         Gson gson = new Gson();
+        String jsonDetailed = gson.toJson(detailedExhibitDirections);
         String json = gson.toJson(exhibitDirections);
         Intent intent = new Intent(this, ExhibitDirectionsActivity.class);
+        intent.putExtra("detailedExhibitDirections",jsonDetailed);
         intent.putExtra("exhibitDirections",json);
         startActivity(intent);
     }

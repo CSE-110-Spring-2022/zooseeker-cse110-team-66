@@ -40,7 +40,7 @@ public class PlanListItem {
         this.weight = weight;
     }
 
-    public static String toMessage(List<PlanListItem> items) {
+    public static String toDetailedMessage(List<PlanListItem> items) {
         String message = "To " + items.get(items.size()-1).target_name + ": \n";
         for (int i = 0; i < items.size(); ++i) {
             if (i == 0) {
@@ -55,6 +55,17 @@ public class PlanListItem {
         }
         return message;
     }
+
+    public static String toMessage(List<PlanListItem> items) {
+        String message = "To " + items.get(items.size()-1).target_name + ": \n";
+        for (int i = 0; i < items.size(); ++i) {
+            message += "walk " + String.valueOf(items.get(i).weight) + " feet towards " +
+                    items.get(i).target_name + ".\n";
+        }
+        return message;
+    }
+
+
 
     public static List<PlanListItem> loadJSON(Context context, String node_info_path, String zoo_graph_path, String edge_info_path) {
         try {
