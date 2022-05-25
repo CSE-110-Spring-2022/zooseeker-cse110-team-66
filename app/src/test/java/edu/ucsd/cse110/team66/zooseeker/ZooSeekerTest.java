@@ -82,6 +82,7 @@ public class ZooSeekerTest {
         }
     }
 
+    /** Test that the plan button is disabled when there are no exhibits in the database **/
     @Test
     public void testPlanBtnUnavailable() {
         try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
@@ -94,6 +95,7 @@ public class ZooSeekerTest {
         }
     }
 
+    /** Test that the clear button is disabled when there are no exhibits in the database **/
     @Test
     public void testClearBtnUnavailable() {
         try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
@@ -102,6 +104,17 @@ public class ZooSeekerTest {
                 Button clear_button =(Button)activity.findViewById(R.id.clear_btn);
                 assertEquals(false, clear_button.isEnabled());
 
+            });
+        }
+    }
+
+    /** Test that the selected exhibtis button is disabled when there are no exhibits in the database **/
+    @Test
+    public void testSelectedExhibitsBtnUnavailable() {
+        try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
+            scenario.onActivity(activity -> {
+                Button selected_exhibits_btn =(Button)activity.findViewById(R.id.selected_exhibits_btn);
+                assertEquals(false, selected_exhibits_btn.isEnabled());
             });
         }
     }
