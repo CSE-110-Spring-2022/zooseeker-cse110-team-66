@@ -73,21 +73,23 @@ public class SearchExhibitActivity extends AppCompatActivity {
             }
         });
         SearchView searchView = (SearchView) searchItem.getActionView();
-        exhibitItemAdapter.getSearchView(searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                exhibitItemAdapter.getFilter().filter(query);
-                return false;
-            }
+        if (exhibitItemAdapter != null) {
+            exhibitItemAdapter.getSearchView(searchView);
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    exhibitItemAdapter.getFilter().filter(query);
+                    return false;
+                }
 
-            // Filter exhibits based on search query
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                exhibitItemAdapter.getFilter().filter(newText);
-                return false;
-            }
-        });
+                // Filter exhibits based on search query
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    exhibitItemAdapter.getFilter().filter(newText);
+                    return false;
+                }
+            });
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

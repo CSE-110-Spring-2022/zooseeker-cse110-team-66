@@ -58,7 +58,8 @@ public class PlanListItem {
 
 
     public static String toMessage(List<PlanListItem> items) {
-        String message = "To " + items.get(items.size()-1).target_name + ": \n";
+        //String message = "To " + items.get(items.size()-1).target_name + ": \n";
+        String message = "";
         for (int i = 0; i < items.size(); ++i) {
             message += "walk " + String.valueOf(items.get(i).weight) + " feet towards " +
                     items.get(i).target_name + ".\n";
