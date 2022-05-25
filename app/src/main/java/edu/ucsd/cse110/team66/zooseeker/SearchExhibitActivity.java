@@ -10,26 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,16 +24,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class SearchExhibitActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public ExhibitItemAdapter exhibitItemAdapter;
-    //private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    //private Future<Void> future;
 
     private ExhibitItemViewModel viewModel;
     private Button planButton;
@@ -59,9 +41,14 @@ public class SearchExhibitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_exhibit);
-        setExhibitItemAdapter();
-        recyclerView.setAlpha(0);
+
         if (permissionChecker.ensurePermissions()) return;
+
+        setPlanButton();
+        setClearButton();
+        setSelectedExhibitsButton();
+        setExhibitItemAdapter();
+        setExhibitRecyclerView();
     }
 
     /** Create a menu at the top for the search and voice search icons **/
@@ -102,46 +89,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
-    }
-
-    /** Display the list of exhibits a user can choose **/
-    private void setExhibitItemAdapter() {
-        viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
-
-        exhibitItemAdapter = new ExhibitItemAdapter();
-        exhibitItemAdapter.setHasStableIds(true);
-        exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
-        viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
-
-        recyclerView = findViewById(R.id.exhibit_items);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(exhibitItemAdapter);
-        countView = findViewById(R.id.exhibit_count);
-        clearButton = findViewById(R.id.clear_btn);
-        planButton = findViewById(R.id.plan_btn);
-        showSelectedExhibitsButton = findViewById(R.id.selected_exhibits_btn);
-
-        exhibitItemAdapter.getCountView(countView);
-        exhibitItemAdapter.getClearBtn(clearButton);
-        exhibitItemAdapter.getPlanBtn(planButton);
-        exhibitItemAdapter.getListBtn(showSelectedExhibitsButton);
-
-        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = routeInfo.edit();
-        int routeNum = routeInfo.getInt("routeNum", 0);
-
-
-        //exhibitItemAdapter.setExhibitItems(ExhibitItem.loadExhibits(this,"sample_node_info.json"));
-
-        planButton.setOnClickListener(view -> openExhibitRouteActivity());
-        clearButton.setOnClickListener(view -> {
-            viewModel.toggleClear();
-            editor.putInt("routeNum", 0);
-            editor.apply();
-        });
-        showSelectedExhibitsButton.setOnClickListener(view -> openSelectedExhibitsListActivity());
-
     }
 
     /** Display selected exhibits in a compact list format **/
@@ -188,6 +135,57 @@ public class SearchExhibitActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ExhibitRouteActivity.class);
         intent.putExtra("exhibitsAll", json);
         startActivity(intent);
+    }
+
+    /** Set up the plan button and chosen exhibits counter **/
+    private void setPlanButton() {
+        planButton = findViewById(R.id.plan_btn);
+        planButton.setOnClickListener(view -> openExhibitRouteActivity());
+        countView = findViewById(R.id.exhibit_count);
+    }
+
+    /** Set up clear button **/
+    private void setClearButton() {
+        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = routeInfo.edit();
+        int routeNum = routeInfo.getInt("routeNum", 0);
+
+        clearButton = findViewById(R.id.clear_btn);
+        clearButton.setOnClickListener(view -> {
+            viewModel.toggleClear();
+            editor.putInt("routeNum", 0);
+            editor.apply();
+        });
+    }
+
+    /** Set up selected exhibits button **/
+    private void setSelectedExhibitsButton() {
+        showSelectedExhibitsButton = findViewById(R.id.selected_exhibits_btn);
+        showSelectedExhibitsButton.setOnClickListener(view -> openSelectedExhibitsListActivity());
+    }
+
+    /** Display the list of exhibits a user can choose **/
+    private void setExhibitItemAdapter() {
+        viewModel = new ViewModelProvider(this).get(ExhibitItemViewModel.class);
+
+        exhibitItemAdapter = new ExhibitItemAdapter();
+        exhibitItemAdapter.setHasStableIds(true);
+        exhibitItemAdapter.setOnAddExhibitHandler(viewModel::toggleAdded);
+        viewModel.getExhibitItems().observe(this, exhibitItemAdapter::setExhibitItems);
+
+        exhibitItemAdapter.getCountView(countView);
+        exhibitItemAdapter.getClearBtn(clearButton);
+        exhibitItemAdapter.getPlanBtn(planButton);
+        exhibitItemAdapter.getListBtn(showSelectedExhibitsButton);
+    }
+
+    /** Set up the recycler view to use the adapter **/
+    private void setExhibitRecyclerView() {
+        recyclerView = findViewById(R.id.exhibit_items);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(exhibitItemAdapter);
+        recyclerView.setAlpha(0);
     }
 
 }
