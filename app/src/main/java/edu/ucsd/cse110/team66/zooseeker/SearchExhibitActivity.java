@@ -165,7 +165,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         exhibitItemAdapter.getListBtn(showSelectedExhibitsButton);
 
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = routeInfo.edit();
+        SharedPreferencesEditor editor = routeInfo.edit();
         int routeNum = routeInfo.getInt("routeNum", 0);
     }
 
