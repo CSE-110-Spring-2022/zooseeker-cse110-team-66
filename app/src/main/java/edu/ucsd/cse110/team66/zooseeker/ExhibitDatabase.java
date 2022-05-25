@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities= {ExhibitItem.class}, version = 1, exportSchema = false)
+@Database(entities= {ExhibitItem.class}, version = 2, exportSchema = false)
 public abstract class ExhibitDatabase extends RoomDatabase {
     private static ExhibitDatabase singleton = null;
 
@@ -34,7 +34,7 @@ public abstract class ExhibitDatabase extends RoomDatabase {
                         super.onCreate(db);
                         Executors.newSingleThreadExecutor().execute(() -> {
                             List<ExhibitItem> exhibits = ExhibitItem
-                                    .loadExhibits(context, "sample_node_info.json");
+                                    .loadExhibits(context, context.getString(R.string.exhibit_node_info_json));
                             getSingleton(context).exhibitItemDao().insertAll(exhibits);
                         });
                     }

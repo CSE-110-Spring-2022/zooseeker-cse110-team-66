@@ -24,4 +24,14 @@ public class LanguageConverter {
         return gson.toJson(list);
     }
 
+    @TypeConverter
+    public static double toDouble(String str) {
+        return Double.parseDouble(str);
+    }
+
+    @TypeConverter
+    public static String fromDouble(Double doub) {
+        return String.valueOf(doub);
+    }
+
 }
