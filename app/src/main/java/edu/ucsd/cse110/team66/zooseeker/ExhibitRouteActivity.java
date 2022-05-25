@@ -51,7 +51,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         exhibitDirections = new ArrayList<String>();
         for (int i = 0; i < plannedDirections.size(); ++i) {
             detailedExhibitDirections.add(PlanListItem.toDetailedMessage(plannedDirections.get(i)));
-            exhibitDirections.add(PlanListItem.toMessage(plannedDirections.get(i)));
+            exhibitDirections.add(PlanListItem.toBriefMessage(plannedDirections.get(i)));
         }
 
         Button directions_btn = findViewById(R.id.directions_btn);

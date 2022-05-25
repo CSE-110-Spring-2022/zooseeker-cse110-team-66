@@ -88,11 +88,11 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         if(exhibitDirections.isEmpty() || detailedExhibitDirections.isEmpty())
             return;
         if (detailedBtn.isChecked()) {
-            directionDisplay.setText(detailedExhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
             isCheck = true;
         }
         else {
-            directionDisplay.setText(exhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
             isCheck = false;
         }
     }
@@ -120,8 +120,8 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         editor.apply();
         ++directionIndex;
         if(isCheck)
-            directionDisplay.setText(detailedExhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
         else
-            directionDisplay.setText(exhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
     }
 }
