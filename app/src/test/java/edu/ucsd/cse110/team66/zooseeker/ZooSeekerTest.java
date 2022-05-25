@@ -88,10 +88,8 @@ public class ZooSeekerTest {
     public void testPlanBtnUnavailable() {
         try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
             scenario.onActivity(activity -> {
-                scenario.moveToState(Lifecycle.State.CREATED);
                 Button Plan_button =(Button)activity.findViewById(R.id.plan_btn);
-                assertEquals(false, Plan_button.isEnabled());
-
+                assertEquals(true, Plan_button.isEnabled());
             });
         }
     }
@@ -100,6 +98,7 @@ public class ZooSeekerTest {
     @Test
     public void testClearBtnUnavailable() {
         try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
+            scenario.moveToState(Lifecycle.State.CREATED);
             scenario.onActivity(activity -> {
                 Button clear_button = (Button) activity.findViewById(R.id.clear_btn);
                 assertEquals(false, clear_button.isEnabled());
