@@ -47,18 +47,27 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView plan_name_item;
+        private final TextView plan_street_item;
+        private final TextView plan_distance_item;
+
         private List<PlanListItem> planItem;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.textView = itemView.findViewById(R.id.plan_item_text);
+            this.plan_name_item = itemView.findViewById(R.id.plan_name_item);
+            this.plan_street_item = itemView.findViewById(R.id.plan_street_item);
+            this.plan_distance_item = itemView.findViewById(R.id.plan_distance_item);
+
         }
 
-        public List<PlanListItem> getPlanItem() {return planItem; }
+        public List<PlanListItem> getPlanItem() { return planItem; }
 
         public void setPlanItem(List<PlanListItem> planListItem) {
             this.planItem = planListItem;
-            this.textView.setText(PlanListItem.toMessage(planItem));
+            this.plan_name_item.setText(String.format("To %s", PlanListItem.getName(planItem)));
+            this.plan_street_item.setText(PlanListItem.getStreet(planItem));
+            this.plan_distance_item.setText(String.format("%.0f ft", PlanListItem.getDistance(planItem)));
         }
     }
 
