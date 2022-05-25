@@ -56,7 +56,9 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                 UserLocation.currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
                 // if no longer on route, need to recalculate
                 if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
+                    // check if not too far off track, not enough to replan
 
+                    // check if off track lots to replan
                 }
             }
         };

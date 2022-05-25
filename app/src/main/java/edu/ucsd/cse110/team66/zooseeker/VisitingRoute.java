@@ -54,7 +54,7 @@ public class VisitingRoute {
         // Get Entrance/Exit id
         if (VisitingRoute.entrance_and_exit_gate_id == null) {
             for (int i = 0; i < zooExhibitsData.size();++i) {
-                if (zooExhibitsData.get(i).kind.toString() == "GATE") {
+                if (zooExhibitsData.get(i).kind.toString().equals("GATE")) {
                     entrance_and_exit_gate_id = zooExhibitsData.get(i).id;
                     break;
                 }
