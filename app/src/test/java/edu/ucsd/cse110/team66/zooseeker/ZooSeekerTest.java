@@ -3,9 +3,11 @@ package edu.ucsd.cse110.team66.zooseeker;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.robolectric.Shadows.shadowOf;
 import static org.robolectric.shadows.ShadowInstrumentation.getInstrumentation;
 
 import android.content.Context;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.Shadows;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowViewGroup;
 
@@ -36,9 +39,6 @@ import java.util.stream.Collectors;
 public class ZooSeekerTest {
     private ExhibitItemDao dao;
     private ExhibitDatabase db;
-
-    @Rule
-    public ActivityScenarioRule<SearchExhibitActivity> scenarioRule = new ActivityScenarioRule<>(SearchExhibitActivity.class);
 
     @Before
     public void createDb() {
@@ -145,34 +145,5 @@ public class ZooSeekerTest {
         size = dao.getDataCount();
         assertEquals(0, size);
     }
-
-    @Test
-    public void maintainDatabaseTest() {
-        // Create a "scenario" to move through the activity lifecycle.
-        // https://developer.android.com/guide/components/activities/activity-lifecycle
-        ActivityScenario<SearchExhibitActivity> scenario = scenarioRule.getScenario();
-
-        // Make sure the activity is in the created state (so onCreated is called).
-        scenario.moveToState(Lifecycle.State.CREATED);
-
-        // When it's ready, we're ready to test inside this lambda (anonymous inline function).
-        scenario.onActivity(activity -> {
-            TextView countView = activity.findViewById(R.id.exhibit_count);
-            assertEquals("0", countView.getText().toString());
-            RecyclerView recyclerView = activity.findViewById(R.id.exhibit_items);
-            Button exhibit1 = recyclerView.getChildAt(1).findViewById(R.id.add_exhibit_btn);
-            exhibit1.performClick();
-            assertEquals("1", countView.getText().toString());
-        });
-
-        //destroys and recreates the activity
-        scenario.recreate();
-        scenario.onActivity(activity -> {
-            TextView countView = activity.findViewById(R.id.exhibit_count);
-            assertEquals("1", countView.getText().toString());
-        });
-
-    }
-
 
 }
