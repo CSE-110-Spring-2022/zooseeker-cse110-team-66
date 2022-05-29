@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -49,6 +50,7 @@ public class SearchExhibitActivity extends AppCompatActivity {
         setSelectedExhibitsButton();
         setExhibitItemAdapter();
         setExhibitRecyclerView();
+        recyclerView.setVisibility(View.INVISIBLE);
     }
 
     /** Create a menu at the top for the search and voice search icons **/
@@ -62,13 +64,13 @@ public class SearchExhibitActivity extends AppCompatActivity {
             // Show all exhibits when search icon is clicked
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                recyclerView.setAlpha(1);
+                recyclerView.setVisibility(View.VISIBLE);
                 return true;
             }
             // Hide all exhibits when search icon is clicked
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                recyclerView.setAlpha(0);
+                recyclerView.setVisibility(View.INVISIBLE);
                 return true;
             }
         });
@@ -187,7 +189,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(exhibitItemAdapter);
-        recyclerView.setAlpha(0);
     }
 
 }
