@@ -20,7 +20,7 @@ public class SearchActivityButtonsTest {
             scenario.moveToState(Lifecycle.State.CREATED);
             scenario.onActivity(activity -> {
                 Button Plan_button =(Button) activity.findViewById(R.id.plan_btn);
-                assertEquals(false, Plan_button.isEnabled());
+                assertEquals(true, Plan_button.isEnabled());
             });
         }
     }
