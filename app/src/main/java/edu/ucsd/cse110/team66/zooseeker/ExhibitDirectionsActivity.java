@@ -17,10 +17,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public class ExhibitDirectionsActivity extends AppCompatActivity {
     private ArrayList<String> exhibitDirections;
@@ -30,19 +31,16 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     TextView directionDisplay;
     Button nextDirection;
     SwitchCompat detailedBtn;
-    Boolean isCheck = false;
+    boolean detailedDirections = false;
 
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        detailedDirections = false;
         setContentView(R.layout.activity_exhibit_directions);
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
-
-
-
-
 
         routeNum = routeInfo.getInt("routeNum", 0);
         directionIndex = routeNum;
@@ -59,11 +57,46 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                 Log.d("zooseeker", String.format("Location changed: %s", location));
                 UserLocation.currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
                 // if no longer on route, need to recalculate
-                //if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
-                    // check if not too far off track, not enough to replan
+                if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
 
+                    List<PlanListItem> nextFastestDirection = VisitingRoute.getNextFastestDirection(directionIndex);
+
+                    // check if not too far off track, not enough to replan, just automatically update current direction
+                    if (nextFastestDirection.get(nextFastestDirection.size()-1).target_id
+                            .equals(VisitingRoute.getExhibitToVisitAtIndex(directionIndex))) {
+                        VisitingRoute.route.set(directionIndex,nextFastestDirection);
+                        exhibitDirections.set(directionIndex,PlanListItem.toMessage(VisitingRoute.route.get(directionIndex)));
+                        detailedExhibitDirections.set(directionIndex,PlanListItem.toDetailedMessage(VisitingRoute.route.get(directionIndex)));
+                        if(detailedDirections)
+                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
+                        else
+                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+                    }
                     // check if off track lots to replan
-                //}
+                    else {
+                        //TODO: NEED TO GENERATE POPUP ASKING TO REPLAN, IF YES, THEN DO THE BELOW
+
+//                        //replace exhibit directions from current index to end
+//                        String startingExhibit = VisitingRoute.closestExhibit();
+//                        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(startingExhibit, VisitingRoute.getExhibitsLeft(directionIndex));
+//                        List<List<PlanListItem>> route = VisitingRoute.get_planned_directions(startingExhibit,Directions);
+//
+//
+//                        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
+//                            // saved route
+//                            VisitingRoute.route.set(i, route.get(i-directionIndex));
+//                            VisitingRoute.saveExhibitsVisitingOrder();
+//                            //generating correct exhibitDirections
+//                            exhibitDirections.set(i,PlanListItem.toMessage(VisitingRoute.route.get(i)));
+//                            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
+//                        }
+//
+//                        if(detailedDirections)
+//                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
+//                        else
+//                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+                    }
+                }
             }
         };
 
@@ -88,12 +121,12 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         if(exhibitDirections.isEmpty() || detailedExhibitDirections.isEmpty())
             return;
         if (detailedBtn.isChecked()) {
-            directionDisplay.setText(detailedExhibitDirections.get(directionIndex));
-            isCheck = true;
+            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
+            detailedDirections = true;
         }
         else {
-            directionDisplay.setText(exhibitDirections.get(directionIndex));
-            isCheck = false;
+            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+            detailedDirections = false;
         }
     }
 
@@ -119,9 +152,9 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         editor.putInt("routeNum", directionIndex);
         editor.apply();
         ++directionIndex;
-        if(isCheck)
-            directionDisplay.setText(detailedExhibitDirections.get(directionIndex));
+        if(detailedDirections)
+            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
         else
-            directionDisplay.setText(exhibitDirections.get(directionIndex));
+            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
     }
 }
