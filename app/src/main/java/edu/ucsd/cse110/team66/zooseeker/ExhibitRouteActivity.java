@@ -13,15 +13,8 @@ import android.widget.Button;
 
 import com.google.gson.Gson;
 
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 
 public class ExhibitRouteActivity extends AppCompatActivity {
     private final String start = "entrance_exit_gate";

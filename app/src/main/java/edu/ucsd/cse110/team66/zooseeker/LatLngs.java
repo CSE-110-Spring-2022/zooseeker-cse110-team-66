@@ -24,7 +24,7 @@ public class LatLngs {
     // returns the index of the closest place to location
     @NonNull
     public static int closest(List<LatLng> places, LatLng location) {
-        double current_closest = 99999999;
+        double current_closest = Integer.MAX_VALUE;
         int closest_index = -1;
 
         for (int i = 0; i < places.size(); ++i) {
