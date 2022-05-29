@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RunWith(AndroidJUnit4.class)
-public class ZooSeekerTest {
+public class ZooSeekerDBTest {
     private ExhibitItemDao dao;
     private ExhibitDatabase db;
 
@@ -79,42 +79,6 @@ public class ZooSeekerTest {
                 TextView text_display =(TextView)activity.findViewById(R.id.exhibit_count);
                 assertEquals("0", text_display.getText());
 
-            });
-        }
-    }
-
-    /** Test that the plan button is disabled when there are no exhibits in the database **/
-    @Test
-    public void testPlanBtnUnavailable() {
-        try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
-            scenario.onActivity(activity -> {
-                Button Plan_button =(Button)activity.findViewById(R.id.plan_btn);
-                assertEquals(true, Plan_button.isEnabled());
-            });
-        }
-    }
-
-    /** Test that the clear button is disabled when there are no exhibits in the database **/
-    @Test
-    public void testClearBtnUnavailable() {
-        try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
-            scenario.moveToState(Lifecycle.State.CREATED);
-            scenario.onActivity(activity -> {
-                Button clear_button = (Button) activity.findViewById(R.id.clear_btn);
-                assertEquals(false, clear_button.isEnabled());
-
-            });
-        }
-    }
-
-    /** Test that the selected exhibits button is disabled when there are no exhibits in the database **/
-    @Test
-    public void testSelectedExhibitsBtnUnavailable() {
-        try(ActivityScenario<SearchExhibitActivity> scenario = ActivityScenario.launch(SearchExhibitActivity.class)) {
-            scenario.moveToState(Lifecycle.State.CREATED);
-            scenario.onActivity(activity -> {
-                Button selected_exhibits_btn =(Button)activity.findViewById(R.id.selected_exhibits_btn);
-                assertEquals(false, selected_exhibits_btn.isEnabled());
             });
         }
     }

@@ -51,6 +51,8 @@ public class SearchExhibitActivity extends AppCompatActivity {
         setExhibitItemAdapter();
         setExhibitRecyclerView();
         recyclerView.setVisibility(View.INVISIBLE);
+
+        planButton.setEnabled(false);
     }
 
     /** Create a menu at the top for the search and voice search icons **/
