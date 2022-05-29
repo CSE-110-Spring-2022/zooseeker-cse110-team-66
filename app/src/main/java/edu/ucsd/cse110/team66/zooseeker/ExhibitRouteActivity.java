@@ -36,7 +36,7 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exhibit_route);
         setUpBackButton();
 
-        VisitingRoute routePlanner = new VisitingRoute(this, getIntent().getExtras().getString("exhibitsAll"));
+        new VisitingRoute(this, getIntent().getExtras().getString("exhibitsAll"));
         List<List<PlanListItem>> plannedDirections = VisitingRoute.getRoute();
 
         PlanListAdapter adapter = new PlanListAdapter();
@@ -57,7 +57,13 @@ public class ExhibitRouteActivity extends AppCompatActivity {
         Button directions_btn = findViewById(R.id.directions_btn);
         directions_btn.setOnClickListener(view -> openExhibitDirectionsActivity());
     }
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new VisitingRoute(this, getIntent().getExtras().getString("exhibitsAll"));
+    }
+
     // Set up back button at the top left
     private void setUpBackButton() {
         ActionBar actionBar = getSupportActionBar();
