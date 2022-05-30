@@ -13,7 +13,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -38,7 +40,12 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         detailedDirections = false;
-        setContentView(R.layout.activity_exhibit_directions);
+        if (UserLocation.enable_mock_button) {
+            setContentView(R.layout.activity_exhibit_directions_mock);
+        }
+        else {
+            setContentView(R.layout.activity_exhibit_directions);
+        }
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
 
@@ -48,60 +55,55 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         displayDirection();
         setNextDirectionButton();
 
+        if (UserLocation.enable_mock_button) {
+            EditText text_current_lat = findViewById(R.id.current_location_latitude);
+            EditText text_current_lng = findViewById(R.id.current_location_longitude);
+            Button mock_location_button = findViewById(R.id.set_mock_location);
 
-        var provider = LocationManager.GPS_PROVIDER;
-        var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        var locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                Log.d("zooseeker", String.format("Location changed: %s", location));
-                UserLocation.currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
-                // if no longer on route, need to recalculate
-                if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
+            UserLocation.currentLocation = new LatLng(VisitingRoute.coordMap.get(VisitingRoute.entrance_and_exit_gate_id).latitude,
+                    VisitingRoute.coordMap.get(VisitingRoute.entrance_and_exit_gate_id).longitude);
 
-                    List<PlanListItem> nextFastestDirection = VisitingRoute.getNextFastestDirection(directionIndex);
+            text_current_lat.setText(String.valueOf(UserLocation.currentLocation.latitude));
+            text_current_lng.setText(String.valueOf(UserLocation.currentLocation.longitude));
 
-                    // check if not too far off track, not enough to replan, just automatically update current direction
-                    if (nextFastestDirection.get(nextFastestDirection.size()-1).target_id
-                            .equals(VisitingRoute.getExhibitToVisitAtIndex(directionIndex))) {
-                        VisitingRoute.route.set(directionIndex,nextFastestDirection);
-                        exhibitDirections.set(directionIndex,PlanListItem.toMessage(VisitingRoute.route.get(directionIndex)));
-                        detailedExhibitDirections.set(directionIndex,PlanListItem.toDetailedMessage(VisitingRoute.route.get(directionIndex)));
-                        if(detailedDirections)
-                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
-                        else
-                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
-                    }
-                    // check if off track lots to replan
-                    else {
-                        //TODO: NEED TO GENERATE POPUP ASKING TO REPLAN, IF YES, THEN DO THE BELOW
-
-//                        //replace exhibit directions from current index to end
-//                        String startingExhibit = VisitingRoute.closestExhibit();
-//                        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(startingExhibit, VisitingRoute.getExhibitsLeft(directionIndex));
-//                        List<List<PlanListItem>> route = VisitingRoute.get_planned_directions(startingExhibit,Directions);
-//
-//
-//                        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
-//                            // saved route
-//                            VisitingRoute.route.set(i, route.get(i-directionIndex));
-//                            VisitingRoute.saveExhibitsVisitingOrder();
-//                            //generating correct exhibitDirections
-//                            exhibitDirections.set(i,PlanListItem.toMessage(VisitingRoute.route.get(i)));
-//                            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
-//                        }
-//
-//                        if(detailedDirections)
-//                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
-//                        else
-//                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
-                    }
+            mock_location_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UserLocation.currentLocation = new LatLng(Double.parseDouble(text_current_lat.getText().toString()),
+                            Double.parseDouble(text_current_lng.getText().toString()));
+                    handleLocationChange();
                 }
-            }
-        };
+            });
 
-        locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
+            text_current_lat.setOnFocusChangeListener((view, hasFocus) -> {
+                if (!hasFocus && text_current_lat.getText().toString().equals("")) {
+                    text_current_lat.setText(String.valueOf(UserLocation.currentLocation.latitude));
+                }
+            });
+
+            text_current_lng.setOnFocusChangeListener((view, hasFocus) -> {
+                if (!hasFocus && text_current_lng.getText().toString().equals("")) {
+                    text_current_lng.setText(String.valueOf(UserLocation.currentLocation.longitude));
+                }
+            });
+
+        }
+        else {
+            var provider = LocationManager.GPS_PROVIDER;
+            var locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            var locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    Log.d("zooseeker", String.format("Location changed: %s", location));
+                    UserLocation.currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
+                    handleLocationChange();
+                }
+            };
+
+            locationManager.requestLocationUpdates(provider, 0, 0f, locationListener);
+        }
     }
+
 
     // Display the direction(s) to the next closest exhibit on the screen
     private void displayDirection() {
@@ -156,5 +158,52 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
         else
             directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+
+        handleLocationChange();
     }
+
+    private void handleLocationChange() {
+        // if no longer on route, need to recalculate
+        if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
+
+            List<PlanListItem> nextFastestDirection = VisitingRoute.getNextFastestDirection(directionIndex);
+
+            // check if not too far off track, not enough to replan, just automatically update current direction
+            if (nextFastestDirection.get(nextFastestDirection.size()-1).target_id
+                    .equals(VisitingRoute.getExhibitToVisitAtIndex(directionIndex))) {
+                VisitingRoute.route.set(directionIndex,nextFastestDirection);
+                exhibitDirections.set(directionIndex,PlanListItem.toBriefMessage(VisitingRoute.route.get(directionIndex)));
+                detailedExhibitDirections.set(directionIndex,PlanListItem.toDetailedMessage(VisitingRoute.route.get(directionIndex)));
+                if(detailedDirections)
+                    directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
+                else
+                    directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+            }
+            // check if off track lots to replan
+            else {
+                //TODO: NEED TO GENERATE POPUP ASKING TO REPLAN, IF YES, THEN DO THE BELOW
+
+//                        //replace exhibit directions from current index to end
+//                        String startingExhibit = VisitingRoute.closestExhibit();
+//                        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(startingExhibit, VisitingRoute.getExhibitsLeft(directionIndex));
+//                        List<List<PlanListItem>> route = VisitingRoute.get_planned_directions(startingExhibit,Directions);
+//
+//
+//                        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
+//                            // saved route
+//                            VisitingRoute.route.set(i, route.get(i-directionIndex));
+//                            VisitingRoute.saveExhibitsVisitingOrder();
+//                            //generating correct exhibitDirections
+//                            exhibitDirections.set(i,PlanListItem.toBriefMessage(VisitingRoute.route.get(i)));
+//                            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
+//                        }
+//
+//                        if(detailedDirections)
+//                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
+//                        else
+//                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+            }
+        }
+    }
+
 }

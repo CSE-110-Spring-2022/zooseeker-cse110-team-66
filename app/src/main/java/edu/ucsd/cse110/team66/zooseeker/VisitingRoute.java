@@ -150,6 +150,10 @@ public class VisitingRoute {
             }
         }
 
+        if (nextDirection == null) {
+            nextDirection = VisitingRoute.get_fastest_direction(currentPosition,VisitingRoute.entrance_and_exit_gate_id).getEdgeList();
+        }
+
         List<PlanListItem> currentDirection = new ArrayList<>();
         for (int j = 0; j < nextDirection.size(); ++j) {
             IdentifiedWeightedEdge to_add = nextDirection.get(j);
