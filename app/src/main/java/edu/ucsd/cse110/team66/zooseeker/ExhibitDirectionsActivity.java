@@ -56,7 +56,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 
         displayDirection();
         setBackDirectionButton();
-        setSkipDirectionButton();
         setNextDirectionButton();
 
         if (UserLocation.enable_mock_button) {
@@ -153,10 +152,15 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 
     private void backExhibitDirection() {
         Log.d("index", String.valueOf(directionIndex));
+        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = routeInfo.edit();
         if (directionIndex < 0) {
+            editor.putInt("routeNum", 0);
+            editor.apply();
             finish();
             return;
         }
+
         String currentExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex);
         String previousExhibit = VisitingRoute.entrance_and_exit_gate_id;
         if (directionIndex > 0) {
@@ -164,20 +168,13 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         }
         List<PlanListItem> previousDirection
                 = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
+        editor.putInt("routeNum", directionIndex);
+        editor.apply();
         --directionIndex;
         if (detailedDirections)
             directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
         else
             directionDisplay.setText(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
-    }
-
-    private void setSkipDirectionButton() {
-        skipDirection = findViewById(R.id.skip_exhibit_direction_btn);
-        skipDirection.setOnClickListener(view -> skipExhibitDirection());
-    }
-
-    private void skipExhibitDirection() {
-
     }
 
     // Set up direction button
