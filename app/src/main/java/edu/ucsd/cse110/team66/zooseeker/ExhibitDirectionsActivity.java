@@ -58,7 +58,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 
         displayDirection();
         setBackDirectionButton();
-        setSkipDirectionButton();
         setNextDirectionButton();
 
         if (UserLocation.enable_mock_button) {
