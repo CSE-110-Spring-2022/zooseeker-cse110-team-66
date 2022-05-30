@@ -55,6 +55,12 @@ public class SearchEmulatorTests {
 
     @Test
     public void SearchInputExisting() {
+        ViewInteraction cbutton = onView(
+                allOf(withId(R.id.clear_btn), withText("CLEAR"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        cbutton.perform(click());
+
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
                         childAtPosition(
@@ -88,32 +94,39 @@ public class SearchEmulatorTests {
         searchAutoComplete2.perform(pressImeActionButton());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.exhibit_item_text), withText("Arctic Foxes"),
+                allOf(withId(R.id.exhibit_item_text), withText("Capuchin Monkeys"),
                         withParent(allOf(withId(R.id.exhibit_item_layout),
                                 withParent(withId(R.id.exhibit_items)))),
                         isDisplayed()));
-        textView.check(matches(withText("Arctic Foxes")));
+        textView.check(matches(withText("Capuchin Monkeys")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.exhibit_item_text), withText("Elephant Odyssey"),
-                        withParent(allOf(withId(R.id.exhibit_item_layout),
-                                withParent(withId(R.id.exhibit_items)))),
-                        isDisplayed()));
-        textView2.check(matches(withText("Elephant Odyssey")));
-
-        ViewInteraction textView4 = onView(
                 allOf(withId(R.id.exhibit_item_text), withText("Gorillas"),
                         withParent(allOf(withId(R.id.exhibit_item_layout),
                                 withParent(withId(R.id.exhibit_items)))),
                         isDisplayed()));
-        textView4.check(matches(withText("Gorillas")));
+        textView2.check(matches(withText("Gorillas")));
 
-        ViewInteraction textView5 = onView(
-                allOf(withId(R.id.exhibit_item_text), withText("Lions"),
+        ViewInteraction textView4 = onView(
+                allOf(withId(R.id.exhibit_item_text), withText("Hippos"),
                         withParent(allOf(withId(R.id.exhibit_item_layout),
                                 withParent(withId(R.id.exhibit_items)))),
                         isDisplayed()));
-        textView5.check(matches(withText("Lions")));
+        textView4.check(matches(withText("Hippos")));
+
+        ViewInteraction textView5 = onView(
+                allOf(withId(R.id.exhibit_item_text), withText("Orangutans"),
+                        withParent(allOf(withId(R.id.exhibit_item_layout),
+                                withParent(withId(R.id.exhibit_items)))),
+                        isDisplayed()));
+        textView5.check(matches(withText("Orangutans")));
+
+        ViewInteraction textView6 = onView(
+                allOf(withId(R.id.exhibit_item_text), withText("Siamangs"),
+                        withParent(allOf(withId(R.id.exhibit_item_layout),
+                                withParent(withId(R.id.exhibit_items)))),
+                        isDisplayed()));
+        textView6.check(matches(withText("Siamangs")));
     }
 
     @Test
