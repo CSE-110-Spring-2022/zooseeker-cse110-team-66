@@ -35,7 +35,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     int routeNum;
     TextView directionDisplay;
     Button backDirection;
-    Button skipDirection;
     Button nextDirection;
     SwitchCompat detailedBtn;
     boolean detailedDirections;
@@ -171,15 +170,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
         else
             directionDisplay.setText(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
-    }
-
-    private void setSkipDirectionButton() {
-        skipDirection = findViewById(R.id.skip_exhibit_direction_btn);
-        skipDirection.setOnClickListener(view -> skipExhibitDirection());
-    }
-
-    private void skipExhibitDirection() {
-
     }
 
     // Set up direction button
