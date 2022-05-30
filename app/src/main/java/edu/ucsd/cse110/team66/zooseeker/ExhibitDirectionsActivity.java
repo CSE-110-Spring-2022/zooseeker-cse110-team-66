@@ -31,9 +31,11 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     private int directionIndex;
     int routeNum;
     TextView directionDisplay;
+    Button backDirection;
+    Button skipDirection;
     Button nextDirection;
     SwitchCompat detailedBtn;
-    boolean detailedDirections = false;
+    boolean detailedDirections;
 
     @SuppressLint("MissingPermission")
     @Override
@@ -47,12 +49,14 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             setContentView(R.layout.activity_exhibit_directions);
         }
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = routeInfo.edit();
-
         routeNum = routeInfo.getInt("routeNum", 0);
         directionIndex = routeNum;
+
         Log.d("directionIndex", ""+directionIndex);
+
         displayDirection();
+        setBackDirectionButton();
+        setSkipDirectionButton();
         setNextDirectionButton();
 
         if (UserLocation.enable_mock_button) {
@@ -119,6 +123,15 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         directionDisplay.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
     }
 
+    private void briefOrDetailedDirections() {
+        if (detailedDirections) {
+            directionDisplay.setText(String.format("%s", detailedExhibitDirections.get(directionIndex)));
+        }
+        else {
+            directionDisplay.setText(String.format("%s", exhibitDirections.get(directionIndex)));
+        }
+    }
+
     private void refresh(){
         if(exhibitDirections.isEmpty() || detailedExhibitDirections.isEmpty())
             return;
@@ -132,20 +145,52 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         }
     }
 
+    /** Set up the back direction button **/
+    private void setBackDirectionButton() {
+        backDirection = findViewById(R.id.back_exhibit_direction_btn);
+        backDirection.setOnClickListener(view -> backExhibitDirection());
+    }
+
+    private void backExhibitDirection() {
+        Log.d("index", String.valueOf(directionIndex));
+        if (directionIndex < 0) {
+            finish();
+            return;
+        }
+        String currentExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex);
+        String previousExhibit = VisitingRoute.entrance_and_exit_gate_id;
+        if (directionIndex > 0) {
+            previousExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex - 1);
+        }
+        List<PlanListItem> previousDirection
+                = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
+        --directionIndex;
+        if (detailedDirections)
+            directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
+        else
+            directionDisplay.setText(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
+    }
+
+    private void setSkipDirectionButton() {
+        skipDirection = findViewById(R.id.skip_exhibit_direction_btn);
+        skipDirection.setOnClickListener(view -> skipExhibitDirection());
+    }
+
+    private void skipExhibitDirection() {
+
+    }
+
     // Set up direction button
     private void setNextDirectionButton() {
         nextDirection = findViewById(R.id.next_exhibit_direction_btn);
         nextDirection.setOnClickListener(view -> nextExhibitDirection());
-        //directionIndex++;
     }
 
     // Go to the next direction; return to plan route if all directions have been displayed
     private void nextExhibitDirection() {
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
-        int i = exhibitDirections.size();
-        if (directionIndex >= exhibitDirections.size()-1)
-        {
+        if (directionIndex >= exhibitDirections.size() - 1) {
             editor.putInt("routeNum", 0);
             editor.apply();
             finish();
@@ -154,11 +199,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         editor.putInt("routeNum", directionIndex);
         editor.apply();
         ++directionIndex;
-        if(detailedDirections)
-            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
-        else
-            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
-
+        briefOrDetailedDirections();
         handleLocationChange();
     }
 
@@ -169,15 +210,12 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             List<PlanListItem> nextFastestDirection = VisitingRoute.getNextFastestDirection(directionIndex);
 
             // check if not too far off track, not enough to replan, just automatically update current direction
-            if (nextFastestDirection.get(nextFastestDirection.size()-1).target_id
+            if (nextFastestDirection.get(nextFastestDirection.size() - 1).target_id
                     .equals(VisitingRoute.getExhibitToVisitAtIndex(directionIndex))) {
-                VisitingRoute.route.set(directionIndex,nextFastestDirection);
-                exhibitDirections.set(directionIndex,PlanListItem.toBriefMessage(VisitingRoute.route.get(directionIndex)));
-                detailedExhibitDirections.set(directionIndex,PlanListItem.toDetailedMessage(VisitingRoute.route.get(directionIndex)));
-                if(detailedDirections)
-                    directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
-                else
-                    directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+                VisitingRoute.route.set(directionIndex, nextFastestDirection);
+                exhibitDirections.set(directionIndex, PlanListItem.toBriefMessage(VisitingRoute.route.get(directionIndex)));
+                detailedExhibitDirections.set(directionIndex, PlanListItem.toDetailedMessage(VisitingRoute.route.get(directionIndex)));
+                briefOrDetailedDirections();
             }
             // check if off track lots to replan
             else {

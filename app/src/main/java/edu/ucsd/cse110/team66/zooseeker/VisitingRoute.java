@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
@@ -63,17 +64,12 @@ public class VisitingRoute {
         // 1. Load the graph...
 
         VisitingRoute.g = ZooData.loadZooGraphJSON(this.context,this.context.getString(R.string.zoo_graph_json));
-
-
-
         VisitingRoute.saveRoute();
         VisitingRoute.generateCoordMap();
-
-
     }
 
     public static String closestExhibit() {
-        double distance = 99999999;
+        double distance = Integer.MAX_VALUE;
         String closest = "";
         for (Map.Entry<String,LatLng> place:VisitingRoute.coordMap.entrySet()) {
             if (getDistanceFT(place.getValue()) < distance) {
@@ -136,13 +132,13 @@ public class VisitingRoute {
         //get rid of exit gate
         exhibitsLeft.remove(exhibitsLeft.size()-1);
 
-        double currentDistance = 999999999;
+        double currentDistance = Integer.MAX_VALUE;
         String currentPosition = VisitingRoute.closestExhibit();
         String closestExhibit = currentPosition;
         List<IdentifiedWeightedEdge> nextDirection = null;
         for (String nextPosition: exhibitsLeft) {
             GraphPath<String, IdentifiedWeightedEdge> path
-                    = VisitingRoute.get_fastest_direction(currentPosition, nextPosition);
+                    = VisitingRoute.getFastestDirection(currentPosition, nextPosition);
             if (currentDistance > path.getWeight()) {
                 currentDistance =  path.getWeight();
                 nextDirection = path.getEdgeList();
@@ -151,7 +147,7 @@ public class VisitingRoute {
         }
 
         if (nextDirection == null) {
-            nextDirection = VisitingRoute.get_fastest_direction(currentPosition,VisitingRoute.entrance_and_exit_gate_id).getEdgeList();
+            nextDirection = VisitingRoute.getFastestDirection(currentPosition, VisitingRoute.entrance_and_exit_gate_id).getEdgeList();
         }
 
         List<PlanListItem> currentDirection = new ArrayList<>();
@@ -188,7 +184,6 @@ public class VisitingRoute {
                 VisitingRoute.coordMap.put(vertexInfo.id, new LatLng(vertexInfo.lat,vertexInfo.lng));
             }
         }
-
     }
 
     public static List<List<PlanListItem>> getRoute() {
@@ -196,8 +191,8 @@ public class VisitingRoute {
     }
 
     public static void saveRoute() {
-        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(VisitingRoute.entrance_and_exit_gate_id, VisitingRoute.exhibitsAdded);
-        VisitingRoute.route = VisitingRoute.get_planned_directions(VisitingRoute.entrance_and_exit_gate_id,Directions);
+        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.getFastestPathToEnd(VisitingRoute.entrance_and_exit_gate_id, VisitingRoute.exhibitsAdded);
+        VisitingRoute.route = VisitingRoute.getPlannedDirections(VisitingRoute.entrance_and_exit_gate_id,Directions);
         VisitingRoute.saveExhibitsVisitingOrder();
     }
 
@@ -211,12 +206,12 @@ public class VisitingRoute {
 
     public static void saveExhibitsVisitingOrder() {
         exhibit_visiting_order = new ArrayList<String>();
-        for (List<PlanListItem> direction:VisitingRoute.route) {
+        for (List<PlanListItem> direction : VisitingRoute.route) {
             exhibit_visiting_order.add(direction.get(direction.size() - 1).target_id);
         }
     }
 
-    public static Vector<List<IdentifiedWeightedEdge>> get_fastest_path_to_end(String currentPosition, List<String> exhibitsAdded) {
+    public static Vector<List<IdentifiedWeightedEdge>> getFastestPathToEnd(String currentPosition, List<String> exhibitsAdded) {
         Vector<List<IdentifiedWeightedEdge>> Directions = new Vector<List<IdentifiedWeightedEdge>>();
 
         // 2. Find the fastest path.
@@ -225,12 +220,12 @@ public class VisitingRoute {
             toPathFind.add(exhibitsAdded.get(i));
         }
         for (int i = 0; i < exhibitsAdded.size(); ++i) {
-            double currentDistance = 999999999;
+            double currentDistance = Integer.MAX_VALUE;
             String closestExhibit = currentPosition;
             List<IdentifiedWeightedEdge> nextDirection = null;
             for (String nextPosition: toPathFind) {
                 GraphPath<String, IdentifiedWeightedEdge> path
-                        = VisitingRoute.get_fastest_direction(currentPosition, nextPosition);
+                        = VisitingRoute.getFastestDirection(currentPosition, nextPosition);
                 if (currentDistance > path.getWeight()) {
                     currentDistance =  path.getWeight();
                     nextDirection = path.getEdgeList();
@@ -243,44 +238,54 @@ public class VisitingRoute {
             toPathFind.remove(currentPosition);
         }
 
-        Directions.add(VisitingRoute.get_fastest_direction(currentPosition, VisitingRoute.entrance_and_exit_gate_id).getEdgeList());
+        Directions.add(VisitingRoute.getFastestDirection(currentPosition, VisitingRoute.entrance_and_exit_gate_id).getEdgeList());
 
         return Directions;
     }
 
-    public static GraphPath<String, IdentifiedWeightedEdge> get_fastest_direction(String pos1, String pos2) {
+    public static GraphPath<String, IdentifiedWeightedEdge> getFastestDirection(String pos1, String pos2) {
         return DijkstraShortestPath.findPathBetween(VisitingRoute.g, pos1, pos2);
     }
 
-    public static List<List<PlanListItem>> get_planned_directions(String previous, Vector<List<IdentifiedWeightedEdge>> Directions) {
+    public static List<PlanListItem> getPreviousExhibitDirections(String currentExhibit, String previousExhibit){
+        List<IdentifiedWeightedEdge> path = getFastestDirection(currentExhibit, previousExhibit).getEdgeList();
+        return constructDirection(currentExhibit, path);
+    }
+
+    public static List<List<PlanListItem>> getPlannedDirections(String previous, Vector<List<IdentifiedWeightedEdge>> Directions) {
         // Create directions object to help with generating direction texts
         List<List<PlanListItem>> plannedDirections = new ArrayList<>();
         for (int i = 0; i < Directions.size(); ++i) {
-            List<PlanListItem> currentDirection = new ArrayList<>();
-            for (int j = 0; j < Directions.get(i).size(); ++j) {
-                IdentifiedWeightedEdge to_add = Directions.get(i).get(j);
-                String street_name = edgeinfo.get(to_add.getId()).street;
-                String street_id = to_add.getId();
-                String source_id;
-                String target_id;
-                if (to_add.getSource().equals(previous)) {
-                    source_id = to_add.getSource();
-                    target_id = to_add.getTarget();
-                }
-                else {
-                    source_id = to_add.getTarget();
-                    target_id = to_add.getSource();
-                }
-                previous = target_id;
-                String source_name = exhibit_id_to_name.get(source_id);
-                String target_name = exhibit_id_to_name.get(target_id);
-                double weight = to_add.getWeight();
-                currentDirection.add(new PlanListItem(street_name,street_id,
-                        source_id,target_id,source_name,target_name,weight));
-            }
-            plannedDirections.add(currentDirection);
+            List<IdentifiedWeightedEdge> path = Directions.get(i);
+            plannedDirections.add(constructDirection(previous, path));
         }
-
         return plannedDirections;
+    }
+
+    /** Construct directions from one exhibit to another exhibit based on given edges **/
+    private static List<PlanListItem> constructDirection(String previous, List<IdentifiedWeightedEdge> path) {
+        List<PlanListItem> currentDirection = new ArrayList<>();
+        for (int j = 0; j < path.size(); ++j) {
+            IdentifiedWeightedEdge to_add = path.get(j);
+            String street_name = edgeinfo.get(to_add.getId()).street;
+            String street_id = to_add.getId();
+            String source_id;
+            String target_id;
+            if (to_add.getSource().equals(previous)) {
+                source_id = to_add.getSource();
+                target_id = to_add.getTarget();
+            }
+            else {
+                source_id = to_add.getTarget();
+                target_id = to_add.getSource();
+            }
+            previous = target_id;
+            String source_name = exhibit_id_to_name.get(source_id);
+            String target_name = exhibit_id_to_name.get(target_id);
+            double weight = to_add.getWeight();
+            currentDirection.add(new PlanListItem(street_name,street_id,
+                    source_id,target_id,source_name,target_name,weight));
+        }
+        return currentDirection;
     }
 }

@@ -50,9 +50,6 @@ public class SearchExhibitActivity extends AppCompatActivity {
         setSelectedExhibitsButton();
         setExhibitItemAdapter();
         setExhibitRecyclerView();
-        recyclerView.setVisibility(View.INVISIBLE);
-
-        planButton.setEnabled(false);
     }
 
     /** Create a menu at the top for the search and voice search icons **/
@@ -187,10 +184,11 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
     /** Set up the recycler view to use the adapter **/
     private void setExhibitRecyclerView() {
-        recyclerView = findViewById(R.id.exhibit_items);
+        recyclerView = (RecyclerView) findViewById(R.id.exhibit_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(exhibitItemAdapter);
+        recyclerView.setVisibility(View.INVISIBLE);
     }
 
 }
