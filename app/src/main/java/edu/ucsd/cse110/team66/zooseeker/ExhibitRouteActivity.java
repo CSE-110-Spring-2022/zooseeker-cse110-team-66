@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExhibitRouteActivity extends AppCompatActivity {
-    private final String start = "entrance_exit_gate";
     public RecyclerView recyclerView;
     private ArrayList<String> detailedExhibitDirections;
     private ArrayList<String> exhibitDirections;
