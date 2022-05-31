@@ -11,38 +11,39 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.TextView;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class PlanButtonTests {
+public class PlanButtonTest {
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Rule
-    public ActivityScenarioRule rule = new ActivityScenarioRule<>(SearchExhibitActivity.class);
+    public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+
+    @Rule
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void oneExhibitAddedTest() {
+    public void planButtonTest() {
         ViewInteraction cbutton = onView(
                 allOf(withId(R.id.clear_btn), withText("CLEAR"),
                         withParent(withParent(withId(android.R.id.content))),
@@ -70,6 +71,17 @@ public class PlanButtonTests {
                         isDisplayed()));
         materialButton.perform(click());
 
+        ViewInteraction materialButton2 = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+                        childAtPosition(
+                                allOf(withId(R.id.exhibit_item_layout),
+                                        childAtPosition(
+                                                withId(R.id.exhibit_items),
+                                                1)),
+                                1),
+                        isDisplayed()));
+        materialButton2.perform(click());
+
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Collapse"),
                         childAtPosition(
@@ -83,8 +95,9 @@ public class PlanButtonTests {
 
         ViewInteraction button = onView(
                 allOf(withId(R.id.plan_btn), withText("PLAN\n"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isEnabled()));
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
         button.check(matches(isEnabled()));
     }
 

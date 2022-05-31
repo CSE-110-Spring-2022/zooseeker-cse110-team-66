@@ -39,14 +39,14 @@ public class SearchExhibitActivity extends AppCompatActivity {
     private Button clearButton;
     private Button showSelectedExhibitsButton;
     private TextView countView;
-    private final PermissionChecker permissionChecker = new PermissionChecker(this);
+    //private final PermissionChecker permissionChecker = new PermissionChecker(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_exhibit);
 
-        if (permissionChecker.ensurePermissions()) return;
+        //if (permissionChecker.ensurePermissions()) return;
 
         setPlanButton();
         setClearButton();
