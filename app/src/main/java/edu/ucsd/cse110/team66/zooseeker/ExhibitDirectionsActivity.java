@@ -193,9 +193,9 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             finish();
             return;
         }
+        ++directionIndex;
         editor.putInt("routeNum", directionIndex);
         editor.apply();
-        ++directionIndex;
         briefOrDetailedDirections();
         handleLocationChange();
     }
