@@ -170,7 +170,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
                 = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
         editor.putInt("routeNum", directionIndex);
         editor.apply();
-        --directionIndex;
         if (detailedDirections)
             directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
         else
