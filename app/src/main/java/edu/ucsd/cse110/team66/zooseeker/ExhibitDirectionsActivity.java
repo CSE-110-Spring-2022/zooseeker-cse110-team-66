@@ -153,7 +153,11 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 
     private void backExhibitDirection() {
         Log.d("index", String.valueOf(directionIndex));
+        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = routeInfo.edit();
         if (directionIndex < 0) {
+            editor.putInt("routeNum", 0);
+            editor.apply();
             finish();
             return;
         }
@@ -164,6 +168,8 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         }
         List<PlanListItem> previousDirection
                 = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
+        editor.putInt("routeNum", directionIndex);
+        editor.apply();
         --directionIndex;
         if (detailedDirections)
             directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
