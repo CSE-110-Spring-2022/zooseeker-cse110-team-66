@@ -165,12 +165,12 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         String previousExhibit = VisitingRoute.entrance_and_exit_gate_id;
         if (directionIndex > 0) {
             previousExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex - 1);
+            --directionIndex;
         }
         List<PlanListItem> previousDirection
                 = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
         editor.putInt("routeNum", directionIndex);
         editor.apply();
-        --directionIndex;
         if (detailedDirections)
             directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
         else
