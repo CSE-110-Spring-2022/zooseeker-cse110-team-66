@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class ExhibitDirectionsActivity extends AppCompatActivity {
     private ArrayList<String> exhibitDirections;
@@ -56,6 +55,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 
         displayDirection();
         setBackDirectionButton();
+        setSkipDirectionButton();
         setNextDirectionButton();
 
         if (UserLocation.enable_mock_button) {
@@ -144,6 +144,45 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         }
     }
 
+    /** Set up the SKIP direction button **/
+    private void setSkipDirectionButton() {
+        skipDirection = findViewById(R.id.skip_exhibit_direction_btn);
+        skipDirection.setOnClickListener(view -> skipExhibitDirection());
+    }
+
+    private void skipExhibitDirection() {
+        String currentExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex);
+        String previousExhibit = VisitingRoute.entrance_and_exit_gate_id;
+        List<PlanListItem> currentDirection = VisitingRoute.getExhibitDirections(previousExhibit, currentExhibit);
+
+        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = routeInfo.edit();
+        // close Direction page if visiting list is empty.
+        if(exhibitDirections.isEmpty()){
+            editor.apply();
+            finish();
+            return;
+        }
+
+//        skipDirection.setEnabled(true);
+        if(!VisitingRoute.exhibitsAdded.isEmpty())
+            VisitingRoute.exhibitsAdded.remove(currentExhibit);
+//        VisitingRoute.exhibit_visiting_order.remove(currentExhibit);
+//        VisitingRoute.route.remove(currentDirection);
+        exhibitDirections.remove(directionIndex);
+        detailedExhibitDirections.remove(directionIndex);
+        if(directionIndex == VisitingRoute.exhibitsAdded.size())
+            --directionIndex;
+        if(exhibitDirections.size() > 1 && exhibitDirections.get(0) == exhibitDirections.get(1)){
+            exhibitDirections.remove(1);
+            detailedExhibitDirections.remove(1);
+            directionIndex = 0;
+        }
+
+        briefOrDetailedDirections();
+
+    }
+
     /** Set up the back direction button **/
     private void setBackDirectionButton() {
         backDirection = findViewById(R.id.back_exhibit_direction_btn);
@@ -154,13 +193,20 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         String currentExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex);
         String previousExhibit = VisitingRoute.entrance_and_exit_gate_id;
         backDirection.setEnabled(false);
+//        skipDirection.setEnabled(false);
+        Log.d("run", "b1");
+        if(exhibitDirections.size() <= 1)
+            return;
+        Log.d("run", "b2");
         if (directionIndex > 0) {
             previousExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex - 1);
             --directionIndex;
             backDirection.setEnabled(true);
+//            skipDirection.setEnabled(true);
         }
+        Log.d("prev", ""+previousExhibit);
         List<PlanListItem> previousDirection
-                = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
+                = VisitingRoute.getExhibitDirections(currentExhibit, previousExhibit);
 
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
@@ -182,18 +228,20 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     private void nextExhibitDirection() {
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
-        if (directionIndex >= exhibitDirections.size() - 1) {
+        if (directionIndex >= exhibitDirections.size() || exhibitDirections.size() == 1) {
             editor.putInt("routeNum", 0);
             editor.apply();
             finish();
             return;
         }
-        ++directionIndex;
         editor.putInt("routeNum", directionIndex);
         editor.apply();
+        ++directionIndex;
         backDirection.setEnabled(true);
+//        skipDirection.setEnabled(true);
         briefOrDetailedDirections();
         handleLocationChange();
+
     }
 
     private void handleLocationChange() {

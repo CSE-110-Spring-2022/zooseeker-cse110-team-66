@@ -247,9 +247,9 @@ public class VisitingRoute {
         return DijkstraShortestPath.findPathBetween(VisitingRoute.g, pos1, pos2);
     }
 
-    public static List<PlanListItem> getPreviousExhibitDirections(String currentExhibit, String previousExhibit){
-        List<IdentifiedWeightedEdge> path = getFastestDirection(currentExhibit, previousExhibit).getEdgeList();
-        return constructDirection(currentExhibit, path);
+    public static List<PlanListItem> getExhibitDirections(String start, String dest){
+        List<IdentifiedWeightedEdge> path = getFastestDirection(start, dest).getEdgeList();
+        return constructDirection(start, path);
     }
 
     public static List<List<PlanListItem>> getPlannedDirections(String previous, Vector<List<IdentifiedWeightedEdge>> Directions) {
