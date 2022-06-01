@@ -46,13 +46,13 @@ public class SearchExhibitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_exhibit);
 
-        if (permissionChecker.ensurePermissions()) return;
-
         setPlanButton();
         setClearButton();
         setSelectedExhibitsButton();
         setExhibitItemAdapter();
         setExhibitRecyclerView();
+
+        if (permissionChecker.ensurePermissions()) return;
     }
 
     /** Create a menu at the top for the search and voice search icons **/
