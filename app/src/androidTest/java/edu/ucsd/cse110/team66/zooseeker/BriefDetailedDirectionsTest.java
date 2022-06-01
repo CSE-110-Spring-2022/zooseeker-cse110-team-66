@@ -20,6 +20,7 @@ import android.view.ViewParent;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
@@ -31,20 +32,18 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RoutePlannedAndShownTest {
+public class BriefDetailedDirectionsTest {
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+    @Rule
+    public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    /**
-     * Test that the planned route is efficient and visits all chosen exhibits:
-     *
-     *
-     */
-
-
     @Test
-    public void routePlannedAndShown() {
+    public void briefDetailedDirectionsTest() {
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
                         childAtPosition(
@@ -55,31 +54,28 @@ public class RoutePlannedAndShownTest {
                         isDisplayed()));
         actionMenuItemView.perform(click());
 
-        // Add Bali Mynah
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
                         childAtPosition(
                                 allOf(withId(R.id.exhibit_item_layout),
                                         childAtPosition(
                                                 withId(R.id.exhibit_items),
-                                                0)),
+                                                2)),
                                 1),
                         isDisplayed()));
         materialButton.perform(click());
 
-        // Add Motmot
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
                         childAtPosition(
                                 allOf(withId(R.id.exhibit_item_layout),
                                         childAtPosition(
                                                 withId(R.id.exhibit_items),
-                                                1)),
+                                                3)),
                                 1),
                         isDisplayed()));
         materialButton2.perform(click());
 
-        // Add Flamingos
         ViewInteraction materialButton3 = onView(
                 allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
                         childAtPosition(
@@ -91,19 +87,18 @@ public class RoutePlannedAndShownTest {
                         isDisplayed()));
         materialButton3.perform(click());
 
-        // Add Gorillas
-        ViewInteraction materialButton4 = onView(
-                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Collapse"),
                         childAtPosition(
-                                allOf(withId(R.id.exhibit_item_layout),
+                                allOf(withId(androidx.appcompat.R.id.action_bar),
                                         childAtPosition(
-                                                withId(R.id.exhibit_items),
-                                                7)),
+                                                withId(androidx.appcompat.R.id.action_bar_container),
+                                                0)),
                                 1),
                         isDisplayed()));
-        materialButton4.perform(click());
+        appCompatImageButton.perform(click());
 
-        ViewInteraction materialButton5 = onView(
+        ViewInteraction materialButton4 = onView(
                 allOf(withId(R.id.plan_btn), withText("Plan\n"),
                         childAtPosition(
                                 childAtPosition(
@@ -111,21 +106,23 @@ public class RoutePlannedAndShownTest {
                                         3),
                                 0),
                         isDisplayed()));
+        materialButton4.perform(click());
+
+        ViewInteraction materialButton5 = onView(
+                allOf(withId(R.id.directions_btn), withText("Directions"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
         materialButton5.perform(click());
 
-        ViewInteraction recyclerView = onView(
-                allOf(withId(R.id.plan_items),
+        ViewInteraction switch_ = onView(
+                allOf(withId(R.id.detailed_directions), withText("Detailed Directions"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        recyclerView.check(matches(isDisplayed()));
-
-
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.plan_name_item), withText("To Flamingos"),
-                        withParent(withParent(withId(R.id.plan_items))),
-                        isDisplayed()));
-        textView.check(matches(withText("To Flamingos")));
+        switch_.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
