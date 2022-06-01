@@ -175,26 +175,20 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             finish();
             return;
         }
-//        if(exhibitDirections.size() > 1 && exhibitDirections.get(0) == exhibitDirections.get(1)){
-//            exhibitDirections.remove(1);
-//            detailedExhibitDirections.remove(1);
-//            directionIndex = 0;
-//        }
-
-
 
         // recalculate directions for remaining exhibits
-//        List<String> exhibitsLeft = VisitingRoute.getExhibitsLeft(directionIndex);
-//        exhibitsLeft.remove(exhibitsLeft.size() - 1);
-//        String currentExhibit;
-//        if (directionIndex > 0) {
-//            currentExhibit = VisitingRoute.exhibit_visiting_order.get(directionIndex-1);
-//        }
-//        else {
-//            currentExhibit = VisitingRoute.entrance_and_exit_gate_id;
-//        }
-//
-//        Vector<List<IdentifiedWeightedEdge>> newDirections = VisitingRoute.getFastestPathToEnd(currentExhibit, exhibitsLeft);
+        List<String> exhibitsLeft = VisitingRoute.getExhibitsLeft(directionIndex);
+        exhibitsLeft.remove(exhibitsLeft.size() - 1);
+        String currentExhibit = VisitingRoute.closestExhibit();
+
+        Vector<List<IdentifiedWeightedEdge>> newDirections = VisitingRoute.getFastestPathToEnd(currentExhibit, exhibitsLeft);
+        List<List<PlanListItem>> newPlans = VisitingRoute.getPlannedDirections(currentExhibit,newDirections);
+        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
+            VisitingRoute.route.set(i,newPlans.get(i-directionIndex));
+            exhibitDirections.set(i,PlanListItem.toBriefMessage(VisitingRoute.route.get(i)));
+            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
+        }
+        VisitingRoute.saveExhibitsVisitingOrder();
 
         briefOrDetailedDirections();
 
@@ -280,6 +274,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             else {
                 showReplanPopup(this);
             }
+            VisitingRoute.saveExhibitsVisitingOrder();
         }
     }
 
@@ -311,7 +306,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
             // saved route
             VisitingRoute.route.set(i, route.get(i-directionIndex));
-            VisitingRoute.saveExhibitsVisitingOrder();
             //generating correct exhibitDirections
             exhibitDirections.set(i,PlanListItem.toBriefMessage(VisitingRoute.route.get(i)));
             detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));

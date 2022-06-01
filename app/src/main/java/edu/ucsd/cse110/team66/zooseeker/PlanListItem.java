@@ -41,6 +41,9 @@ public class PlanListItem {
     }
 
     public static String toDetailedMessage(List<PlanListItem> items) {
+        if (items.size() == 0) {
+            return "To " + VisitingRoute.exhibit_id_to_name.get(VisitingRoute.closestExhibit()) + ":\nYou are there.";
+        }
         String message = "To " + items.get(items.size()-1).target_name + ": \n";
         for (int i = 0; i < items.size(); ++i) {
             if (i == 0) {
@@ -57,6 +60,9 @@ public class PlanListItem {
     }
 
     public static String toBriefMessage(List<PlanListItem> items) {
+        if (items.size() == 0) {
+            return "To " + VisitingRoute.exhibit_id_to_name.get(VisitingRoute.closestExhibit()) + ":\nYou are there.";
+        }
         String message = "To " + items.get(items.size()-1).target_name + ": \n";
         for (int i = 0; i < items.size(); ++i) {
             message += "Walk " + String.valueOf(items.get(i).weight) + " feet towards " +

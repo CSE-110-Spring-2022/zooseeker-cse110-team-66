@@ -207,7 +207,13 @@ public class VisitingRoute {
     public static void saveExhibitsVisitingOrder() {
         exhibit_visiting_order = new ArrayList<String>();
         for (List<PlanListItem> direction : VisitingRoute.route) {
-            exhibit_visiting_order.add(direction.get(direction.size() - 1).target_id);
+            if (direction.size() == 0) {
+                exhibit_visiting_order.add(VisitingRoute.closestExhibit());
+            }
+            else {
+                exhibit_visiting_order.add(direction.get(direction.size() - 1).target_id);
+            }
+
         }
     }
 
@@ -255,6 +261,10 @@ public class VisitingRoute {
     public static List<List<PlanListItem>> getPlannedDirections(String previous, Vector<List<IdentifiedWeightedEdge>> Directions) {
         // Create directions object to help with generating direction texts
         List<List<PlanListItem>> plannedDirections = new ArrayList<>();
+        if (Directions.size() == 1 && Directions.get(0).size() == 0) {
+            plannedDirections.add(new ArrayList<PlanListItem>());
+            return plannedDirections;
+        }
         for (int i = 0; i < Directions.size(); ++i) {
             List<IdentifiedWeightedEdge> path = Directions.get(i);
             List<PlanListItem> constructDirection = constructDirection(previous, path);
