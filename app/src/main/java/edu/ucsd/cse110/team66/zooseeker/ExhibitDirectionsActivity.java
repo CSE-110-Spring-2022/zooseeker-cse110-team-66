@@ -221,7 +221,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             --directionIndex;
             backDirection.setEnabled(directionIndex>0);
             List<PlanListItem> previousDirection
-                    = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
+                    = VisitingRoute.getExhibitDirections(currentExhibit, previousExhibit);
 
             SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = routeInfo.edit();
