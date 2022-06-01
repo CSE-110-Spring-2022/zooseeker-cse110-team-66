@@ -149,6 +149,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     private void setBackDirectionButton() {
         backDirection = findViewById(R.id.back_exhibit_direction_btn);
         backDirection.setOnClickListener(view -> backExhibitDirection());
+        backDirection.setEnabled(directionIndex>0);
     }
 
     private void backExhibitDirection() {
@@ -158,19 +159,20 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         if (directionIndex > 0) {
             previousExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex - 1);
             --directionIndex;
-            backDirection.setEnabled(true);
-        }
-        List<PlanListItem> previousDirection
-                = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
+            backDirection.setEnabled(directionIndex>0);
+            List<PlanListItem> previousDirection
+                    = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
 
-        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = routeInfo.edit();
-        editor.putInt("routeNum", directionIndex);
-        editor.apply();
-        if (detailedDirections)
-            directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
-        else
-            directionDisplay.setText(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
+            SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = routeInfo.edit();
+            editor.putInt("routeNum", directionIndex);
+            editor.apply();
+            if (detailedDirections)
+                directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
+            else
+                directionDisplay.setText(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
+        }
+
     }
 
     // Set up direction button
