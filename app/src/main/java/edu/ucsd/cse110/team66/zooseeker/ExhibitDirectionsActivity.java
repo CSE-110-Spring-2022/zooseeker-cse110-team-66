@@ -159,6 +159,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = routeInfo.edit();
         // close Direction page if visiting list is empty.
         if(exhibitDirections.isEmpty()){
+            editor.putInt("routeNum", 0);
             editor.apply();
             finish();
             return;
@@ -171,8 +172,12 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 //        VisitingRoute.route.remove(currentDirection);
         exhibitDirections.remove(directionIndex);
         detailedExhibitDirections.remove(directionIndex);
-        if(directionIndex == VisitingRoute.exhibitsAdded.size())
-            --directionIndex;
+        if(directionIndex == VisitingRoute.exhibitsAdded.size()){
+            editor.putInt("routeNum", 0);
+            editor.apply();
+            finish();
+            return;
+        }
         if(exhibitDirections.size() > 1 && exhibitDirections.get(0) == exhibitDirections.get(1)){
             exhibitDirections.remove(1);
             detailedExhibitDirections.remove(1);
