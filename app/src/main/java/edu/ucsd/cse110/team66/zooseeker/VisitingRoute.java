@@ -107,6 +107,12 @@ public class VisitingRoute {
     public static List<LatLng> getCoordsOnRouteDirection(int index) {
         List<PlanListItem> direction = VisitingRoute.route.get(index);
         List<LatLng> coords = new ArrayList<>();
+
+        if (direction.size() == 0) {
+            String currentLocation = VisitingRoute.closestExhibit();
+            coords.add(new LatLng(coordMap.get(currentLocation).latitude,coordMap.get(currentLocation).longitude));
+            return coords;
+        }
         //if not looking at last direction
         coords.add(new LatLng(coordMap.get(direction.get(0).source_id).latitude,coordMap.get(direction.get(0).source_id).longitude));
 
