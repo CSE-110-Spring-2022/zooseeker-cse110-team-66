@@ -327,6 +327,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             exhibitDirections.set(i,PlanListItem.toBriefMessage(VisitingRoute.route.get(i)));
             detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
         }
+        VisitingRoute.saveExhibitsVisitingOrder();
         briefOrDetailedDirections();
     }
 }
