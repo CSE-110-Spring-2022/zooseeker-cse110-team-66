@@ -151,10 +151,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     }
 
     private void skipExhibitDirection() {
-        String currentExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex);
-        String previousExhibit = VisitingRoute.entrance_and_exit_gate_id;
-        List<PlanListItem> currentDirection = VisitingRoute.getExhibitDirections(previousExhibit, currentExhibit);
-
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
         // close Direction page if visiting list is empty.
@@ -165,11 +161,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             return;
         }
 
-//        skipDirection.setEnabled(true);
-        if(!VisitingRoute.exhibitsAdded.isEmpty())
-            VisitingRoute.exhibitsAdded.remove(currentExhibit);
-//        VisitingRoute.exhibit_visiting_order.remove(currentExhibit);
-//        VisitingRoute.route.remove(currentDirection);
         exhibitDirections.remove(directionIndex);
         detailedExhibitDirections.remove(directionIndex);
         if(directionIndex == VisitingRoute.exhibitsAdded.size()){
@@ -178,11 +169,11 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             finish();
             return;
         }
-        if(exhibitDirections.size() > 1 && exhibitDirections.get(0) == exhibitDirections.get(1)){
-            exhibitDirections.remove(1);
-            detailedExhibitDirections.remove(1);
-            directionIndex = 0;
-        }
+//        if(exhibitDirections.size() > 1 && exhibitDirections.get(0) == exhibitDirections.get(1)){
+//            exhibitDirections.remove(1);
+//            detailedExhibitDirections.remove(1);
+//            directionIndex = 0;
+//        }
 
         briefOrDetailedDirections();
 
