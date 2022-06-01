@@ -24,6 +24,7 @@ public class VisitingRoute {
     public static Graph<String, IdentifiedWeightedEdge> g;
     public static Map<String, ZooData.EdgeInfo> edgeinfo;
     public static Map<String, String> exhibit_id_to_name;
+    public static Map<String, List<String>> groups_to_added_exhibits;
     public static List<List<PlanListItem>> route;
     public static List<String> exhibit_visiting_order;
     public static Map<String, LatLng> coordMap;
@@ -274,6 +275,7 @@ public class VisitingRoute {
         for (int i = 0; i < Directions.size(); ++i) {
             List<IdentifiedWeightedEdge> path = Directions.get(i);
             List<PlanListItem> constructDirection = constructDirection(previous, path);
+
             plannedDirections.add(constructDirection);
             previous=constructDirection.get(constructDirection.size()-1).target_id;
         }

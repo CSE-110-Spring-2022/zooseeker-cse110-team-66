@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.team66.zooseeker;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,8 +21,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -115,14 +118,31 @@ public class SearchExhibitActivity extends AppCompatActivity {
 
         List<ZooData.VertexInfo> exhibits = ZooData.loadZooItemJSON(this, getString(R.string.exhibit_node_info_json),"exhibits");
         Map<String,String> exhibits_to_groups = new HashMap<String, String>();
+        Map<String, List<String>> groups_to_added_exhibits = new HashMap<>();
         for (int i = 0; i < exhibits.size(); ++i) {
             if (exhibits.get(i).group_id != null) {
                 exhibits_to_groups.put(exhibits.get(i).id, exhibits.get(i).group_id);
+
+                if (tempExhibitsAdded.contains(exhibits.get(i).id)) {
+                    // Put selected exhibits with group ids in a map to access later
+                    String group_id = exhibits.get(i).group_id;
+                    String name = exhibits.get(i).name;
+                    List<String> added_exhibits;
+                    if (groups_to_added_exhibits.containsKey(group_id)) {
+                        added_exhibits = groups_to_added_exhibits.get(group_id);
+                    } else {
+                        added_exhibits = new LinkedList<>();
+                    }
+                    added_exhibits.add(name);
+                    groups_to_added_exhibits.put(exhibits.get(i).group_id, added_exhibits);
+                }
             }
             else {
                 exhibits_to_groups.put(exhibits.get(i).id,exhibits.get(i).id);
             }
         }
+
+        VisitingRoute.groups_to_added_exhibits = groups_to_added_exhibits;
 
         Set<String> existingExhibits = new HashSet<String>();
         List<String> exhibitsAdded = new ArrayList<String>();
