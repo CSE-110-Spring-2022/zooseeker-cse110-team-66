@@ -257,7 +257,9 @@ public class VisitingRoute {
         List<List<PlanListItem>> plannedDirections = new ArrayList<>();
         for (int i = 0; i < Directions.size(); ++i) {
             List<IdentifiedWeightedEdge> path = Directions.get(i);
-            plannedDirections.add(constructDirection(previous, path));
+            List<PlanListItem> constructDirection = constructDirection(previous, path);
+            plannedDirections.add(constructDirection);
+            previous=constructDirection.get(constructDirection.size()-1).target_id;
         }
         return plannedDirections;
     }
