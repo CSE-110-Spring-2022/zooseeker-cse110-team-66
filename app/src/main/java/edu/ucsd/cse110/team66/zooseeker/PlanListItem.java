@@ -63,12 +63,27 @@ public class PlanListItem {
         if (items.size() == 0) {
             return "To " + VisitingRoute.exhibit_id_to_name.get(VisitingRoute.closestExhibit()) + ":\nYou are there.";
         }
-        String message = "To " + items.get(items.size()-1).target_name + ": \n";
-        for (int i = 0; i < items.size(); ++i) {
-            message += "Walk " + String.valueOf(items.get(i).weight) + " feet towards " +
+        String destination = "To " + items.get(items.size()-1).target_name + ": \n";
+        String message = "";
+        double weighttotal = 0;
+        int i = 0;
+        while (i < items.size()) {
+            Log.d("test2", items.get(i).street_name);
+            weighttotal = items.get(i).weight;
+            if ((i+1) < items.size()) {
+                while ((i+1) < items.size() && items.get(i).street_name.equals(items.get(i+1).street_name)) {
+                    Log.d("test1", "test ok");
+                    weighttotal += items.get(i+1).weight;
+                    i++;
+                    continue;
+                }
+            }
+            message += "Walk " + String.valueOf(weighttotal) + " feet towards " +
                     items.get(i).target_name + ".\n";
+            weighttotal = 0;
+            i++;
         }
-        return message;
+        return destination + message;
     }
 
 
