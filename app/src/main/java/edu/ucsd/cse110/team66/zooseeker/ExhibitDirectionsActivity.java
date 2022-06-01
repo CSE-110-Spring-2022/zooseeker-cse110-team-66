@@ -169,7 +169,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 
         exhibitDirections.remove(directionIndex);
         detailedExhibitDirections.remove(directionIndex);
-        if(directionIndex == VisitingRoute.exhibitsAdded.size()){
+        if(directionIndex == VisitingRoute.route.size()){
             editor.putInt("routeNum", 0);
             editor.apply();
             finish();
@@ -245,17 +245,18 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     private void nextExhibitDirection() {
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
+
+        editor.putInt("routeNum", directionIndex);
+        editor.apply();
+        ++directionIndex;
+        backDirection.setEnabled(true);
+//        skipDirection.setEnabled(true);
         if (directionIndex >= exhibitDirections.size() || exhibitDirections.size() == 1) {
             editor.putInt("routeNum", 0);
             editor.apply();
             finish();
             return;
         }
-        editor.putInt("routeNum", directionIndex);
-        editor.apply();
-        ++directionIndex;
-        backDirection.setEnabled(true);
-//        skipDirection.setEnabled(true);
         briefOrDetailedDirections();
         handleLocationChange();
 
