@@ -10,5 +10,4 @@ public class UserLocation {
 
     //public static String closest_exhibit()
 
-
 }

@@ -7,19 +7,6 @@
     tools:context=".ExhibitDirectionsActivity"
     tools:ignore="UseSwitchCompatOrMaterialXml">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/direction_display"
-        app:autoSizeTextType="uniform"
-        app:autoSizeMaxTextSize="20dp"
-        android:layout_width="0dp"
-        android:layout_height="580dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/next_exhibit_direction_btn"
         android:layout_width="wrap_content"
@@ -93,4 +80,16 @@
         android:text="Set Location"
         app:layout_constraintBottom_toTopOf="@+id/next_exhibit_direction_btn"
         app:layout_constraintStart_toEndOf="@+id/current_location_longitude" />
+
+    <TextView
+        android:id="@+id/direction_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="116dp"
+        android:text="Filler"
+        android:textAlignment="center"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

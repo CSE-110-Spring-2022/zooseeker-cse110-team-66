@@ -11,38 +11,41 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.TextView;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class PlanButtonTests {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class SelectedExhibitsButtonTests {
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Rule
-    public ActivityScenarioRule rule = new ActivityScenarioRule<>(SearchExhibitActivity.class);
+    public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+
+    @Rule
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void oneExhibitAddedTest() {
+    public void selectedExhibitsButtonTest() {
         ViewInteraction cbutton = onView(
                 allOf(withId(R.id.clear_btn), withText("CLEAR"),
                         withParent(withParent(withId(android.R.id.content))),
@@ -82,9 +85,23 @@ public class PlanButtonTests {
         appCompatImageButton.perform(click());
 
         ViewInteraction button = onView(
-                allOf(withId(R.id.plan_btn), withText("PLAN\n"),
+                allOf(withId(R.id.selected_exhibits_btn), withText("SELECTED EXHIBITS"),
                         withParent(withParent(withId(android.R.id.content))),
-                        isEnabled()));
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
+        button.check(matches(isEnabled()));
+    }
+
+    /**
+     * Check that selected exhibits button is still enabled when reopening app with data
+     */
+    @Test
+    public void selectedExhibitsPersistenceTest() {
+        ViewInteraction button = onView(
+                allOf(withId(R.id.selected_exhibits_btn), withText("SELECTED EXHIBITS"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
         button.check(matches(isEnabled()));
     }
 
