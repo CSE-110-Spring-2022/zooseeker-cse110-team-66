@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
@@ -31,7 +34,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     int routeNum;
     TextView directionDisplay;
     Button backDirection;
-    Button skipDirection;
     Button nextDirection;
     SwitchCompat detailedBtn;
     boolean detailedDirections;
@@ -107,7 +109,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         }
     }
 
-
     // Display the direction(s) to the next closest exhibit on the screen
     private void displayDirection() {
         Gson gson= new Gson();
@@ -118,28 +119,40 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         // Show if Detailed Direction
         detailedBtn = findViewById(R.id.detailed_directions);
         detailedBtn.setOnCheckedChangeListener((compoundButton, checked) -> refresh());
-        refresh();
+        briefOrDetailedDirections();
         directionDisplay.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+    }
+
+    private void setExhibitDirections(String directions){
+        directionDisplay.setText(directions+specifyExhibit());
     }
 
     private void briefOrDetailedDirections() {
         if (detailedDirections) {
-            directionDisplay.setText(String.format("%s", detailedExhibitDirections.get(directionIndex)));
+            setExhibitDirections(String.format("%s", detailedExhibitDirections.get(directionIndex)));
+        } else {
+            setExhibitDirections(String.format("%s", exhibitDirections.get(directionIndex)));
         }
-        else {
-            directionDisplay.setText(String.format("%s", exhibitDirections.get(directionIndex)));
+    }
+
+    /** If the target exhibit(s) is within a group, specify the exhibit in directions **/
+    private String specifyExhibit(){
+        String current_exhibit = VisitingRoute.exhibit_visiting_order.get(directionIndex);
+        if (VisitingRoute.groups_to_added_exhibits.containsKey(current_exhibit)) {
+            return String.format("Find %s inside.", VisitingRoute.groups_to_added_exhibits.get(current_exhibit).toString().replace("[","").replace("]",""));
         }
+        return "";
     }
 
     private void refresh(){
         if(exhibitDirections.isEmpty() || detailedExhibitDirections.isEmpty())
             return;
         if (detailedBtn.isChecked()) {
-            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
+            setExhibitDirections(String.format("%s",detailedExhibitDirections.get(directionIndex)));
             detailedDirections = true;
         }
         else {
-            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+            setExhibitDirections(String.format("%s",exhibitDirections.get(directionIndex)));
             detailedDirections = false;
         }
     }
@@ -183,6 +196,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     private void setBackDirectionButton() {
         backDirection = findViewById(R.id.back_exhibit_direction_btn);
         backDirection.setOnClickListener(view -> backExhibitDirection());
+        backDirection.setEnabled(directionIndex>0);
     }
 
     private void backExhibitDirection() {
@@ -197,21 +211,24 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         if (directionIndex > 0) {
             previousExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex - 1);
             --directionIndex;
-            backDirection.setEnabled(true);
+            Log.d("prev", ""+previousExhibit);
+            backDirection.setEnabled(directionIndex>0);
 //            skipDirection.setEnabled(true);
-        }
-        Log.d("prev", ""+previousExhibit);
-        List<PlanListItem> previousDirection
-                = VisitingRoute.getExhibitDirections(currentExhibit, previousExhibit);
+      
+            List<PlanListItem> previousDirection
+                    = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
 
-        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = routeInfo.edit();
-        editor.putInt("routeNum", directionIndex);
-        editor.apply();
-        if (detailedDirections)
-            directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
-        else
-            directionDisplay.setText(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
+            SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = routeInfo.edit();
+            editor.putInt("routeNum", directionIndex);
+            editor.apply();
+            if (detailedDirections)
+                setExhibitDirections(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
+            else
+                setExhibitDirections(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
+        }
+
+
     }
 
     // Set up direction button
@@ -243,8 +260,8 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     private void handleLocationChange() {
         // if no longer on route, need to recalculate
         if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
-
             List<PlanListItem> nextFastestDirection = VisitingRoute.getNextFastestDirection(directionIndex);
+            if (nextFastestDirection.size() == 0) return;
 
             // check if not too far off track, not enough to replan, just automatically update current direction
             if (nextFastestDirection.get(nextFastestDirection.size() - 1).target_id
@@ -256,29 +273,44 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             }
             // check if off track lots to replan
             else {
-                //TODO: NEED TO GENERATE POPUP ASKING TO REPLAN, IF YES, THEN DO THE BELOW
-
-//                        //replace exhibit directions from current index to end
-//                        String startingExhibit = VisitingRoute.closestExhibit();
-//                        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.get_fastest_path_to_end(startingExhibit, VisitingRoute.getExhibitsLeft(directionIndex));
-//                        List<List<PlanListItem>> route = VisitingRoute.get_planned_directions(startingExhibit,Directions);
-//
-//
-//                        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
-//                            // saved route
-//                            VisitingRoute.route.set(i, route.get(i-directionIndex));
-//                            VisitingRoute.saveExhibitsVisitingOrder();
-//                            //generating correct exhibitDirections
-//                            exhibitDirections.set(i,PlanListItem.toBriefMessage(VisitingRoute.route.get(i)));
-//                            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
-//                        }
-//
-//                        if(detailedDirections)
-//                            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
-//                        else
-//                            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+                showReplanPopup(this);
             }
         }
     }
 
+    private void showReplanPopup(Activity activity) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
+
+        alertBuilder
+                .setTitle("Replan?")
+                .setMessage("You have gone off-route to reach the next exhibit. Do you wish to replan your route?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        replanDirections();
+                    }
+                })
+                .setNegativeButton("No",null)
+                .setCancelable(true);
+
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+    }
+
+    public void replanDirections() {
+        //replace exhibit directions from current index to end
+        String startingExhibit = VisitingRoute.closestExhibit();
+        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.getFastestPathToEnd(startingExhibit, VisitingRoute.getExhibitsLeft(directionIndex));
+        List<List<PlanListItem>> route = VisitingRoute.getPlannedDirections(startingExhibit,Directions);
+
+        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
+            // saved route
+            VisitingRoute.route.set(i, route.get(i-directionIndex));
+            VisitingRoute.saveExhibitsVisitingOrder();
+            //generating correct exhibitDirections
+            exhibitDirections.set(i,PlanListItem.toBriefMessage(VisitingRoute.route.get(i)));
+            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
+        }
+        briefOrDetailedDirections();
+    }
 }

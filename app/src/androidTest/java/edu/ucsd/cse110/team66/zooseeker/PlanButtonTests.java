@@ -42,18 +42,13 @@ public class PlanButtonTests {
     public ActivityScenarioRule rule = new ActivityScenarioRule<>(SearchExhibitActivity.class);
 
     @Test
-    public void testInitialZeroExhibitsAdded() {
-        ActivityScenario scenario =  rule.getScenario();
-
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.onActivity(activity -> {
-            assertFalse(activity.findViewById(R.id.plan_btn).isEnabled());
-            assertEquals(((TextView) activity.findViewById(R.id.exhibit_count)).getText().toString(), "0");
-        });
-    }
-
-    @Test
     public void oneExhibitAddedTest() {
+        ViewInteraction cbutton = onView(
+                allOf(withId(R.id.clear_btn), withText("CLEAR"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        cbutton.perform(click());
+
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
                         childAtPosition(

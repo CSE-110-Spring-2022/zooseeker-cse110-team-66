@@ -37,6 +37,12 @@ public class ClearBtnTest {
 
     @Test
     public void clearBtnTest() {
+        ViewInteraction cbutton = onView(
+                allOf(withId(R.id.clear_btn), withText("CLEAR"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        cbutton.perform(click());
+
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
                         childAtPosition(

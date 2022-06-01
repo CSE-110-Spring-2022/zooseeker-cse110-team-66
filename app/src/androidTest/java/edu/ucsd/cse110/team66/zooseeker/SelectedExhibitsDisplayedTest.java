@@ -5,6 +5,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
@@ -36,6 +37,12 @@ public class SelectedExhibitsDisplayedTest {
 
     @Test
     public void selectedExhibitsDisplayedTest() {
+        ViewInteraction cbutton = onView(
+                allOf(withId(R.id.clear_btn), withText("CLEAR"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        cbutton.perform(click());
+
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.exhibit_search), withContentDescription("Search Exhibit"),
                         childAtPosition(
