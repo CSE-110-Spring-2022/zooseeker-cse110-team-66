@@ -201,6 +201,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         // if no longer on route, need to recalculate
         if (!VisitingRoute.followingCurrentDirection(directionIndex)) {
             List<PlanListItem> nextFastestDirection = VisitingRoute.getNextFastestDirection(directionIndex);
+            if (nextFastestDirection.size() == 0) return;
 
             // check if not too far off track, not enough to replan, just automatically update current direction
             if (nextFastestDirection.get(nextFastestDirection.size() - 1).target_id
