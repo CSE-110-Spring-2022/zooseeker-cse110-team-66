@@ -48,6 +48,7 @@ public class RouteDisplaysChosenExhibitsTest {
      *  - Flamingos -> To Flamingos
      *  - Crocodiles -> To Crocodiles
      *  - Bali Mynah -> To Owens Aviary
+     *  - Entrance and Exit Gate -> To Entrance and Exit Gate
      */
     @Test
     public void routeDisplaysChosenExhibitsTest() {
@@ -144,6 +145,12 @@ public class RouteDisplaysChosenExhibitsTest {
                         withParent(withParent(withId(R.id.plan_items))),
                         isDisplayed()));
         textView3.check(matches(withText("To Crocodiles")));
+
+        ViewInteraction textView4 = onView(
+                allOf(withId(R.id.plan_name_item), withText("To Entrance and Exit Gate"),
+                        withParent(withParent(withId(R.id.plan_items))),
+                        isDisplayed()));
+        textView4.check(matches(withText("To Entrance and Exit Gate")));
     }
 
     private static Matcher<View> childAtPosition(
