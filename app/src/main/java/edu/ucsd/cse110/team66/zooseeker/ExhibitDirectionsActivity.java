@@ -152,19 +152,21 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     }
 
     private void backExhibitDirection() {
-        Log.d("index", String.valueOf(directionIndex));
-        if (directionIndex < 0) {
-            finish();
-            return;
-        }
         String currentExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex);
         String previousExhibit = VisitingRoute.entrance_and_exit_gate_id;
+        backDirection.setEnabled(false);
         if (directionIndex > 0) {
             previousExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex - 1);
+            --directionIndex;
+            backDirection.setEnabled(true);
         }
         List<PlanListItem> previousDirection
                 = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
-        --directionIndex;
+
+        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = routeInfo.edit();
+        editor.putInt("routeNum", directionIndex);
+        editor.apply();
         if (detailedDirections)
             directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
         else
@@ -187,9 +189,10 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             finish();
             return;
         }
+        ++directionIndex;
         editor.putInt("routeNum", directionIndex);
         editor.apply();
-        ++directionIndex;
+        backDirection.setEnabled(true);
         briefOrDetailedDirections();
         handleLocationChange();
     }
