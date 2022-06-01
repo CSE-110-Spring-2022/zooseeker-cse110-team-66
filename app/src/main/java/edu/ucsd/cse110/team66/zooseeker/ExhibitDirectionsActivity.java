@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team66.zooseeker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.constraintlayout.motion.utils.ViewTimeCycle;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -33,6 +34,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     private ArrayList<String> detailedExhibitDirections;
     private int directionIndex;
     int routeNum;
+    Button skipDirection;
     TextView directionDisplay;
     Button backDirection;
     Button nextDirection;
@@ -58,6 +60,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 
         displayDirection();
         setBackDirectionButton();
+        setSkipDirectionButton();
         setNextDirectionButton();
 
         if (UserLocation.enable_mock_button) {
@@ -157,6 +160,52 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         }
     }
 
+    /** Set up the SKIP direction button **/
+    private void setSkipDirectionButton() {
+        skipDirection = findViewById(R.id.skip_exhibit_direction_btn);
+        skipDirection.setOnClickListener(view -> skipExhibitDirection());
+    }
+
+    private void skipExhibitDirection() {
+        SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = routeInfo.edit();
+        // close Direction page if visiting list is empty.
+        if(exhibitDirections.isEmpty()){
+            editor.putInt("routeNum", 0);
+            editor.apply();
+            finish();
+            return;
+        }
+        VisitingRoute.route.remove(directionIndex);
+        VisitingRoute.exhibit_visiting_order.remove(directionIndex);
+
+        exhibitDirections.remove(directionIndex);
+        detailedExhibitDirections.remove(directionIndex);
+        if(directionIndex == VisitingRoute.route.size()){
+            editor.putInt("routeNum", 0);
+            editor.apply();
+            finish();
+            return;
+        }
+
+        // recalculate directions for remaining exhibits
+        List<String> exhibitsLeft = VisitingRoute.getExhibitsLeft(directionIndex);
+        exhibitsLeft.remove(exhibitsLeft.size() - 1);
+        String currentExhibit = VisitingRoute.closestExhibit();
+
+        Vector<List<IdentifiedWeightedEdge>> newDirections = VisitingRoute.getFastestPathToEnd(currentExhibit, exhibitsLeft);
+        List<List<PlanListItem>> newPlans = VisitingRoute.getPlannedDirections(currentExhibit,newDirections);
+        for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
+            VisitingRoute.route.set(i,newPlans.get(i-directionIndex));
+            exhibitDirections.set(i,PlanListItem.toBriefMessage(VisitingRoute.route.get(i)));
+            detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));
+        }
+        VisitingRoute.saveExhibitsVisitingOrder();
+
+        briefOrDetailedDirections();
+
+    }
+
     /** Set up the back direction button **/
     private void setBackDirectionButton() {
         backDirection = findViewById(R.id.back_exhibit_direction_btn);
@@ -168,12 +217,20 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         String currentExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex);
         String previousExhibit = VisitingRoute.entrance_and_exit_gate_id;
         backDirection.setEnabled(false);
+//        skipDirection.setEnabled(false);
+        Log.d("run", "b1");
+        if(exhibitDirections.size() <= 1)
+            return;
+        Log.d("run", "b2");
         if (directionIndex > 0) {
             previousExhibit = VisitingRoute.getExhibitToVisitAtIndex(directionIndex - 1);
             --directionIndex;
+            Log.d("prev", ""+previousExhibit);
             backDirection.setEnabled(directionIndex>0);
+//            skipDirection.setEnabled(true);
+      
             List<PlanListItem> previousDirection
-                    = VisitingRoute.getPreviousExhibitDirections(currentExhibit, previousExhibit);
+                    = VisitingRoute.getExhibitDirections(currentExhibit, previousExhibit);
 
             SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = routeInfo.edit();
@@ -197,18 +254,21 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     private void nextExhibitDirection() {
         SharedPreferences routeInfo = getSharedPreferences("routeInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = routeInfo.edit();
-        if (directionIndex >= exhibitDirections.size() - 1) {
+
+        editor.putInt("routeNum", directionIndex);
+        editor.apply();
+        ++directionIndex;
+        backDirection.setEnabled(true);
+//        skipDirection.setEnabled(true);
+        if (directionIndex >= exhibitDirections.size() || exhibitDirections.size() == 1) {
             editor.putInt("routeNum", 0);
             editor.apply();
             finish();
             return;
         }
-        ++directionIndex;
-        editor.putInt("routeNum", directionIndex);
-        editor.apply();
-        backDirection.setEnabled(true);
         briefOrDetailedDirections();
         handleLocationChange();
+
     }
 
     private void handleLocationChange() {
@@ -229,6 +289,7 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             else {
                 showReplanPopup(this);
             }
+            VisitingRoute.saveExhibitsVisitingOrder();
         }
     }
 
@@ -260,7 +321,6 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
             // saved route
             VisitingRoute.route.set(i, route.get(i-directionIndex));
-            VisitingRoute.saveExhibitsVisitingOrder();
             //generating correct exhibitDirections
             exhibitDirections.set(i,PlanListItem.toBriefMessage(VisitingRoute.route.get(i)));
             detailedExhibitDirections.set(i,PlanListItem.toDetailedMessage(VisitingRoute.route.get(i)));

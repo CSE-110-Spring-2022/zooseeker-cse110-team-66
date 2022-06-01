@@ -108,6 +108,12 @@ public class VisitingRoute {
     public static List<LatLng> getCoordsOnRouteDirection(int index) {
         List<PlanListItem> direction = VisitingRoute.route.get(index);
         List<LatLng> coords = new ArrayList<>();
+
+        if (direction.size() == 0) {
+            String currentLocation = VisitingRoute.closestExhibit();
+            coords.add(new LatLng(coordMap.get(currentLocation).latitude,coordMap.get(currentLocation).longitude));
+            return coords;
+        }
         //if not looking at last direction
         coords.add(new LatLng(coordMap.get(direction.get(0).source_id).latitude,coordMap.get(direction.get(0).source_id).longitude));
 
@@ -208,7 +214,13 @@ public class VisitingRoute {
     public static void saveExhibitsVisitingOrder() {
         exhibit_visiting_order = new ArrayList<String>();
         for (List<PlanListItem> direction : VisitingRoute.route) {
-            exhibit_visiting_order.add(direction.get(direction.size() - 1).target_id);
+            if (direction.size() == 0) {
+                exhibit_visiting_order.add(VisitingRoute.closestExhibit());
+            }
+            else {
+                exhibit_visiting_order.add(direction.get(direction.size() - 1).target_id);
+            }
+
         }
     }
 
@@ -248,14 +260,18 @@ public class VisitingRoute {
         return DijkstraShortestPath.findPathBetween(VisitingRoute.g, pos1, pos2);
     }
 
-    public static List<PlanListItem> getPreviousExhibitDirections(String currentExhibit, String previousExhibit){
-        List<IdentifiedWeightedEdge> path = getFastestDirection(currentExhibit, previousExhibit).getEdgeList();
-        return constructDirection(currentExhibit, path);
+    public static List<PlanListItem> getExhibitDirections(String start, String dest){
+        List<IdentifiedWeightedEdge> path = getFastestDirection(start, dest).getEdgeList();
+        return constructDirection(start, path);
     }
 
     public static List<List<PlanListItem>> getPlannedDirections(String previous, Vector<List<IdentifiedWeightedEdge>> Directions) {
         // Create directions object to help with generating direction texts
         List<List<PlanListItem>> plannedDirections = new ArrayList<>();
+        if (Directions.size() == 1 && Directions.get(0).size() == 0) {
+            plannedDirections.add(new ArrayList<PlanListItem>());
+            return plannedDirections;
+        }
         for (int i = 0; i < Directions.size(); ++i) {
             List<IdentifiedWeightedEdge> path = Directions.get(i);
             List<PlanListItem> constructDirection = constructDirection(previous, path);
