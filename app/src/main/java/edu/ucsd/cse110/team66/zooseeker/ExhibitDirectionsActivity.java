@@ -315,7 +315,9 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
     public void replanDirections() {
         //replace exhibit directions from current index to end
         String startingExhibit = VisitingRoute.closestExhibit();
-        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.getFastestPathToEnd(startingExhibit, VisitingRoute.getExhibitsLeft(directionIndex));
+        List<String> exhibitsLeft = VisitingRoute.getExhibitsLeft(directionIndex);
+        exhibitsLeft.remove(exhibitsLeft.size() - 1);
+        Vector<List<IdentifiedWeightedEdge>> Directions = VisitingRoute.getFastestPathToEnd(startingExhibit, exhibitsLeft);
         List<List<PlanListItem>> route = VisitingRoute.getPlannedDirections(startingExhibit,Directions);
 
         for (int i = directionIndex; i < VisitingRoute.route.size(); ++i) {
