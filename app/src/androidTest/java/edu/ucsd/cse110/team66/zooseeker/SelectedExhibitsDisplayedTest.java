@@ -25,12 +25,15 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SelectedExhibitsDisplayedTest {
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
@@ -41,6 +44,9 @@ public class SelectedExhibitsDisplayedTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    /**
+     * Test that chosen exhibits are stored and can be viewed in a new activity
+     */
     @Test
     public void selectedExhibitsDisplayedTest() {
         ViewInteraction cbutton = onView(
@@ -70,6 +76,17 @@ public class SelectedExhibitsDisplayedTest {
                         isDisplayed()));
         materialButton.perform(click());
 
+        ViewInteraction materialButton2 = onView(
+                allOf(withId(R.id.add_exhibit_btn), withText("ADD"),
+                        childAtPosition(
+                                allOf(withId(R.id.exhibit_item_layout),
+                                        childAtPosition(
+                                                withId(R.id.exhibit_items),
+                                                3)),
+                                1),
+                        isDisplayed()));
+        materialButton2.perform(click());
+
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Collapse"),
                         childAtPosition(
@@ -81,7 +98,7 @@ public class SelectedExhibitsDisplayedTest {
                         isDisplayed()));
         appCompatImageButton.perform(click());
 
-        ViewInteraction materialButton2 = onView(
+        ViewInteraction materialButton3 = onView(
                 allOf(withId(R.id.selected_exhibits_btn), withText("Selected Exhibits"),
                         childAtPosition(
                                 childAtPosition(
@@ -89,13 +106,35 @@ public class SelectedExhibitsDisplayedTest {
                                         0),
                                 1),
                         isDisplayed()));
-        materialButton2.perform(click());
+        materialButton3.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.selected_exhibits_text), withText("Bali Mynah"),
+                allOf(withId(R.id.selected_exhibits_text), withText("Bali Mynah\nCrocodiles"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView.check(matches(withText("Bali Mynah")));
+        textView.check(matches(withText("Bali Mynah\nCrocodiles")));
+    }
+
+    /**
+     * Test that selected exhibits are stored even after restarting the app
+     */
+    @Test
+    public void selectedExhibitsPersistenceTest() {
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.selected_exhibits_btn), withText("Selected Exhibits"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                1),
+                        isDisplayed()));
+        materialButton.perform(click());
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.selected_exhibits_text), withText("Bali Mynah\nCrocodiles"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        textView.check(matches(withText("Bali Mynah\nCrocodiles")));
     }
 
     private static Matcher<View> childAtPosition(

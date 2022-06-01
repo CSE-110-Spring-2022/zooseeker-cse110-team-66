@@ -25,13 +25,16 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SelectedExhibitsBtnEnabledTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class SelectedExhibitsButtonTests {
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -42,7 +45,7 @@ public class SelectedExhibitsBtnEnabledTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void selectedExhibitsBtnTest() {
+    public void selectedExhibitsButtonTest() {
         ViewInteraction cbutton = onView(
                 allOf(withId(R.id.clear_btn), withText("CLEAR"),
                         withParent(withParent(withId(android.R.id.content))),
@@ -81,6 +84,19 @@ public class SelectedExhibitsBtnEnabledTest {
                         isDisplayed()));
         appCompatImageButton.perform(click());
 
+        ViewInteraction button = onView(
+                allOf(withId(R.id.selected_exhibits_btn), withText("SELECTED EXHIBITS"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
+        button.check(matches(isEnabled()));
+    }
+
+    /**
+     * Check that selected exhibits button is still enabled when reopening app with data
+     */
+    @Test
+    public void selectedExhibitsPersistenceTest() {
         ViewInteraction button = onView(
                 allOf(withId(R.id.selected_exhibits_btn), withText("SELECTED EXHIBITS"),
                         withParent(withParent(withId(android.R.id.content))),
