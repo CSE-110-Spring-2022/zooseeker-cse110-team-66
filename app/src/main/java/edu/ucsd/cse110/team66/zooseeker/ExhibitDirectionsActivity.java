@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team66.zooseeker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.constraintlayout.motion.utils.ViewTimeCycle;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -26,12 +27,14 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class ExhibitDirectionsActivity extends AppCompatActivity {
     private ArrayList<String> exhibitDirections;
     private ArrayList<String> detailedExhibitDirections;
     private int directionIndex;
     int routeNum;
+    Button skipDirection;
     TextView directionDisplay;
     Button backDirection;
     Button nextDirection;
@@ -161,6 +164,8 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             finish();
             return;
         }
+        VisitingRoute.route.remove(directionIndex);
+        VisitingRoute.exhibit_visiting_order.remove(directionIndex);
 
         exhibitDirections.remove(directionIndex);
         detailedExhibitDirections.remove(directionIndex);
@@ -175,6 +180,21 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
 //            detailedExhibitDirections.remove(1);
 //            directionIndex = 0;
 //        }
+
+
+
+        // recalculate directions for remaining exhibits
+//        List<String> exhibitsLeft = VisitingRoute.getExhibitsLeft(directionIndex);
+//        exhibitsLeft.remove(exhibitsLeft.size() - 1);
+//        String currentExhibit;
+//        if (directionIndex > 0) {
+//            currentExhibit = VisitingRoute.exhibit_visiting_order.get(directionIndex-1);
+//        }
+//        else {
+//            currentExhibit = VisitingRoute.entrance_and_exit_gate_id;
+//        }
+//
+//        Vector<List<IdentifiedWeightedEdge>> newDirections = VisitingRoute.getFastestPathToEnd(currentExhibit, exhibitsLeft);
 
         briefOrDetailedDirections();
 
