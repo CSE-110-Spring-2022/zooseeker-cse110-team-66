@@ -119,28 +119,40 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
         // Show if Detailed Direction
         detailedBtn = findViewById(R.id.detailed_directions);
         detailedBtn.setOnCheckedChangeListener((compoundButton, checked) -> refresh());
-        refresh();
+        briefOrDetailedDirections();
         directionDisplay.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+    }
+
+    private void setExhibitDirections(String directions){
+        directionDisplay.setText(directions+specifyExhibit());
     }
 
     private void briefOrDetailedDirections() {
         if (detailedDirections) {
-            directionDisplay.setText(String.format("%s", detailedExhibitDirections.get(directionIndex)));
+            setExhibitDirections(String.format("%s", detailedExhibitDirections.get(directionIndex)));
+        } else {
+            setExhibitDirections(String.format("%s", exhibitDirections.get(directionIndex)));
         }
-        else {
-            directionDisplay.setText(String.format("%s", exhibitDirections.get(directionIndex)));
+    }
+
+    /** If the target exhibit(s) is within a group, specify the exhibit in directions **/
+    private String specifyExhibit(){
+        String current_exhibit = VisitingRoute.exhibit_visiting_order.get(directionIndex);
+        if (VisitingRoute.groups_to_added_exhibits.containsKey(current_exhibit)) {
+            return String.format("Find %s inside.", VisitingRoute.groups_to_added_exhibits.get(current_exhibit).toString().replace("[","").replace("]",""));
         }
+        return "";
     }
 
     private void refresh(){
         if(exhibitDirections.isEmpty() || detailedExhibitDirections.isEmpty())
             return;
         if (detailedBtn.isChecked()) {
-            directionDisplay.setText(String.format("%s",detailedExhibitDirections.get(directionIndex)));
+            setExhibitDirections(String.format("%s",detailedExhibitDirections.get(directionIndex)));
             detailedDirections = true;
         }
         else {
-            directionDisplay.setText(String.format("%s",exhibitDirections.get(directionIndex)));
+            setExhibitDirections(String.format("%s",exhibitDirections.get(directionIndex)));
             detailedDirections = false;
         }
     }
@@ -168,9 +180,9 @@ public class ExhibitDirectionsActivity extends AppCompatActivity {
             editor.putInt("routeNum", directionIndex);
             editor.apply();
             if (detailedDirections)
-                directionDisplay.setText(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
+                setExhibitDirections(String.format("%s", PlanListItem.toDetailedMessage(previousDirection)));
             else
-                directionDisplay.setText(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
+                setExhibitDirections(String.format("%s", PlanListItem.toBriefMessage(previousDirection)));
         }
 
     }
